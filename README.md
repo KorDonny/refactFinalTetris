@@ -17,10 +17,10 @@
 #conflict 해결 -> master에서 수행하는 것이 바람직. 코드 구문의 필요성과 의의를 파악.
 최대한 대면 작업이 필요함.
 
-#reset방법 -> 완전리셋은 hard = commit까지 삭제후, 변경사항도 local에서 삭제.
-reset mixed -> 로컬 작업부분 그대로, git에는 초기이후 작업부분이 unstaged, git log 없음
-reset soft -> 로컬 작업 부분 그대로, git에는 초기이후 작업부분이 staged, git log 없음
-reset hard -> 지정 헤더 이후 작업 모두 삭제, git에는 작업부분 삭제로 커밋할것 없다 뜸, git log 없음
+#reset방법
+1. reset mixed -> 로컬 작업부분 그대로, git에는 초기이후 작업부분이 unstaged, git log 없음
+2. reset soft -> 로컬 작업 부분 그대로, git에는 초기이후 작업부분이 staged, git log 없음
+3. reset hard -> 지정 헤더 이후 작업 모두 삭제, git에는 작업부분 삭제로 커밋할것 없다 뜸, git log 없음
 
 #구현 목표
 1. 타이머 정리 및 병합 -> 메인 타이머를 Tetris 클래스에서 수행. 이것을 각 클래스마다 매개변수로 참조.
