@@ -7,7 +7,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.database.*;
-import kr.ac.jbnu.se.tetris.Entity.Account;
 import kr.ac.jbnu.se.tetris.Entity.GlobalStorage;
 
 import javax.swing.*;
@@ -28,7 +27,6 @@ public class FirebaseTool {
     private FirebaseApp firebaseApp;
     private DatabaseReference databaseReference;
     private GlobalStorage globalStorage;
-    private Account accessUser;
     public static FirebaseTool getInstance(){
         if (firebaseTool == null) firebaseTool = new FirebaseTool();
         return firebaseTool;

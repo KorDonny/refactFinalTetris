@@ -1,6 +1,4 @@
 package kr.ac.jbnu.se.tetris;
-
-//import kr.ac.jbnu.se.tetris.Boundary.TestMonitor;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.Control.Calculator;
 import kr.ac.jbnu.se.tetris.Control.FirebaseTool;
@@ -20,10 +18,6 @@ public class Tetris extends JFrame {//테트리스 클래스
 	public enum GameMode {
 		NORMAL_MODE, ITEM_MODE, SURVIVAL_MODE, SPRINT_MODE, AI_MODE, PVP_MODE
 	}
-	//#
-
-	//#Handler선언문
-	private final GameMode currentMode = GameMode.NORMAL_MODE;
 	private GameModeHandler modeHandler;
 	//#
 
