@@ -13,7 +13,7 @@ import java.util.Random;
 public class SurvivalModeHandler extends NormalModeHandler implements GameModeHandler {
     private final Timer lineAdditionTimer;
     private final Random random;
-    public SurvivalModeHandler() throws IOException {
+    public SurvivalModeHandler(){
         super();
         this.random = new Random();
         this.lineAdditionTimer = new Timer(2000, new ActionListener() {

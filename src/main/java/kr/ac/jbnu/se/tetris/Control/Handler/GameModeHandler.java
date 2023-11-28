@@ -7,5 +7,6 @@ import java.io.IOException;
 public interface GameModeHandler {
     void startGame() throws IOException;
     void connectCanvas();
-    public TetrisCanvas getCanvas();
+    TetrisCanvas getCanvas();
+    void initiateTrigger();
 }

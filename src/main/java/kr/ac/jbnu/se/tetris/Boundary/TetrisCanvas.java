@@ -38,7 +38,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	/** 현재 떨어지는 블록 */
 	Entity curPiece;
 	public TetrisCanvas() {
-		super();
+		setPreferredSize(new Dimension(BOARD_SIZE_W,BOARD_SIZE_H));
 		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
 		board = new Tetrominoes[BoardWidth * BoardHeight]; // 1차원 배열의 칸 생성
 	}
@@ -53,13 +53,6 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		isStarted = true;
 		isFallingFinished = false;
 		numLinesRemoved = 0;
-
-		BackPanel.addTask("Canvas drop logic", new TimerTask() {
-			@Override
-			public void run() {
-				actionTrigger();
-			}
-		}, 400);
 		newPiece();
 	}
 	public void actionTrigger(){

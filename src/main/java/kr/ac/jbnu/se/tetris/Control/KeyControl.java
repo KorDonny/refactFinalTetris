@@ -1,12 +1,14 @@
 package kr.ac.jbnu.se.tetris.Control;
 
+import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
 import kr.ac.jbnu.se.tetris.Entity.Entity;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.TimerTask;
 
-public class KeyControl extends KeyAdapter{
+public class KeyControl implements KeyListener {
     static KeyControl keyControl = null;
     boolean isLeft,isRight,isUp,isDown,isOne,isDrop;
     boolean isLeftP2,isRightP2,isUpP2,isDownP2,isOneP2,isDropP2;
@@ -28,6 +30,12 @@ public class KeyControl extends KeyAdapter{
         isDownP2=false;
         isOneP2=false;
         isDropP2=false;
+        BackPanel.addTask("KeyControl", new TimerTask() {
+            @Override
+            public void run() {
+                doKeyLogic();
+            }
+        },100);
     }
     public boolean isSingle(){ return player2 == null; }
     @Override
@@ -49,6 +57,12 @@ public class KeyControl extends KeyAdapter{
         if(key == KeyEvent.VK_SPACE){isDrop = false;}
         if(key == KeyEvent.VK_B){isOne = false;}
     }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();

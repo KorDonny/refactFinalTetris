@@ -1,5 +1,7 @@
 package kr.ac.jbnu.se.tetris.Boundary;
 
+import kr.ac.jbnu.se.tetris.Control.KeyControl;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -36,7 +38,11 @@ public class BackPanel extends JPanel {
         if(!viewStack.isEmpty())viewStack.peek().setVisible(false);
         target.setVisible(true);
         viewStack.add(target);
-        if(target instanceof UICanvas) setGameUIFrame();
+        if(target instanceof UICanvas&&!(target instanceof TetrisCanvas)) {
+            setGameUIFrame();
+            target.setFocusable(true); // 키입력 강제로 받도록 설정.
+            target.addKeyListener(KeyControl.getInstance());
+        }
         add(viewStack.peek());
         revalidate();
     }
@@ -67,6 +73,6 @@ public class BackPanel extends JPanel {
     public static void startTask(String taskID){ timerMap.get(taskID).run(); }
     public void setGameUIFrame(){
         setBorder(100,100,100,100);
-        setLayout(new GridLayout(1,3,0,100));
+
     }
 }

@@ -16,7 +16,7 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
     private boolean gameClearAchieved; // Game Clear 상태 여부
     private final Random random;
     private NormalModeHandler normal;
-    public SprintModeHandler() throws IOException {
+    public SprintModeHandler(){
         super();
         this.sprintModeStatusbar = new JLabel();
         this.gameClearAchieved = false;

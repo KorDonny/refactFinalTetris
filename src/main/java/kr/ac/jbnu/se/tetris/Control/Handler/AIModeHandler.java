@@ -10,7 +10,7 @@ import java.io.IOException;
 public class AIModeHandler extends NormalModeHandler implements GameModeHandler{
     private final TetrisCanvas canvas;
     private NormalModeHandler AI;
-    public AIModeHandler() throws IOException {
+    public AIModeHandler(){
         super();
         AI = new NormalModeHandler();
         this.canvas = new TetrisCanvasAI();
