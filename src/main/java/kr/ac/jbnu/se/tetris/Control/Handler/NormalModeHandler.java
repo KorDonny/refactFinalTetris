@@ -1,44 +1,29 @@
 package kr.ac.jbnu.se.tetris.Control.Handler;
 
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
-import kr.ac.jbnu.se.tetris.Tetris;
+import kr.ac.jbnu.se.tetris.Boundary.UICanvas;
+import kr.ac.jbnu.se.tetris.Control.KeyControl;
+import kr.ac.jbnu.se.tetris.FrameMain;
 
-import javax.swing.*;
-import java.awt.*;
-
-import static kr.ac.jbnu.se.tetris.Tetris.*;
+import java.io.IOException;
 
 public class NormalModeHandler implements GameModeHandler {
-    private final Tetris tetris;
     private final TetrisCanvas canvas;
-    static JPanel uiBoard;
-
-    public NormalModeHandler(Tetris tetris) {
-        this.tetris = tetris;
-        this.canvas = new TetrisCanvas(tetris);
+    public static final String KEY_CONTROL_LABEL = "KeyControl";
+    public NormalModeHandler() throws IOException {
+        this.canvas = new TetrisCanvas();
+        KeyControl.updatePlayer(canvas);
     }
 
     @Override
-    public void startGame() {
+    public void startGame() throws IOException {
+        FrameMain.getBackPanel().push(new UICanvas());
         connectCanvas();
-        tetris.inputGameUI(canvas);
+        FrameMain.getBackPanel().push(canvas);
         canvas.start();
-        uiBoard = new JPanel();
-        uiBoard.setPreferredSize(new Dimension(gameUIBlockWidth,gameUIBlockHeight));
-        uiBoard.setBackground(Color.YELLOW);
-        tetris.inputGameUI(uiBoard);
-        canvas.requestFocusInWindow();
     }
-
     @Override
-    public void connectCanvas() { tetris.updateP1(this.canvas); }
-
+    public void connectCanvas() { KeyControl.updatePlayer(canvas); }
     @Override
     public TetrisCanvas getCanvas() { return this.canvas; }
-    public static void addUI(JFrame component){
-        uiBoard.add(component);
-        uiBoard.revalidate();
-        uiBoard.repaint();
-    }
-
 }

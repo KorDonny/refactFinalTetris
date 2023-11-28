@@ -6,13 +6,19 @@ import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
 import kr.ac.jbnu.se.tetris.Tetris;
 
 import javax.swing.*;
+import java.util.TimerTask;
 
 public class TetrisCanvasAI extends TetrisCanvas {
 
 	private AIControl aiControl;
-	public TetrisCanvasAI(Tetris game) {
-		super(game);
-		timer = new Timer(100, this); // 이벤트간 딜레이 400
+	public TetrisCanvasAI() {
+		super();
+		BackPanel.addTask("Canvas AI Logic", new TimerTask() {
+			@Override
+			public void run() {
+				actionTrigger();
+			}
+		}, 100);// 이벤트간 딜레이 400
 		aiControl = new AIControl(this);
 	}
 

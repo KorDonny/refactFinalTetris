@@ -1,21 +1,21 @@
 package kr.ac.jbnu.se.tetris.Control.Handler;
 
 //import kr.ac.jbnu.se.tetris.Boundary.TestMonitor;
+import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
+import kr.ac.jbnu.se.tetris.Control.KeyControl;
 import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
 import kr.ac.jbnu.se.tetris.Tetris;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.Random;
 
 public class ItemModeHandler extends NormalModeHandler implements GameModeHandler {
-    private final Tetris tetris;
     private final Timer itemTimer;
-
-    public ItemModeHandler(Tetris tetris) {
-        super(tetris);
-        this.tetris = tetris;
+    public ItemModeHandler() throws IOException {
+        super();
         // 아이템 타이머 생성 및 리스너 등록
         itemTimer = new Timer(10000, e -> removeRandomLine());
         // statusbar의 텍스트 변경을 모니터링하는 리스너 등록
@@ -25,18 +25,15 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
 //            }
 //        });
     }
-
     @Override
-    public void startGame() {
+    public void startGame() throws IOException {
         super.startGame();
         itemTimer.start();
     }
-
     @Override
-    public void connectCanvas() { tetris.updateP1(getCanvas()); }
+    public void connectCanvas() { KeyControl.updatePlayer(getCanvas()); }
     @Override
     public TetrisCanvas getCanvas() { return super.getCanvas(); }
-
     // 랜덤한 가로줄 또는 세로줄 제거
     private void removeRandomLine() {
         Random random = new Random();
@@ -48,7 +45,6 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
             removeRandomColumn();
         }
     }
-
     // 랜덤한 가로줄 제거
     private void removeRandomRow() {
         int rowToRemove = (int) (Math.random() * TetrisCanvas.BoardHeight);
@@ -57,7 +53,6 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
         }
         getCanvas().repaint();
     }
-
     // 랜덤한 세로줄 제거
     private void removeRandomColumn() {
         int colToRemove = (int) (Math.random() * TetrisCanvas.BoardWidth);

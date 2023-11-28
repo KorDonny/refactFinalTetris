@@ -7,7 +7,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.database.*;
-import kr.ac.jbnu.se.tetris.Entity.GlobalStorage;
+import kr.ac.jbnu.se.tetris.Entity.Account;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -26,14 +26,12 @@ public class FirebaseTool {
     private static FirebaseTool firebaseTool = null;
     private FirebaseApp firebaseApp;
     private DatabaseReference databaseReference;
-    private GlobalStorage globalStorage;
     public static FirebaseTool getInstance(){
         if (firebaseTool == null) firebaseTool = new FirebaseTool();
         return firebaseTool;
     }
     public FirebaseTool(){
         initialize();
-        globalStorage = GlobalStorage.getInstance();
     }
     public void initialize(){
         try{
@@ -55,43 +53,40 @@ public class FirebaseTool {
     public boolean logIn(String id, String password){
         try{
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(firebaseApp);
-            UserRecord userRecord = firebaseAuth.getUserByEmail(id);
+            UserRecord userRecord = firebaseAuth.getUser(id);
             if(userRecord!=null){
-                if(userRecord.getEmail().equals(id)){
-                    globalStorage.setUserID(id);
-                    JOptionPane.showMessageDialog(null, "로그인이 정상적으로 처리되었습니다.");
+                if(userRecord.getUid().equals(id)){
                     return true;
                 }
             }
         }catch (NullPointerException e){
-            JOptionPane.showMessageDialog(null,"아이디를 확인하세요.");
             return false;
         }catch (FirebaseAuthException e){
-            JOptionPane.showMessageDialog(null,"비밀번호를 확인하세요.");
             return false;
         }
         return false;
     }
-    public void signUp(String id, String password) {
+    public boolean signUp(String id, String password) {
         try {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(firebaseApp);
             firebaseAuth.createUser(new UserRecord.CreateRequest()
-                    .setEmail(id)
-                    .setEmailVerified(false)
+                    .setUid(id)
                     .setPassword(password)
                     .setDisplayName(id));
 
             DatabaseReference initReference = FirebaseDatabase.getInstance(firebaseApp).getReference();
 
-            initReference.child("user").child(id.split("@")[0]).child("profileimage").setValue("1", null);
-            initReference.child("user").child(id.split("@")[0]).child("bestscore").setValue("0", null);
-            initReference.child("user").child(id.split("@")[0]).child("theme").setValue("1", null);
+            for (Account.scoreType scores : Account.scoreType.values()){
+                initReference.child(MEMBER).child(id.split("@")[0]).child(scores.getTag()).setValue("0", null);
+            }
 
             JOptionPane.showMessageDialog(null, "회원가입에 정상적으로 처리되었습니다.");
+            return true;
 
         } catch (NullPointerException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "회원가입에 문제가 생겼습니다.");
+            return  false;
         } catch (FirebaseAuthException e) {
             JOptionPane.showMessageDialog(null, "회원가입에 문제가 생겼습니다.");
             throw new RuntimeException(e);
@@ -138,7 +133,7 @@ public class FirebaseTool {
             userScoreDatabase.child("user").child(id.split("@")[0]).child("bestscore").setValue(bestscore, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    globalStorage.setUserBestScore(bestscore);
+
                 }
             });
 

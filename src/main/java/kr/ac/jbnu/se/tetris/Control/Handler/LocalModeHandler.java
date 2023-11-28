@@ -1,28 +1,29 @@
 package kr.ac.jbnu.se.tetris.Control.Handler;
 
+import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
+import kr.ac.jbnu.se.tetris.Control.KeyControl;
+import kr.ac.jbnu.se.tetris.FrameMain;
 import kr.ac.jbnu.se.tetris.Tetris;
 
+import java.io.IOException;
+
 public class LocalModeHandler extends NormalModeHandler implements GameModeHandler{
-    private final Tetris tetris;
     private final TetrisCanvas canvas;
     NormalModeHandler normal;
-    public LocalModeHandler(Tetris tetris){
-        super(tetris);
-        this.normal = new NormalModeHandler(tetris);
-        this.tetris = tetris;
-        this.canvas = new TetrisCanvas(tetris);
+    public LocalModeHandler() throws IOException {
+        super();
+        this.normal = new NormalModeHandler();
+        this.canvas = new TetrisCanvas();
+        KeyControl.updatePlayer(this.canvas);
     }
     @Override
-    public void startGame() {
+    public void startGame() throws IOException {
         normal.startGame();
-        tetris.inputGameUI(canvas);
+        FrameMain.getInstance().getBackPanel().push(canvas);
         connectCanvas();
         canvas.start();
-        normal.getCanvas().requestFocusInWindow();
     }
-    @Override
-    public void connectCanvas() {tetris.updateP2(this.canvas);}
     @Override
     public TetrisCanvas getCanvas() { return this.canvas; }
 }
