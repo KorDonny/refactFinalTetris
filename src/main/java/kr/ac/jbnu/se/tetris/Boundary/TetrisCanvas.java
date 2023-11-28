@@ -36,10 +36,11 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	/** 지워진 라인 갯수 */
 	int numLinesRemoved = 0;
 	/** 현재 떨어지는 블록 */
-	Entity curPiece;
+	Entity curPiece, shadowPiece;
 	public TetrisCanvas() {
 		super();
 		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
+		shadowPiece = new Entity(Tetrominoes.NoShape);
 		board = new Tetrominoes[BoardWidth * BoardHeight]; // 1차원 배열의 칸 생성
 	}
 	/** 칸의 가로 길이 */
@@ -99,7 +100,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 					drawSquare(g, 0 + j * squareWidth(), boardTop + i * squareHeight(), shape);
 			}
 		}
-
+		
 		// 떨어지는 블록 색칠
 		if (curPiece.getShape() != Tetrominoes.NoShape) {
 			for (int i = 0; i < 4; ++i) {
@@ -108,6 +109,20 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 				drawSquare(g, 0 + x * squareWidth(), boardTop + (BoardHeight - y - 1) * squareHeight(),
 						curPiece.getShape());
 			}
+		}
+
+		// 블록 그림자 색칠
+		shadowPiece.copyEntity(curPiece);
+		int newY = shadowPiece.getCurY();
+		while (newY > 0) {
+			if (!tryMoveA(shadowPiece, shadowPiece.getCurX(), newY - 1))
+				break;
+			--newY;
+		}
+		for (int i = 0; i < 4; ++i) {
+			int x = shadowPiece.getCurX() + shadowPiece.x(i);
+			int y = shadowPiece.getCurY() - shadowPiece.y(i);
+			drawSquare(g, x * squareWidth(), boardTop + (BoardHeight - y - 1) * squareHeight(), Tetrominoes.Shadow);
 		}
 	}
 	public boolean dropDown() {
@@ -175,6 +190,21 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		repaint();
 		return true;
 	}
+
+	public boolean tryMoveA(Entity newPiece, int newX, int newY) {
+		for (int i = 0; i < 4; ++i) {
+			int x = newX + newPiece.x(i);
+			int y = newY - newPiece.y(i);
+			if (x < 0 || x >= BoardWidth || y < 0 || y >= BoardHeight)//테트리스 컨트롤 도형의 x,y에 의해 통제
+				return false;
+			if (shapeAt(x, y) != Tetrominoes.NoShape)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
+				return false;
+		}
+		newPiece.setPosition(newX,newY);
+		repaint();
+		return true;
+	}
+
 	/** 완성된 줄 제거 */
 	protected void removeFullLines() {
 		int numFullLines = 0; // 완성된 줄의 수

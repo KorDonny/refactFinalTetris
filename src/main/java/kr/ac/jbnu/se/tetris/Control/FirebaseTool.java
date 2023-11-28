@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 public class FirebaseTool {
 
     private static final String DOMAIN_NAME = "https://jungboproj-default-rtdb.firebaseio.com/";
-    private static final String KEY_LOCATION = "../Tetris/jungboproj-firebase-adminsdk-pco24-58aac1409b.json";
+    private static final String KEY_LOCATION = "../refactFinalTetris/jungboproj-firebase-adminsdk-pco24-58aac1409b.json";
     private static final String MEMBER = "user";
     private static FirebaseTool firebaseTool = null;
     private FirebaseApp firebaseApp;
