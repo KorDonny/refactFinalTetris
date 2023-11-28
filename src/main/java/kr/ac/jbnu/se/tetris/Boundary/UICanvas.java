@@ -14,5 +14,6 @@ public class UICanvas extends JPanel {
         addKeyListener(KeyControl.getInstance());
         requestFocus();
     }
+
     public Timer getTimer(){ return timer; }
 }

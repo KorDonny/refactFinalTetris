@@ -36,22 +36,8 @@ public class BackPanel extends JPanel {
         if(!viewStack.isEmpty())viewStack.peek().setVisible(false);
         target.setVisible(true);
         viewStack.add(target);
-        if(target instanceof UICanvas){
-            if(target instanceof TetrisCanvas){
-                if(!isGameFirst) {
-                    isGameFirst = true;
-                    add(viewStack.peek(),BorderLayout.WEST);
-                }
-                else add(viewStack.peek(),BorderLayout.EAST);
-            }
-            else{
-                setGameUIFrame();
-                add(viewStack.peek(),BorderLayout.CENTER);
-            }
-        }
-        else{
-            add(viewStack.peek());
-        }
+        if(target instanceof UICanvas) setGameUIFrame();
+        add(viewStack.peek());
         revalidate();
     }
     /** 뷰 스택의 최상단을 가리고, 이후 제거 및 다음 최상단 표시 ~= 뒤로가기. */
@@ -80,7 +66,7 @@ public class BackPanel extends JPanel {
     public static void resumeAllTask(){ timer.notifyAll(); }
     public static void startTask(String taskID){ timerMap.get(taskID).run(); }
     public void setGameUIFrame(){
-        setBorder(200,100,200,100);
-        setLayout(new BorderLayout(0,100));
+        setBorder(100,100,100,100);
+        setLayout(new GridLayout(1,3,0,100));
     }
 }

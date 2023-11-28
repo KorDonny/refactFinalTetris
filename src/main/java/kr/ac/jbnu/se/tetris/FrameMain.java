@@ -23,7 +23,7 @@ public class FrameMain extends JFrame {
     DEFAULT_VERT_GRID_ROW = 15,DEFAULT_VERT_GRID_COLUMN = 1,GRID_VGAP = 10, GRID_WGAP = 0;
     static BackPanel backPanel;
     public FrameMain() throws IOException {
-        frameMain=this;
+        frameMain = this;
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         backPanel = new BackPanel();

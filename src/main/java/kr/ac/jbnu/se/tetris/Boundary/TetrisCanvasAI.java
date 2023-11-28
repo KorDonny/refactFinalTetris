@@ -3,9 +3,7 @@ package kr.ac.jbnu.se.tetris.Boundary;
 import kr.ac.jbnu.se.tetris.Control.AIControl;
 import kr.ac.jbnu.se.tetris.Entity.Entity;
 import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
-import kr.ac.jbnu.se.tetris.Tetris;
 
-import javax.swing.*;
 import java.util.TimerTask;
 
 public class TetrisCanvasAI extends TetrisCanvas {

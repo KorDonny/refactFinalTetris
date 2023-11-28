@@ -1,14 +1,11 @@
 package kr.ac.jbnu.se.tetris.Control.Handler;
 
 //import kr.ac.jbnu.se.tetris.Boundary.TestMonitor;
-import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.Control.KeyControl;
 import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
-import kr.ac.jbnu.se.tetris.Tetris;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.util.Random;
 
