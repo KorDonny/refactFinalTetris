@@ -28,6 +28,8 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	public static final int BoardWidth = 10;
 	/** 화면의 세로칸 수 */
 	public static final int BoardHeight = 22;
+
+	private int imageWidth, imageHeight;
 	/** 기본 프레임 딜레이 400 */ //딜레이 구성 변경 로직 구현하여 난이도 조절 가능할 것이라고 추측됨.
 	/** ture : 블록이 바닥에 닿은 상태 <br/>
 	 * false : 블록이 낙하중인 상태 */
@@ -39,18 +41,28 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	/** 지워진 라인 갯수 */
 	int numLinesRemoved = 0;
 	/** 현재 떨어지는 블록 */
-	Entity curPiece, shadowPiece;;
+	Entity curPiece, shadowPiece;
 	public Sound sound;
+
 	/** 배경 이미지 GIF */
-	private ImageIcon gifImage;
+	private Image image;
 	public TetrisCanvas() throws IOException {
 		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
 		shadowPiece = new Entity(Tetrominoes.NoShape);
 		board = new Tetrominoes[BoardWidth * BoardHeight]; // 1차원 배열의 칸 생성
 		gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/backGif2.gif";
-		gifImage = new ImageIcon(ImageIO.read(new File(gifImagePath)));
+		image = new ImageIcon(ImageIO.read(new File(gifImagePath))).getImage();
 		setImage();
 		sound = new Sound();
+
+		// 넓이에 맞추기
+		imageWidth = UICanvas.BOARD_SIZE_W;
+		imageHeight = (int) ((double) imageWidth / image.getWidth(null) * image.getHeight(null));
+
+//		// 높이에 맞추기
+//		imageHeight = UICanvas.BOARD_SIZE_H;
+//		imageWidth = (int) ((double) imageHeight / image.getWidth(null) * image.getHeight(null));
+
 	}
 	/** 칸의 가로 길이 */
 	int squareWidth() { return (int) getSize().getWidth() / BoardWidth; }
@@ -97,6 +109,8 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		Dimension size = getSize();
 		int boardTop = (int) size.getHeight() - BoardHeight * squareHeight();
 
+		g.drawImage(image, 0, 0, imageWidth, imageHeight, null);
+
 		// 쌓여있는 블록 색칠
 		for (int i = 0; i < BoardHeight; ++i) {
 			for (int j = 0; j < BoardWidth; ++j) {
@@ -105,7 +119,6 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 					drawSquare(g, 0 + j * squareWidth(), boardTop + i * squareHeight(), shape);
 			}
 		}
-
 
 		// 블록 그림자 위치 변경
 		shadowPiece.copyEntity(curPiece);
@@ -184,7 +197,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		}
 	}
 	public void paintComponent(Graphics g){
-		gifImage.paintIcon(this, g, 0, 0);
+//		gifImage.paintIcon(this, g, 0, 0);
 	}
 	/** 블록 움직일 수 있는지 여부 반환<br/>
 	 *  만약 움직일 수 있다면 움직이는 메서드 */
