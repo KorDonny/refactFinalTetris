@@ -39,5 +39,15 @@ public class NormalModeHandler implements GameModeHandler {
                 }
             }
         }, 400);
+//         BackPanel.getTimer().scheduleAtFixedRate(new TimerTask() {
+//             @Override
+//             public void run() {
+//                 try {
+//                     canvas.actionTrigger();
+//                 } catch (InterruptedException e) {
+//                     throw new RuntimeException(e);
+//                 }
+//             }
+//         },0,400);
     }
 }

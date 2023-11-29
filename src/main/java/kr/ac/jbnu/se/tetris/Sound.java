@@ -11,12 +11,12 @@ public class Sound {
 
     public Sound() {
         setBgm();
-        setDropSound();
-        setRemoveSound();
+        //setDropSound();
+        //setRemoveSound();
     }
 
     private synchronized void setBgm() {
-        File bgmFile = new File("music/bgm.wav");
+        File bgmFile = new File("./src/main/java/kr/ac/jbnu/se/tetris/Resource/music/bgm.wav");
         try {
             bgmClip = AudioSystem.getClip();
             bgmClip.open(AudioSystem.getAudioInputStream(bgmFile));
@@ -26,7 +26,7 @@ public class Sound {
     }
 
     private synchronized void setDropSound() {
-        File dropSoundFile = new File("music/drop.wav");
+        File dropSoundFile = new File("./src/main/java/kr/ac/jbnu/se/tetris/Resource/music/drop.wav");
         try {
             dropSoundClip = AudioSystem.getClip();
             dropSoundClip.open(AudioSystem.getAudioInputStream(dropSoundFile));
@@ -36,7 +36,7 @@ public class Sound {
     }
 
     private synchronized void setRemoveSound() {
-        File removeSoundFile = new File("music/remove.wav");
+        File removeSoundFile = new File("./src/main/java/kr/ac/jbnu/se/tetris/Resource/music/remove.wav");
         try {
             removeSoundClip = AudioSystem.getClip();
             removeSoundClip.open(AudioSystem.getAudioInputStream(removeSoundFile));

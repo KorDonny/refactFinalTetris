@@ -47,9 +47,9 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
 		shadowPiece = new Entity(Tetrominoes.NoShape);
 		board = new Tetrominoes[BoardWidth * BoardHeight]; // 1차원 배열의 칸 생성
-		String gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/backGif2.gif";
+		gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/backGif2.gif";
 		gifImage = new ImageIcon(ImageIO.read(new File(gifImagePath)));
-		scaleImage();
+		setImage();
 		sound = new Sound();
 	}
 	/** 칸의 가로 길이 */
@@ -152,7 +152,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	}
 	/** 현재 위치에 블록을 남기는 메소드 */
 	protected void pieceDropped() throws InterruptedException {
-		sound.playDropSound();
+		//sound.playDropSound();
 		// 현재 위치에 블록 배치
 		for (int i = 0; i < 4; ++i) {
 			int x = curPiece.getCurX() + curPiece.x(i);
@@ -243,7 +243,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			numLinesRemoved += numFullLines;
 			isFallingFinished = true;
 			curPiece = new Entity(Tetrominoes.NoShape);
-			sound.playRemoveSound();
+			//sound.playRemoveSound();
 			repaint();
 		}
 	}

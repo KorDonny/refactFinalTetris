@@ -22,7 +22,7 @@ public class BackPanel extends JPanel {
     static Timer timer;
     static HashMap<Object,TimerTask> timerMap;
     BufferedImage background;
-    final String backgroundPath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/background.png";
+    final String backgroundPath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/background.png";
     boolean isGameFirst;
     public BackPanel() throws IOException {
         viewStack = new Stack<>();
@@ -86,4 +86,5 @@ public class BackPanel extends JPanel {
     public void setGameUIFrame(){
         setBorder(25,100,75,100);
     }
+    public static Timer getTimer(){ return timer; }
 }
