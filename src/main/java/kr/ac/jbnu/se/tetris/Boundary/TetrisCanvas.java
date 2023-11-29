@@ -4,13 +4,16 @@ import kr.ac.jbnu.se.tetris.Control.FirebaseTool;
 import kr.ac.jbnu.se.tetris.Control.KeyControl;
 import kr.ac.jbnu.se.tetris.Entity.Entity;
 import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
+import kr.ac.jbnu.se.tetris.Sound;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.TimerTask;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 //상속클래스 = Jpanel
 	/**
@@ -38,7 +41,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	/** 현재 떨어지는 블록 */
 	Entity curPiece, shadowPiece;;
 	public Sound sound;
-	/** 배경 이미지 GIF */+
+	/** 배경 이미지 GIF */
 	private ImageIcon gifImage;
 	public TetrisCanvas() throws IOException {
 		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
