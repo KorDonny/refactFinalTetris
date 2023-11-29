@@ -4,6 +4,7 @@ import kr.ac.jbnu.se.tetris.Control.FirebaseTool;
 import kr.ac.jbnu.se.tetris.Control.KeyControl;
 import kr.ac.jbnu.se.tetris.Entity.Entity;
 import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
+import kr.ac.jbnu.se.tetris.Sound;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -37,10 +38,12 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	int numLinesRemoved = 0;
 	/** 현재 떨어지는 블록 */
 	Entity curPiece;
+	public Sound sound;
 	public TetrisCanvas() {
 		super();
 		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
 		board = new Tetrominoes[BoardWidth * BoardHeight]; // 1차원 배열의 칸 생성
+		sound = new Sound();
 	}
 	/** 칸의 가로 길이 */
 	int squareWidth() { return (int) getSize().getWidth() / BoardWidth; }
@@ -61,6 +64,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			}
 		}, 400);
 		newPiece();
+		sound.startBgm();
 	}
 	public void actionTrigger(){
 		if (isFallingFinished) {
@@ -80,8 +84,10 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		isPaused = !isPaused;
 		if (isPaused) {
 			timer.stop();
+			sound.stopBgm();
 		} else {
 			timer.start();
+			sound.startBgm();
 		}
 		repaint();
 	}
@@ -132,6 +138,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	}
 	/** 현재 위치에 블록을 남기는 메소드 */
 	protected void pieceDropped() {
+		sound.playDropSound();
 		// 현재 위치에 블록 배치
 		for (int i = 0; i < 4; ++i) {
 			int x = curPiece.getCurX() + curPiece.x(i);
@@ -152,6 +159,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
 			curPiece = new Entity(Tetrominoes.NoShape); // 떨어지는 블록 없앰
 			timer.stop();
+			sound.stopBgm();
 			isStarted = false;
 //			if(Integer.parseInt(globalStorage.getUserBestScore())<numLinesRemoved) {
 //				globalStorage.setUserBestScore(String.valueOf(numLinesRemoved));
@@ -203,6 +211,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			numLinesRemoved += numFullLines;
 			isFallingFinished = true;
 			curPiece = new Entity(Tetrominoes.NoShape);
+			sound.playRemoveSound();
 			repaint();
 		}
 	}
