@@ -11,17 +11,18 @@ import java.util.TimerTask;
 public class LocalModeHandler extends NormalModeHandler implements GameModeHandler{
     private final TetrisCanvas canvas;
     NormalModeHandler normal;
-    public LocalModeHandler(){
+    public LocalModeHandler() throws IOException {
         super();
         this.normal = new NormalModeHandler();
         this.canvas = new TetrisCanvas();
     }
     @Override
-    public void startGame() throws IOException {
+    public void startGame() throws IOException, InterruptedException {
         normal.startGame();
         FrameMain.getBackPanel().push(canvas);
         connectCanvas();
         canvas.start();
+        initiateTrigger();
     }
     @Override
     public TetrisCanvas getCanvas() { return this.canvas; }
@@ -29,10 +30,14 @@ public class LocalModeHandler extends NormalModeHandler implements GameModeHandl
     public void connectCanvas() { KeyControl.updatePlayer(getCanvas()); }
     @Override
     public void initiateTrigger(){
-        BackPanel.addTask("Canvas drop logic 2P", new TimerTask() {
+        BackPanel.addTask(this.canvas, new TimerTask() {
             @Override
             public void run() {
-                getCanvas().actionTrigger();
+                try {
+                    getCanvas().actionTrigger();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, 400);
     }

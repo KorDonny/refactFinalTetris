@@ -1,16 +1,13 @@
 package kr.ac.jbnu.se.tetris.Boundary;
 
-import kr.ac.jbnu.se.tetris.Control.FirebaseTool;
-import kr.ac.jbnu.se.tetris.Control.KeyControl;
 import kr.ac.jbnu.se.tetris.Entity.Entity;
 import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.TimerTask;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import java.io.File;
+import java.io.IOException;
 
 public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 //상속클래스 = Jpanel
 	/**
@@ -37,10 +34,14 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	int numLinesRemoved = 0;
 	/** 현재 떨어지는 블록 */
 	Entity curPiece;
-	public TetrisCanvas() {
-		setPreferredSize(new Dimension(BOARD_SIZE_W,BOARD_SIZE_H));
+	/** 배경 이미지 GIF */
+	private ImageIcon gifImage;
+	public TetrisCanvas() throws IOException {
 		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
 		board = new Tetrominoes[BoardWidth * BoardHeight]; // 1차원 배열의 칸 생성
+		String gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/backGif2.gif";
+		gifImage = new ImageIcon(ImageIO.read(new File(gifImagePath)));
+		scaleImage();
 	}
 	/** 칸의 가로 길이 */
 	int squareWidth() { return (int) getSize().getWidth() / BoardWidth; }
@@ -48,14 +49,14 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	int squareHeight() { return (int) getSize().getHeight() / BoardHeight; }
 	/** (x,y)에 블록 종류 */
 	public Tetrominoes shapeAt(int x, int y) { return board[(y * BoardWidth) + x]; }
-	public void start() {
+	public void start() throws InterruptedException {
 		clearBoard();
 		isStarted = true;
 		isFallingFinished = false;
 		numLinesRemoved = 0;
 		newPiece();
 	}
-	public void actionTrigger(){
+	public void actionTrigger() throws InterruptedException {
 		if (isFallingFinished) {
 			isFallingFinished = false;
 			newPiece();
@@ -67,14 +68,14 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	 * 일시정지 메소드
 	 * 추후 pause이펙트를 공통으로 걸려면, timer에 대한 처리가 필요할 것으로 보임.
 	 * */
-	public void pause() {
+	public void pause() throws InterruptedException {
 		if (!isStarted)
 			return;
 		isPaused = !isPaused;
 		if (isPaused) {
-			timer.stop();
+			BackPanel.stopTask(this);
 		} else {
-			timer.start();
+			BackPanel.resumeTask(this);
 		}
 		repaint();
 	}
@@ -103,7 +104,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			}
 		}
 	}
-	public boolean dropDown() {
+	public boolean dropDown() throws InterruptedException {
 		int newY = curPiece.getCurY();
 		while (newY > 0) {
 			if (!tryMove(curPiece, curPiece.getCurX(), newY - 1))
@@ -114,7 +115,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		return true;
 	}
 	/** 블록이 한줄 아래로 내려가는 메소드*/
-	protected void oneLineDown() {
+	protected void oneLineDown() throws InterruptedException {
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY() - 1))
 			pieceDropped(); //떨어지면 수행되는 메소드, 드롭다운과 동일
 	}
@@ -124,7 +125,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			board[i] = Tetrominoes.NoShape;
 	}
 	/** 현재 위치에 블록을 남기는 메소드 */
-	protected void pieceDropped() {
+	protected void pieceDropped() throws InterruptedException {
 		// 현재 위치에 블록 배치
 		for (int i = 0; i < 4; ++i) {
 			int x = curPiece.getCurX() + curPiece.x(i);
@@ -138,19 +139,22 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			newPiece();
 	}
 	/** 새 블록 생성 */
-	protected void newPiece() {
+	protected void newPiece() throws InterruptedException {
 		// 블록 종류 및 위치 수정
 		curPiece.setRandomShape();
 		// 블록이 움직이지 못할 때(게임 종료)
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
 			curPiece = new Entity(Tetrominoes.NoShape); // 떨어지는 블록 없앰
-			timer.stop();
+			BackPanel.stopTask(this);
 			isStarted = false;
 //			if(Integer.parseInt(globalStorage.getUserBestScore())<numLinesRemoved) {
 //				globalStorage.setUserBestScore(String.valueOf(numLinesRemoved));
 //				firebaseTool.setUserBestScore(globalStorage.getUserID(), String.valueOf(numLinesRemoved));// 베스트 스코어 업데이트
 //			}
 		}
+	}
+	public void paintComponent(Graphics g){
+		gifImage.paintIcon(this, g, 0, 0);
 	}
 	/** 블록 움직일 수 있는지 여부 반환<br/>
 	 *  만약 움직일 수 있다면 움직이는 메서드 */

@@ -10,13 +10,13 @@ import java.io.IOException;
 public class AIModeHandler extends NormalModeHandler implements GameModeHandler{
     private final TetrisCanvas canvas;
     private NormalModeHandler AI;
-    public AIModeHandler(){
+    public AIModeHandler() throws IOException {
         super();
         AI = new NormalModeHandler();
         this.canvas = new TetrisCanvasAI();
     }
     @Override
-    public void startGame() throws IOException {
+    public void startGame() throws IOException, InterruptedException {
         AI.startGame();
         this.connectCanvas();
         FrameMain.getInstance().getBackPanel().push(canvas);

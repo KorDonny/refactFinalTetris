@@ -20,9 +20,9 @@ import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_WIDTH;
 public class BackPanel extends JPanel {
     Stack<JPanel> viewStack;
     static Timer timer;
-    static HashMap<String,TimerTask> timerMap;
+    static HashMap<Object,TimerTask> timerMap;
     BufferedImage background;
-    final String backgroundPath = "./src/main/java/kr/ac/jbnu/se/tetris/background.png";
+    final String backgroundPath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/background.png";
     boolean isGameFirst;
     public BackPanel() throws IOException {
         viewStack = new Stack<>();
@@ -57,22 +57,33 @@ public class BackPanel extends JPanel {
     public void setBorder(int top, int left, int bottom, int right) {
         super.setBorder(new EmptyBorder(top, left, bottom, right));
     }
-    public static void addTask(String taskID, TimerTask task,long period){
+    public static void addTask(Object obj, TimerTask task,long period){
         if(timer==null)timer = new Timer("Game Timer");
         if(timerMap==null)timerMap = new HashMap<>();
-        if(timerMap.get(taskID)==null){
-            timerMap.put(taskID,task);
+        if(timerMap.get(obj)==null){
+            timerMap.put(obj,task);
             timer.scheduleAtFixedRate(task,0,period);
         }
     }
-    public static TimerTask getTask(String taskID){ return timerMap.get(taskID); }
-    public static void removeTask(String taskID){ if(timerMap.get(taskID)!=null)timerMap.get(taskID).cancel(); }
-    public static void stopTask(String taskID) throws InterruptedException { timerMap.get(taskID).wait(); }
-    public static void resumeTask(String taskID){ timerMap.get(taskID).notify(); }
+    public static TimerTask getTask(Object obj){ return timerMap.get(obj); }
+    public static void removeTask(Object obj){ if(timerMap.get(obj)!=null)timerMap.get(obj).cancel(); }
+    public static void stopTask(Object obj) {
+        synchronized (obj) {
+            try {
+                TimerTask task = timerMap.get(obj);
+                if (task != null) {
+                    task.cancel();
+                    timerMap.remove(obj);
+                }
+                obj.notify();  // 대기 중인 스레드에게 안전하게 진행할 수 있음을 알림
+            } catch (IllegalMonitorStateException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void resumeTask(Object obj){ timerMap.get(obj).notify(); }
     public static void resumeAllTask(){ timer.notifyAll(); }
-    public static void startTask(String taskID){ timerMap.get(taskID).run(); }
     public void setGameUIFrame(){
-        setBorder(100,100,100,100);
-
+        setBorder(25,100,75,100);
     }
 }

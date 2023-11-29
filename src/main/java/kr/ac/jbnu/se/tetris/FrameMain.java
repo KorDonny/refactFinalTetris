@@ -86,6 +86,7 @@ public class FrameMain extends JFrame {
         FrameMain frame = new FrameMain();
         frame.setVisible(true);
         frame.initiateUI();
+        frame.requestFocusInWindow();
         frame.addKeyListener(new KeyControl());
     }
 }

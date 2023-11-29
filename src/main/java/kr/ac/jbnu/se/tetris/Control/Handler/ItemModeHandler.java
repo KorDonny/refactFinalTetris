@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class ItemModeHandler extends NormalModeHandler implements GameModeHandler {
     private final Timer itemTimer;
-    public ItemModeHandler(){
+    public ItemModeHandler() throws IOException {
         super();
         // 아이템 타이머 생성 및 리스너 등록
         itemTimer = new Timer(10000, e -> removeRandomLine());
@@ -23,7 +23,7 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
 //        });
     }
     @Override
-    public void startGame() throws IOException {
+    public void startGame() throws IOException, InterruptedException {
         super.startGame();
         itemTimer.start();
     }

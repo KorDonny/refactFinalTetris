@@ -33,7 +33,11 @@ public class KeyControl implements KeyListener {
         BackPanel.addTask("KeyControl", new TimerTask() {
             @Override
             public void run() {
-                doKeyLogic();
+                try {
+                    doKeyLogic();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         },100);
     }
@@ -66,7 +70,20 @@ public class KeyControl implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        if(key=='p'||key=='P'){ player1.pause(); if(player2!=null)player2.pause(); return; }
+        if(key=='p'||key=='P'){
+            try {
+                player1.pause();
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+            if(player2!=null) {
+                try {
+                    player2.pause();
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            return; }
         if(!isSingle()){
             if (player2.isStarted() || getCurPiece(player2).getShape() != Tetrominoes.NoShape || !player2.isPaused()) {
                 if(key == KeyEvent.VK_LEFT&&!isRightP2){isLeftP2 = true;}
@@ -90,7 +107,7 @@ public class KeyControl implements KeyListener {
             if(key == KeyEvent.VK_B&&!isDrop){isOne = true;}
         }
     }
-    public void doKeyLogic(){
+    public void doKeyLogic() throws InterruptedException {
         /**
          * 일시정지, 드롭다운은 즉각 처리. switch문 이전에 KeyPressed에서 처리함
          * 아래는 키값의 상수처리, 이를 합연산으로 처리 구분*/

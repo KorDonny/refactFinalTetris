@@ -1,17 +1,33 @@
 package kr.ac.jbnu.se.tetris.Boundary;
 
-import kr.ac.jbnu.se.tetris.Control.KeyControl;
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.TimerTask;
 
 public class UICanvas extends JPanel {
-    final int BOARD_SIZE_W = 400;
-    final int BOARD_SIZE_H = 800;
-    Timer timer;//타이머 클래스는 존재. -> 타임레코딩 가능할것이라 예상됨. 필요 리소스 = DB
-    public UICanvas(){
+    static final int BOARD_SIZE_W = 350;
+    static final int BOARD_SIZE_H = 700;
+    ImageIcon gifImage;
+    public UICanvas() throws IOException {
         setPreferredSize(new Dimension(BOARD_SIZE_W,BOARD_SIZE_H));
+        if(!(this instanceof TetrisCanvas)){
+            String gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/uiGif.gif";
+            gifImage = new ImageIcon(ImageIO.read(new File(gifImagePath)));
+            scaleImage();
+        }
+        BackPanel.addTask(this, new TimerTask() {
+            @Override
+            public void run() {
+                repaint();
+            }
+        },20);
     }
-
-    public Timer getTimer(){ return timer; }
+    void scaleImage() {
+        Image img = gifImage.getImage();
+        Image scaledImg = img.getScaledInstance(UICanvas.BOARD_SIZE_W, UICanvas.BOARD_SIZE_H, Image.SCALE_SMOOTH);
+        gifImage = new ImageIcon(scaledImg);
+    }
 }

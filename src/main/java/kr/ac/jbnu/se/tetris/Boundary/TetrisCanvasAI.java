@@ -4,24 +4,29 @@ import kr.ac.jbnu.se.tetris.Control.AIControl;
 import kr.ac.jbnu.se.tetris.Entity.Entity;
 import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
 
+import java.io.IOException;
 import java.util.TimerTask;
 
 public class TetrisCanvasAI extends TetrisCanvas {
 
 	private AIControl aiControl;
-	public TetrisCanvasAI() {
+	public TetrisCanvasAI() throws IOException {
 		super();
 		BackPanel.addTask("Canvas AI Logic", new TimerTask() {
 			@Override
 			public void run() {
-				actionTrigger();
+				try {
+					actionTrigger();
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}, 100);// 이벤트간 딜레이 400
 		aiControl = new AIControl(this);
 	}
 
 	@Override
-	protected void newPiece() {
+	protected void newPiece() throws InterruptedException {
 		super.newPiece();
 		if (isStarted){
 			doControlLogic();

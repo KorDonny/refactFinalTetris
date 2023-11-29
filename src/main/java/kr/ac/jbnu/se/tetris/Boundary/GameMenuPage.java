@@ -20,7 +20,7 @@ public class GameMenuPage extends JPanel {
             toInsert.addActionListener(e-> {
                 try {
                     startGame(mode);
-                } catch (IOException ex) {
+                } catch (IOException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
             });
@@ -29,7 +29,7 @@ public class GameMenuPage extends JPanel {
         this.setBorder(new EmptyBorder((FrameMain.WINDOW_HEIGHT-this.getHeight())/2,
                 0,0,0));
     }
-    private void startGame(GameMode mode) throws IOException {
+    private void startGame(GameMode mode) throws IOException, InterruptedException {
         this.setVisible(false);
         switch (mode) {
             case NORMAL:

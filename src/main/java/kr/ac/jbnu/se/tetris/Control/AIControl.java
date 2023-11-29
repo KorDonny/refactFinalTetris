@@ -1,6 +1,5 @@
 package kr.ac.jbnu.se.tetris.Control;
 
-import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvasAI;
 import kr.ac.jbnu.se.tetris.Entity.Entity;
 import kr.ac.jbnu.se.tetris.Entity.Point;

@@ -1,5 +1,6 @@
 package kr.ac.jbnu.se.tetris.Control.Handler;
 
+import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.Control.KeyControl;
 import kr.ac.jbnu.se.tetris.FrameMain;
@@ -16,7 +17,7 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
     private boolean gameClearAchieved; // Game Clear 상태 여부
     private final Random random;
     private NormalModeHandler normal;
-    public SprintModeHandler(){
+    public SprintModeHandler() throws IOException {
         super();
         this.sprintModeStatusbar = new JLabel();
         this.gameClearAchieved = false;
@@ -37,7 +38,7 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
         gameClearCheckTimer.start();
     }
     @Override
-    public void startGame() throws IOException {
+    public void startGame() throws IOException, InterruptedException {
         super.startGame();
         updateTargetLineCount();
         updateStatusbarText();
@@ -60,9 +61,9 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
             gameClearAchieved = true;
             gameClearStatusLabel.setText("Game Clear!");
             gameClearStatusLabel.setVisible(true);
-            getCanvas().getTimer().stop();
+            //BackPanel.resumeTask();
             getCanvas().setEnabled(false);
-            FrameMain.getInstance().getBackPanel().repaint();
+            FrameMain.getBackPanel().repaint();
         }
     }
     private void updateTargetLineCount() {

@@ -5,7 +5,7 @@ import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import java.io.IOException;
 
 public interface GameModeHandler {
-    void startGame() throws IOException;
+    void startGame() throws IOException, InterruptedException;
     void connectCanvas();
     TetrisCanvas getCanvas();
     void initiateTrigger();
