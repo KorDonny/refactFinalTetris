@@ -1,6 +1,7 @@
 package kr.ac.jbnu.se.tetris.Control;
 
 import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
+import kr.ac.jbnu.se.tetris.Boundary.InGamePage;
 import kr.ac.jbnu.se.tetris.Entity.Entity;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
@@ -15,7 +16,6 @@ public class KeyControl implements KeyListener {
     static TetrisCanvas player1;
     static TetrisCanvas player2;
     public KeyControl(){
-        player1 = null;
         isLeft=false;
         isRight=false;
         isUp=false;
@@ -23,7 +23,6 @@ public class KeyControl implements KeyListener {
         isOne=false;
         isDrop=false;
 
-        player2 = null;
         isLeftP2=false;
         isRightP2=false;
         isUpP2=false;
@@ -34,37 +33,61 @@ public class KeyControl implements KeyListener {
             @Override
             public void run() {
                 try {
-                    doKeyLogic();
+                    if(player2!=null)handlePlayerInput(player2, isDropP2, isLeftP2, isRightP2, isUpP2, isDownP2, isOneP2);
+                    handlePlayerInput(player1, isDrop, isLeft, isRight, isUp, isDown, isOne);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
-        },100);
+        },150);
     }
     public boolean isSingle(){ return player2 == null; }
     @Override
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
 
-        if(!isSingle()){
-            if(key == KeyEvent.VK_LEFT){isLeftP2 = false;}
-            if(key == KeyEvent.VK_RIGHT){isRightP2 = false;}
-            if(key == KeyEvent.VK_UP){isUpP2 = false;}
-            if(key == KeyEvent.VK_DOWN){isDownP2 = false;}
-            if(key == ']'){isDropP2 = false;}
-            if(key == '['){isOneP2 = false;}
+//        if(!isSingle()){
+//            isLeftP2 = key == KeyEvent.VK_LEFT;
+//            isRightP2 = key == KeyEvent.VK_RIGHT;
+//            isUpP2 = key == KeyEvent.VK_UP;
+//            isDownP2 = key == KeyEvent.VK_DOWN;
+//            isDropP2 = key == ']';
+//            isOneP2 = key == '[';
+//        }
+//        isLeft = key == KeyEvent.VK_A;
+//        isRight = key == KeyEvent.VK_D;
+//        isUp = key == KeyEvent.VK_W;
+//        isOne = key == KeyEvent.VK_S;
+//        isDrop = key == KeyEvent.VK_SPACE;
+//        isDown = key == KeyEvent.VK_R;
+        if (!isSingle()) {
+            isLeftP2 = key == KeyEvent.VK_RIGHT ? false : true;
+            isRightP2 = key == KeyEvent.VK_RIGHT ? false : true;
+            isUpP2 = key == KeyEvent.VK_UP ? false : true;
+            isDownP2 = key == KeyEvent.VK_DOWN ? false : true;
+            isDropP2 = key == ']' ? false : true;
+            isOneP2 = key == '[' ? false : true;
         }
-        if(key == KeyEvent.VK_A){isLeft = false;}
-        if(key == KeyEvent.VK_D){isRight = false;}
-        if(key == KeyEvent.VK_W){isUp = false;}
-        if(key == KeyEvent.VK_S){isDown = false;}
-        if(key == KeyEvent.VK_SPACE){isDrop = false;}
-        if(key == KeyEvent.VK_B){isOne = false;}
+        isLeft = key == KeyEvent.VK_A ? false : true;
+        isRight = key == KeyEvent.VK_D ? false : true;
+        isUp = key == KeyEvent.VK_W ? false : true;
+        isOne = key == KeyEvent.VK_S ? false : true;
+        isDrop = key == KeyEvent.VK_SPACE ? false : true;
+        isDown = key == KeyEvent.VK_R ? false : true;
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+//        int key = e.getKeyCode();
+//        if(key=='p'||key=='P'){
+//            try {
+//                if(player2!=null)player2.pause();
+//                player1.pause();
+//            } catch (InterruptedException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//            return;
+//        }
     }
 
     @Override
@@ -72,66 +95,81 @@ public class KeyControl implements KeyListener {
         int key = e.getKeyCode();
         if(key=='p'||key=='P'){
             try {
+                if(player2!=null)player2.pause();
                 player1.pause();
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
-            if(player2!=null) {
+            return;
+        }
+        if(key==KeyEvent.VK_ESCAPE){
+            if(player1!=null) {
                 try {
-                    player2.pause();
+                    if(player2!=null)player2.pause();
+                    player1.pause();
+                    return;
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
             }
-            return; }
+        }
         if(!isSingle()){
-            if (player2.isStarted() || getCurPiece(player2).getShape() != Tetrominoes.NoShape || !player2.isPaused()) {
-                if(key == KeyEvent.VK_LEFT&&!isRightP2){isLeftP2 = true;}
-                if(key == KeyEvent.VK_RIGHT&&!isLeftP2){isRightP2 = true;}
-                if(isRightP2&&isLeftP2){isLeftP2 = false; isRightP2 = false;}
-                if(key == KeyEvent.VK_UP){isUpP2 = true;}
-                if(key == KeyEvent.VK_DOWN){isDownP2 = true;}
-                if(isDownP2&&isUpP2){isUpP2 = false; isDownP2 = false;}
-                if(key == ']'&&!isOneP2){isDropP2 = true;}
-                if(key == '['&&!isDropP2){isOneP2 = true;}
+            if (player2.isStarted() && getCurPiece(player2).getShape() != Tetrominoes.NoShape && !player2.isPaused()){
+                isLeftP2 = key == KeyEvent.VK_RIGHT;
+                isRightP2 = key == KeyEvent.VK_RIGHT;
+                isUpP2 = key == KeyEvent.VK_UP;
+                isDownP2 = key == KeyEvent.VK_DOWN;
+                isDropP2 = key == ']' ;
+                isOneP2 = key == '[';
             }
         }
-        if (player1.isStarted() || getCurPiece(player1).getShape() != Tetrominoes.NoShape || !player1.isPaused()) {
-            if(key == KeyEvent.VK_A&&!isRight){isLeft = true;}
-            if(key == KeyEvent.VK_D&&!isLeft){isRight = true;}
-            if(isRight&&isLeft){isLeft = false; isRight = false;}
-            if(key == KeyEvent.VK_W&&!isDown){isUp = true;}
-            if(key == KeyEvent.VK_S&&!isUp){isDown = true;}
-            if(isDown&&isUp){isUp = false; isDown = false;}
-            if(key == KeyEvent.VK_SPACE&&!isOne){isDrop = true;}
-            if(key == KeyEvent.VK_B&&!isDrop){isOne = true;}
+        if (player1.isStarted() && getCurPiece(player1).getShape() != Tetrominoes.NoShape && !player1.isPaused()){
+            isLeft = key == KeyEvent.VK_A;
+            isRight = key == KeyEvent.VK_D;
+            isUp = key == KeyEvent.VK_W;
+            isOne = key == KeyEvent.VK_S;
+            isDrop = key == KeyEvent.VK_SPACE;
+            isDown = key == KeyEvent.VK_R;
         }
     }
-    public void doKeyLogic() throws InterruptedException {
-        /**
-         * 일시정지, 드롭다운은 즉각 처리. switch문 이전에 KeyPressed에서 처리함
-         * 아래는 키값의 상수처리, 이를 합연산으로 처리 구분*/
-        if(!isSingle()){
-            if(isDropP2){player2.dropDown();return;}
-            if(isLeftP2) player2.tryMove(getCurPiece(player2),getX(player2)-1,getY(player2));
-            if(isRightP2) player2.tryMove(getCurPiece(player2),getX(player2)+1,getY(player2));
-            if(isUpP2) getCurPiece(player2).rotateLeft();
-            if(isDownP2) getCurPiece(player2).rotateRight();
-            if(isOneP2) player2.tryMove(getCurPiece(player2),getX(player2),getY(player2)-1);
+//    public void doKeyLogic() throws InterruptedException {
+//        /**
+//         * 일시정지, 드롭다운은 즉각 처리. switch문 이전에 KeyPressed에서 처리함
+//         * 아래는 키값의 상수처리, 이를 합연산으로 처리 구분*/
+//        if(!isSingle()){
+//            if(isDropP2){player2.dropDown();return;}
+//            if(isLeftP2) player2.tryMove(getCurPiece(player2),getX(player2)-1,getY(player2));
+//            if(isRightP2) player2.tryMove(getCurPiece(player2),getX(player2)+1,getY(player2));
+//            if(isUpP2) player2.tryMove(getCurPiece(player2).rotateLeft(),getX(player2),getY(player2));
+//            if(isDownP2) player2.tryMove(getCurPiece(player2).rotateRight(),getX(player2),getY(player2));
+//            if(isOneP2) player2.tryMove(getCurPiece(player2),getX(player2),getY(player2)-1);
+//        }
+//        if(isDrop) {player1.dropDown(); return;}
+//        if(isLeft) player1.tryMove(getCurPiece(player1),getX(player1)-1,getY(player1));
+//        if(isRight) player1.tryMove(getCurPiece(player1),getX(player1)+1,getY(player1));
+//        if(isUp) player1.tryMove(getCurPiece(player1).rotateLeft(),getX(player1),getY(player1));
+//        if(isDown) player1.tryMove(getCurPiece(player1).rotateRight(),getX(player1),getY(player1));
+//        if(isOne) player1.tryMove(getCurPiece(player1),getX(player1),getY(player1)-1);
+//    }
+    private void handlePlayerInput(TetrisCanvas player, boolean isDrop, boolean isLeft, boolean isRight, boolean isUp, boolean isDown, boolean isOne) throws InterruptedException {
+        if (isDrop) {
+            player.dropDown();
+            return;
         }
-        if(isDrop) {player1.dropDown(); return;}
-        if(isLeft) player1.tryMove(getCurPiece(player1),getX(player1)-1,getY(player1));
-        if(isRight) player1.tryMove(getCurPiece(player1),getX(player1)+1,getY(player1));
-        if(isUp) getCurPiece(player1).rotateLeft();
-        if(isDown) getCurPiece(player1).rotateRight();
-        if(isOne) player1.tryMove(getCurPiece(player1),getX(player1),getY(player1)-1);
+        int newX = getX(player);
+        int newY = getY(player);
+        if(isUp && !isDown) getCurPiece(player).rotateLeftA();
+        else if(isDown && !isUp) getCurPiece(player).rotateRightA();
+        if(isLeft && !isRight) --newX;
+        else if(isRight && isLeft) ++newX;
+        player.tryMove(getCurPiece(player), newX, newY);
     }
     Entity getCurPiece(TetrisCanvas player){ return player.getCurPiece(); }
     int getX(TetrisCanvas player){ return getCurPiece(player).getCurX(); }
     int getY(TetrisCanvas player){ return getCurPiece(player).getCurY(); }
     public static void updatePlayer(TetrisCanvas player){
         if(player1==null)player1=player;
-        else if(player2==null)player2=player;
+        else player2=player;
     }
     public static KeyControl getInstance(){
         if(keyControl==null){
@@ -140,5 +178,9 @@ public class KeyControl implements KeyListener {
             }
         }
         return keyControl;
+    }
+    public static TetrisCanvas getPlayer(boolean isP2) {
+        if(isP2&&player2!=null)return player2;
+        else return player1;
     }
 }

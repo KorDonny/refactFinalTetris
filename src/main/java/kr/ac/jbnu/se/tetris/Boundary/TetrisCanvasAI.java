@@ -44,7 +44,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 //		System.out.println("----------------------------");
 
 		for (int i = goodPosition[2]; i > 0; i--) {
-			curPiece.rotateRight();
+			curPiece.rotateRightA();
 		}
 		int num = curPiece.getCurX() - goodPosition[0];
 		while (num != 0){
@@ -63,7 +63,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 		for (int i = 0; i < 4; ++i) {
 			int x = newX + newPiece.x(i);
 			int y = newY - newPiece.y(i);
-			if (x < 0 || x >= BoardWidth || y < 0 || y >= BoardHeight)//테트리스 컨트롤 도형의 x,y에 의해 통제
+			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
 				return false;
 			if (shapeAt(x, y) != Tetrominoes.NoShape)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
 				return false;

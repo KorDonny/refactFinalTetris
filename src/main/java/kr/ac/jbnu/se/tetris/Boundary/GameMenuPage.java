@@ -10,7 +10,6 @@ import java.awt.*;
 import java.io.IOException;
 
 public class GameMenuPage extends JPanel {
-    GameModeHandler modeHandler;
     GameMenuPage(){
         setOpaque(false);
         setLayout(new GridLayout(FrameMain.DEFAULT_VERT_GRID_ROW,FrameMain.DEFAULT_VERT_GRID_COLUMN,
@@ -30,33 +29,38 @@ public class GameMenuPage extends JPanel {
                 0,0,0));
     }
     private void startGame(GameMode mode) throws IOException, InterruptedException {
-        this.setVisible(false);
         switch (mode) {
             case NORMAL:
-                modeHandler = new NormalModeHandler();
-                modeHandler.startGame();
+                setModeHandler(new NormalModeHandler());
                 break;
             case ITEM:
-                modeHandler = new ItemModeHandler();
-                modeHandler.startGame();
+                setModeHandler(new ItemModeHandler());
                 break;
             case SURVIVAL:
-                modeHandler = new SurvivalModeHandler();
-                modeHandler.startGame();
+                setModeHandler(new SurvivalModeHandler());
                 break;
             case SPRINT:
-                modeHandler = new SprintModeHandler();
-                modeHandler.startGame();
+                setModeHandler(new SprintModeHandler());
                 break;
             case AI:
-                modeHandler = new AIModeHandler();
-                modeHandler.startGame();
+                setModeHandler(new AIModeHandler());
                 break;
             case MULTI:
                 // Local 대전
-                modeHandler = new LocalModeHandler();
-                modeHandler.startGame();
+                setModeHandler(new LocalModeHandler());
                 break;
         }
+        InGamePage.getInstance();
     }
+    private static class GameModeHolder {
+        private static final InnerContextResource CONTEXT_PROV = new InnerContextResource();
+        private GameModeHolder() { super(); }
+    }
+    private static final class InnerContextResource {
+        private GameModeHandler context;
+        private InnerContextResource() { super(); }
+        private void setContext(GameModeHandler context) {this.context = context; }
+    }
+    public static GameModeHandler getModeHandler() { return GameModeHolder.CONTEXT_PROV.context; }
+    public void setModeHandler(GameModeHandler ac) { GameModeHolder.CONTEXT_PROV.setContext(ac); }
 }
