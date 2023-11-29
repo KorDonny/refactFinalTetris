@@ -1,6 +1,7 @@
 package kr.ac.jbnu.se.tetris.Control.Handler;
 
 import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
+import kr.ac.jbnu.se.tetris.Boundary.InGamePage;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.Control.KeyControl;
 import kr.ac.jbnu.se.tetris.FrameMain;
@@ -19,7 +20,7 @@ public class LocalModeHandler extends NormalModeHandler implements GameModeHandl
     @Override
     public void startGame() throws IOException, InterruptedException {
         normal.startGame();
-        FrameMain.getBackPanel().push(canvas);
+        InGamePage.getInstance().add(canvas);
         connectCanvas();
         canvas.start();
         initiateTrigger();
@@ -30,15 +31,15 @@ public class LocalModeHandler extends NormalModeHandler implements GameModeHandl
     public void connectCanvas() { KeyControl.updatePlayer(getCanvas()); }
     @Override
     public void initiateTrigger(){
-        BackPanel.addTask(this.canvas, new TimerTask() {
+        BackPanel.getTimer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 try {
-                    getCanvas().actionTrigger();
+                    canvas.actionTrigger();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
-        }, 400);
+        },0,400);
     }
 }

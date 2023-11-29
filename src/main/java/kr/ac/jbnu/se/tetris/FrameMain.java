@@ -5,28 +5,36 @@ import kr.ac.jbnu.se.tetris.Boundary.LogInPage;
 import kr.ac.jbnu.se.tetris.Boundary.RegisterPage;
 import kr.ac.jbnu.se.tetris.Control.KeyControl;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.util.Stack;
 
 public class FrameMain extends JFrame {
+    public static final int WINDOW_WIDTH = 1200;
+    public static final int WINDOW_HEIGHT = 800;
+    public static final int FONT_TITLE  = 20;
+    public static final int FONT_DEFAULT = 10;
+    public static final int DEFAULT_VERT_GRID_ROW = 15;
+    public static final int DEFAULT_VERT_GRID_COLUMN = 1;
+    public static final int GRID_VGAP = 10;
+    public static final int GRID_WGAP = 0;
+    static BackPanel backPanel;
     static FrameMain frameMain;
     JLayeredPane contentPane;
-    public final static int WINDOW_WIDTH = 1200, WINDOW_HEIGHT = 800, FONT_TITLE  = 20, FONT_DEFAULT = 10,
-    DEFAULT_VERT_GRID_ROW = 15,DEFAULT_VERT_GRID_COLUMN = 1,GRID_VGAP = 10, GRID_WGAP = 0;
-    static BackPanel backPanel;
+
+    static {
+        try {
+            backPanel = new BackPanel();
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     public FrameMain() throws IOException {
         frameMain = this;
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        backPanel = new BackPanel();
 
         contentPane = new JLayeredPane();
         contentPane.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
@@ -40,11 +48,11 @@ public class FrameMain extends JFrame {
     }
     /** 우회 접근을 해야 컴포넌트가 안가려짐. 생성자에서 연결시 버튼이나 라벨들이 가리는 문제점 존재 */
     public void initiateUI(){
-        backPanel.push(new UIPanel(this));
+        backPanel.push(new UIPanel());
     }
     /** 기초 진입화면 */
     class UIPanel extends JPanel{
-        UIPanel(FrameMain main){
+        UIPanel(){
             setOpaque(false);
             setLayout(new GridLayout(DEFAULT_VERT_GRID_ROW,DEFAULT_VERT_GRID_COLUMN,GRID_WGAP,GRID_VGAP));
 
@@ -59,14 +67,8 @@ public class FrameMain extends JFrame {
             welcome.setFont(new Font("SansSerif",Font.BOLD,FONT_TITLE));
             welcome.setOpaque(false);
 
-            btnLogIn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) { backPanel.push(new LogInPage()); }
-            });
-            btnRegister.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) { backPanel.push(new RegisterPage()); }
-            });
+            btnLogIn.addActionListener(e -> backPanel.push(new LogInPage()));
+            btnRegister.addActionListener(e -> backPanel.push(new RegisterPage()));
 
             add(welcome);
             add(btnLogIn);
@@ -75,7 +77,7 @@ public class FrameMain extends JFrame {
     }
     public static FrameMain getInstance() throws IOException {
         if(frameMain==null){
-            synchronized (KeyControl.class){
+            synchronized (FrameMain.class){
                 frameMain = new FrameMain();
             }
         }
@@ -83,10 +85,9 @@ public class FrameMain extends JFrame {
     }
     public static BackPanel getBackPanel(){ return backPanel; }
     public static void main(String[] args) throws IOException {
-        FrameMain frame = new FrameMain();
-        frame.setVisible(true);
-        frame.initiateUI();
-        frame.requestFocusInWindow();
-        frame.addKeyListener(new KeyControl());
+        //FrameMain.getInstance();
+        FrameMain frameMain1 = new FrameMain();
+        FrameMain.getInstance().setVisible(true);
+        FrameMain.getInstance().initiateUI();
     }
 }

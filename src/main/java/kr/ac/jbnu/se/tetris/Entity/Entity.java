@@ -1,8 +1,9 @@
 package kr.ac.jbnu.se.tetris.Entity;
 
-import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
-
 import java.util.Random;
+
+import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_H;
+import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_W;
 
 public class Entity {
 
@@ -18,6 +19,7 @@ public class Entity {
      * 블럭 형상 정보 배열 n칸 x=0 ,y=1 좌표
      */
     protected int coords[][];
+    private Random random = new Random();
 
     public Entity(Tetrominoes shape) {
         initFunc(shape);
@@ -35,7 +37,7 @@ public class Entity {
     private void initFunc(Tetrominoes shape) {
         this.shape = shape;
         this.coords = shape.getShapeArr();
-        setPosition(TetrisCanvas.BoardWidth / 2 + 1, TetrisCanvas.BoardHeight - 1 - maxY());
+        setPosition(TETRIS_CANVAS_W / 2 + 1, TETRIS_CANVAS_H - 1 - maxY());
     }
 
     /**
@@ -141,39 +143,63 @@ public class Entity {
     /**
      * 복사된 entity를 newPiece에 전달, tryMove가 처리. 좌회전
      */
-    public void rotateLeft() {
+    public void rotateLeftA() {
         if (getShape() == Tetrominoes.SquareShape) // 블록이 사각형인 경우 종료
             return;
         int[][] result = new int[4][2];
         for (int i = 0; i < 4; ++i) {
             result[i][0] = coords[i][1];
             result[i][1] = -coords[i][0];
+            if(result[i][0] < 0 || result[i][0] >= TETRIS_CANVAS_W || result[i][1]  < 0 || result[i][1]  >= TETRIS_CANVAS_H){
+                return;
+            }
         }
         setShapeArr(result);
-        return;
+    }
+
+    public Entity rotateLeft(){
+        if (getShape() == Tetrominoes.SquareShape) // 블록이 사각형인 경우 종료
+            return this;
+        Entity newPiece = new Entity(this.getShape());
+        for (int i = 0; i < 4; ++i) {
+            newPiece.getShapeArr()[i][0] = -this.getShapeArr()[i][1];
+            newPiece.getShapeArr()[i][1] = this.getShapeArr()[i][0];
+        }
+        return newPiece;
     }
 
     /**
      * 복사된 entity를 newPiece에 전달, tryMove가 처리. 우회전
      */
-    public void rotateRight() {
+    public void rotateRightA() {
         if (getShape() == Tetrominoes.SquareShape) // 블록이 사각형인 경우 종료
             return;
         int[][] result = new int[4][2];
         for (int i = 0; i < 4; ++i) {
             result[i][0] = -coords[i][1];
             result[i][1] = coords[i][0];
+            if(result[i][0] < 0 || result[i][0] >= TETRIS_CANVAS_W || result[i][1]  < 0 || result[i][1]  >= TETRIS_CANVAS_H){
+                return;
+            }
         }
         setShapeArr(result);
-        return;
+    }
+    public Entity rotateRight(){
+        if (getShape() == Tetrominoes.SquareShape) // 블록이 사각형인 경우 종료
+            return this;
+        Entity newPiece = new Entity(this.getShape());
+        for (int i = 0; i < 4; ++i) {
+            newPiece.getShapeArr()[i][0] = -this.getShapeArr()[i][1];
+            newPiece.getShapeArr()[i][1] = this.getShapeArr()[i][0];
+        }
+        return newPiece;
     }
 
     /**
      * 블럭 초기화시점에 랜덤화
      */
     public void setRandomShape() {
-        Random r = new Random();
-        int x = Math.abs(r.nextInt()) % 7 + 1;
+        int x = Math.abs(random.nextInt()) % 7 + 1;
         Tetrominoes[] values = Tetrominoes.values();
         initFunc(values[x]);
     }

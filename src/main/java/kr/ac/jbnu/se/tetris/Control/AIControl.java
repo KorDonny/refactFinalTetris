@@ -7,7 +7,7 @@ import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
 
 import java.util.Random;
 
-import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.BoardWidth;
+import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_W;
 
 public class AIControl {
     Random random;
@@ -48,7 +48,7 @@ public class AIControl {
             }
 
             // 블럭 회전
-            curPiece.rotateRight();
+            curPiece.rotateRightA();
         }
 
         // 가장 최적의 위치 좌표와 화전 횟수
@@ -100,7 +100,7 @@ public class AIControl {
         for (int i = 0; i < shape.getShapeArr().length; i++) {
             int x = curX + shape.x(i);
             int y = curY - shape.y(i);
-            int idx = y * BoardWidth + x;
+            int idx = y * TETRIS_CANVAS_W + x;
             canvas.board[idx] = Tetrominoes.NoShape;
         }
     }
@@ -111,7 +111,7 @@ public class AIControl {
         for (int i = 0; i < 4; i++) {
             int x = curX + shape.x(i);
             int y = curY - shape.y(i);
-            int idx = y * BoardWidth + x;
+            int idx = y * TETRIS_CANVAS_W + x;
             canvas.board[idx] = shape.getShape();
         }
     }

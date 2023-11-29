@@ -1,8 +1,14 @@
 package kr.ac.jbnu.se.tetris.Boundary;
 
+import kr.ac.jbnu.se.tetris.Control.Handler.AIModeHandler;
+import kr.ac.jbnu.se.tetris.Control.KeyControl;
+import kr.ac.jbnu.se.tetris.FrameMain;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.TimerTask;
@@ -13,6 +19,8 @@ public class UICanvas extends JPanel implements CanvasInterface{
     ImageIcon gifImage;
     String gifImagePath;
     public UICanvas() throws IOException {
+        setOpaque(false);
+        gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/uiGif.gif";
         setPreferredSize(new Dimension(BOARD_SIZE_W,BOARD_SIZE_H));
         BackPanel.addTask(this, new TimerTask() {
             @Override
@@ -24,11 +32,7 @@ public class UICanvas extends JPanel implements CanvasInterface{
     }
     @Override
     public void setImage() throws IOException {
-        gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/uiGif.gif";
         gifImage = new ImageIcon(ImageIO.read(new File(gifImagePath)));
-        scaleImage();
-    }
-    void scaleImage() {
         Image img = gifImage.getImage();
         Image scaledImg = img.getScaledInstance(UICanvas.BOARD_SIZE_W, UICanvas.BOARD_SIZE_H, Image.SCALE_SMOOTH);
         gifImage = new ImageIcon(scaledImg);

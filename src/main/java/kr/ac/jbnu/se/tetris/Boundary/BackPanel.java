@@ -1,7 +1,5 @@
 package kr.ac.jbnu.se.tetris.Boundary;
 
-import kr.ac.jbnu.se.tetris.Control.KeyControl;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,40 +7,33 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_HEIGHT;
 import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_WIDTH;
 
 public class BackPanel extends JPanel {
-    Stack<JPanel> viewStack;
+    static Deque<JPanel> viewStack = new ArrayDeque<>();
     static Timer timer;
     static HashMap<Object,TimerTask> timerMap;
-    BufferedImage background;
-    final String backgroundPath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/background.png";
+    BufferedImage backgroundImg;
+    static final String backgroundPath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/background.png";
     boolean isGameFirst;
     public BackPanel() throws IOException {
-        viewStack = new Stack<>();
-        background = ImageIO.read(new File(backgroundPath));
+        backgroundImg = ImageIO.read(new File(backgroundPath));
         isGameFirst = false;
     }
-
+    @Override
     public void paintComponent(Graphics g){
-        g.drawImage(background.getScaledInstance(WINDOW_WIDTH,WINDOW_HEIGHT,Image.SCALE_SMOOTH),
+        g.drawImage(backgroundImg.getScaledInstance(WINDOW_WIDTH,WINDOW_HEIGHT,Image.SCALE_SMOOTH),
                 0,0,null);
     }
     public void push(JPanel target){
         if(!viewStack.isEmpty())viewStack.peek().setVisible(false);
         target.setVisible(true);
+        target.setOpaque(false);
         viewStack.add(target);
-        if(target instanceof UICanvas&&!(target instanceof TetrisCanvas)) {
-            setGameUIFrame();
-            target.setFocusable(true); // 키입력 강제로 받도록 설정.
-            target.addKeyListener(KeyControl.getInstance());
-        }
         add(viewStack.peek());
         revalidate();
     }
