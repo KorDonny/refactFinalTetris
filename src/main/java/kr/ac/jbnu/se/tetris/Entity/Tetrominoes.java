@@ -75,6 +75,9 @@ public enum Tetrominoes {
 			case 8:
 				shape = new int[][] { { 0, -1 }, { 0, 0 }, { 0, 1 }, { 0, 2 } }.clone();
 				break;
+			case 9:
+				shape = new int[][] { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } }.clone();
+				break;
 			default:
 				return null;
 		}

@@ -40,7 +40,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	public TetrisCanvas() {
 		super();
 		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
-		shadowPiece = new Entity(Tetrominoes.NoShape);
+		shadowPiece = new Entity(Tetrominoes.Shadow);
 		board = new Tetrominoes[BoardWidth * BoardHeight]; // 1차원 배열의 칸 생성
 	}
 	/** 칸의 가로 길이 */
@@ -100,29 +100,33 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 					drawSquare(g, 0 + j * squareWidth(), boardTop + i * squareHeight(), shape);
 			}
 		}
-		
-		// 떨어지는 블록 색칠
-		if (curPiece.getShape() != Tetrominoes.NoShape) {
-			for (int i = 0; i < 4; ++i) {
-				int x = curPiece.getCurX() + curPiece.x(i);
-				int y = curPiece.getCurY() - curPiece.y(i);
-				drawSquare(g, 0 + x * squareWidth(), boardTop + (BoardHeight - y - 1) * squareHeight(),
-						curPiece.getShape());
-			}
-		}
 
-		// 블록 그림자 색칠
-		shadowPiece.copyEntity(curPiece);
+		// 그림자 위치 생성
+		/*
+		차후 블럭이 움직일 때만 작동하도록 수정하면 좋을듯
+		 */
+		shadowPiece.setPosition(curPiece.getCurX(), curPiece.getCurY());
+		shadowPiece.setShapeArr(curPiece.getShapeArr());
 		int newY = shadowPiece.getCurY();
 		while (newY > 0) {
 			if (!tryMoveA(shadowPiece, shadowPiece.getCurX(), newY - 1))
 				break;
 			--newY;
 		}
-		for (int i = 0; i < 4; ++i) {
-			int x = shadowPiece.getCurX() + shadowPiece.x(i);
-			int y = shadowPiece.getCurY() - shadowPiece.y(i);
-			drawSquare(g, x * squareWidth(), boardTop + (BoardHeight - y - 1) * squareHeight(), Tetrominoes.Shadow);
+
+
+		// 움직이는 블록 색칠
+		if (curPiece.getShape() != Tetrominoes.NoShape) {
+			for (int i = 0; i < 4; ++i) {
+				// 그림자 색칠
+				int x = shadowPiece.getCurX() + shadowPiece.x(i);
+				int y = shadowPiece.getCurY() - shadowPiece.y(i);
+				drawSquare(g, x * squareWidth(), boardTop + (BoardHeight - y - 1) * squareHeight(), Tetrominoes.Shadow);
+				// 떨어지는 블록 색칠
+				x = curPiece.getCurX() + curPiece.x(i);
+				y = curPiece.getCurY() - curPiece.y(i);
+				drawSquare(g, x * squareWidth(), boardTop + (BoardHeight - y - 1) * squareHeight(), curPiece.getShape());
+			}
 		}
 	}
 	public boolean dropDown() {
