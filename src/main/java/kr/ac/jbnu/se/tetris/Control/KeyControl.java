@@ -121,7 +121,7 @@ public class KeyControl implements KeyListener {
         if(isUp && !isDown) getCurPiece(player).rotateLeft();
         else if(isDown && !isUp) getCurPiece(player).rotateRight();
         if(isLeft && !isRight) --newX;
-        else if(isRight && isLeft) ++newX;
+        else if(isRight && !isLeft) ++newX;
         player.tryMove(getCurPiece(player), newX, newY);
     }
     Entity getCurPiece(TetrisCanvas player){ return player.getCurPiece(); }
