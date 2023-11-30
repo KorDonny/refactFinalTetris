@@ -1,36 +1,56 @@
 package kr.ac.jbnu.se.tetris.Boundary;
 
-import kr.ac.jbnu.se.tetris.Boundary.GameMenuPage;
+import kr.ac.jbnu.se.tetris.Control.FirebaseTool;
 import kr.ac.jbnu.se.tetris.Entity.GameMode;
 import kr.ac.jbnu.se.tetris.FrameMain;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
+
+import static kr.ac.jbnu.se.tetris.FrameMain.FONT_DEFAULT;
 
 public class ScoreboardPage extends JPanel {
-    FlowLayout mainLayout;
+    GridLayout scoreLayout;
     final int BUTTON_GAP = 50;
     final int INDEX_TOP10 = 10;
-    JPanel[] rankList;
-    ScoreboardPage(){
-        mainLayout = new FlowLayout(FlowLayout.CENTER, BUTTON_GAP, FrameMain.WINDOW_HEIGHT/2);
-        setLayout(mainLayout);
+    ScoreboardPage() throws ExecutionException, InterruptedException {
+        scoreLayout = new GridLayout(0,GameMode.values().length+1,BUTTON_GAP/2,BUTTON_GAP/2);
+        setLayout(scoreLayout);
 
-        /** 추후 DB연결을 해야 함. */
-        rankList = new JPanel[GameMode.values().length];
-        int idx = 0;
+        JButton backBtn = new JButton("<");
+        backBtn.setVisible(true);
+        add(backBtn);
+        backBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FrameMain.getBackPanel().pop();
+            }
+        });
         for(GameMode menu : GameMode.values()){
-            String title = menu.label();
-            rankList[idx] = new JPanel(new GridLayout(INDEX_TOP10+1,1));
-            JLabel label = new JLabel(title);
-            label.setFont(new Font("SansSerif",Font.BOLD,20));
-            label.setForeground(Color.MAGENTA);
-            label.setBackground(Color.DARK_GRAY);
-            rankList[idx].add(label);
-            rankList[idx].setFont(new Font("SansSerif",Font.BOLD,20-idx));
-            rankList[idx].setForeground(Color.WHITE);
-            rankList[idx].setBackground(Color.BLACK);
-            add(rankList[idx++]).setVisible(true);
+            JLabel colmTag = new JLabel(menu.label());
+            colmTag.setOpaque(true);
+            colmTag.setBackground(Color.cyan);
+            colmTag.setForeground(Color.GREEN);
+            colmTag.setFont(new Font("SansSerif",Font.BOLD,FONT_DEFAULT));
+            add(colmTag);
+        }
+        for (int i = 0; i < INDEX_TOP10*(GameMode.values().length+1); i++){
+            JLabel colmTag;
+            if(i%7==0){
+                colmTag = new JLabel(String.valueOf(i/7+1));
+            }
+            else{
+                FirebaseTool.getModeBestScoreChart(GameMode.values()[i%7]).keySet();
+                colmTag = new JLabel();
+            }
+            colmTag.setOpaque(true);
+            colmTag.setBackground(Color.cyan);
+            colmTag.setForeground(Color.MAGENTA);
+            colmTag.setFont(new Font("SansSerif",Font.BOLD,FONT_DEFAULT));
+            add(colmTag);
         }
     }
 }
