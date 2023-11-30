@@ -13,6 +13,7 @@ public class UICanvas extends JPanel implements CanvasInterface{
     ImageIcon gifImage;
     String gifImagePath;
     public UICanvas() throws IOException {
+        setOpaque(false);
         setPreferredSize(new Dimension(BOARD_SIZE_W,BOARD_SIZE_H));
         BackPanel.addTask(this, new TimerTask() {
             @Override

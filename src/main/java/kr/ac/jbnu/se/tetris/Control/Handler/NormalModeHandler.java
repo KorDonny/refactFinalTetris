@@ -1,6 +1,7 @@
 package kr.ac.jbnu.se.tetris.Control.Handler;
 
 import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
+import kr.ac.jbnu.se.tetris.Boundary.InGamePage;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.Boundary.UICanvas;
 import kr.ac.jbnu.se.tetris.Control.KeyControl;
@@ -17,9 +18,9 @@ public class NormalModeHandler implements GameModeHandler {
 
     @Override
     public void startGame() throws IOException, InterruptedException {
-        FrameMain.getBackPanel().push(new UICanvas());
         connectCanvas();
-        FrameMain.getBackPanel().push(canvas);
+        InGamePage.getInstance().add(canvas);
+        InGamePage.getInstance().add(new UICanvas());
         canvas.start();
         initiateTrigger();
     }
@@ -29,25 +30,25 @@ public class NormalModeHandler implements GameModeHandler {
     public TetrisCanvas getCanvas() { return this.canvas; }
     @Override
     public void initiateTrigger(){
-        BackPanel.addTask(this.canvas, new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    canvas.actionTrigger();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }, 400);
-//         BackPanel.getTimer().scheduleAtFixedRate(new TimerTask() {
-//             @Override
-//             public void run() {
-//                 try {
-//                     canvas.actionTrigger();
-//                 } catch (InterruptedException e) {
-//                     throw new RuntimeException(e);
-//                 }
-//             }
-//         },0,400);
+//        BackPanel.addTask(this.canvas, new TimerTask() {
+//            @Override
+//            public void run() {
+//                try {
+//                    canvas.actionTrigger();
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }, 400);
+         BackPanel.getTimer().scheduleAtFixedRate(new TimerTask() {
+             @Override
+             public void run() {
+                 try {
+                     canvas.actionTrigger();
+                 } catch (InterruptedException e) {
+                     throw new RuntimeException(e);
+                 }
+             }
+         },0,400);
     }
 }

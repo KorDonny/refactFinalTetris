@@ -29,7 +29,6 @@ public class LogInPage extends JPanel {
         this.setLayout(layout);
         layout.setVgap(20);
         layout.setHgap(0);
-        this.setOpaque(false);
         int uiTopMargin = (FrameMain.WINDOW_HEIGHT)/3;
         this.setBorder(new EmptyBorder(uiTopMargin,0,0,0));
 

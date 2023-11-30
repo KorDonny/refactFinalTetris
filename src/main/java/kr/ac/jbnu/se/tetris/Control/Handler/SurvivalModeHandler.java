@@ -10,6 +10,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Random;
 
+import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_H;
+import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_W;
+
 public class SurvivalModeHandler extends NormalModeHandler implements GameModeHandler {
     private final Timer lineAdditionTimer;
     private final Random random;
@@ -46,15 +49,15 @@ public class SurvivalModeHandler extends NormalModeHandler implements GameModeHa
     }
     public void doLogic() {
         if (!getCanvas().isStarted()) return;
-        int holePosition = random.nextInt(TetrisCanvas.BoardWidth); // 뚫린 위치
-        for (int x = 0; x < TetrisCanvas.BoardWidth; x++) {
-            for (int y = TetrisCanvas.BoardHeight - 1; y > 0; y--) {
+        int holePosition = random.nextInt(TETRIS_CANVAS_W); // 뚫린 위치
+        for (int x = 0; x < TETRIS_CANVAS_W; x++) {
+            for (int y = TETRIS_CANVAS_H - 1; y > 0; y--) {
                 Tetrominoes shape = getCanvas().shapeAt(x, y - 1);
-                getCanvas().board[y * TetrisCanvas.BoardWidth + x] = shape;
+                getCanvas().board[y * TETRIS_CANVAS_W + x] = shape;
             }
         }
         // 랜덤한 위치에 한 칸 뚫린 라인 생성
-        for (int x = 0; x < TetrisCanvas.BoardWidth; x++) {
+        for (int x = 0; x < TETRIS_CANVAS_W; x++) {
             if (x != holePosition) {
                 getCanvas().board[x] = Tetrominoes.GrayLineShape;
             } else {

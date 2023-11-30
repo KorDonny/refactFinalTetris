@@ -6,8 +6,8 @@ import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
 
 import java.util.*;
 
-import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.BoardHeight;
-import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.BoardWidth;
+import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_H;
+import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_W;
 
 public class Calculator {
     private TetrisCanvas canvas;
@@ -22,7 +22,7 @@ public class Calculator {
         int hc = hole_count();
         int cl = complete_line();
 
-        int[] height = new int[BoardHeight];
+        int[] height = new int[TETRIS_CANVAS_H];
         int ah = aggregate_height(height);
         int b = bumpiness(height);
 
@@ -38,14 +38,14 @@ public class Calculator {
     // 완성된 줄을 찾는 메소드
     private int complete_line() {
         int ret = 0;
-        for (int i = 0; i < BoardHeight; i++) {
+        for (int i = 0; i < TETRIS_CANVAS_H; i++) {
             int j;
-            for (j = 0; j < BoardWidth; j++) {
-                if (canvas.board[j * BoardWidth + i] == Tetrominoes.NoShape)
+            for (j = 0; j < TETRIS_CANVAS_W; j++) {
+                if (canvas.board[j * TETRIS_CANVAS_W + i] == Tetrominoes.NoShape)
                     break;
             }
 
-            if (j == BoardWidth)
+            if (j == TETRIS_CANVAS_W)
                 ret++;
         }
 
@@ -54,17 +54,17 @@ public class Calculator {
 
     private int bumpiness(int height[]) {
         int ret = 0;
-        for (int i = 1; i < BoardWidth; i++) {
+        for (int i = 1; i < TETRIS_CANVAS_W; i++) {
             ret += Math.abs(height[i - 1] - height[i]);
         }
         return ret;
     }
 
     private int aggregate_height(int height[]) {
-        for (int i = 0; i < BoardWidth; i++) {
-            int high = BoardHeight - 1;
+        for (int i = 0; i < TETRIS_CANVAS_W; i++) {
+            int high = TETRIS_CANVAS_H - 1;
             while (high >= 0) {
-                if (canvas.board[high * BoardWidth + i] != Tetrominoes.NoShape) {
+                if (canvas.board[high * TETRIS_CANVAS_W + i] != Tetrominoes.NoShape) {
                     break;
                 }
                 high--;
@@ -73,7 +73,7 @@ public class Calculator {
         }
 
         int ret = 0;
-        for (int i = 0; i < BoardHeight; i++) {
+        for (int i = 0; i < TETRIS_CANVAS_H; i++) {
             ret += height[i];
         }
         return ret;
@@ -81,12 +81,12 @@ public class Calculator {
 
     // 테트리스 블럭들 사이에 존재하는 구멍을 구하는 메소드
     private int hole_count() {
-        boolean[][] visited = new boolean[BoardHeight][BoardWidth];
+        boolean[][] visited = new boolean[TETRIS_CANVAS_H][TETRIS_CANVAS_W];
 
         // 테트리스 보드판에 0이 아닌 지점을 찾는다.
-        for (int i = 0; i < BoardHeight; i++) {
-            for (int j = 0; j < BoardWidth; j++) {
-                if (canvas.board[i * BoardWidth + j] != Tetrominoes.NoShape)
+        for (int i = 0; i < TETRIS_CANVAS_H; i++) {
+            for (int j = 0; j < TETRIS_CANVAS_W; j++) {
+                if (canvas.board[i * TETRIS_CANVAS_W + j] != Tetrominoes.NoShape)
                     visited[i][j] = true;
             }
         }
@@ -97,8 +97,8 @@ public class Calculator {
         int ret = 0;
 
         // bfs를 진행하고 boolean 값이 false인 값은 구멍이다.
-        for (int i = 0; i < BoardHeight; i++) {
-            for (int j = 0; j < BoardWidth; j++) {
+        for (int i = 0; i < TETRIS_CANVAS_H; i++) {
+            for (int j = 0; j < TETRIS_CANVAS_W; j++) {
                 if (!visited[i][j])
                     ret++;
             }
@@ -122,7 +122,7 @@ public class Calculator {
                 int nx = cur.x + ud[i];
                 int ny = cur.y + rl[i];
 
-                if (nx < 0 || nx >= BoardHeight || ny < 0 || ny >= BoardWidth || visited[nx][ny])
+                if (nx < 0 || nx >= TETRIS_CANVAS_H || ny < 0 || ny >= TETRIS_CANVAS_W || visited[nx][ny])
                     continue;
 
                 visited[nx][ny] = true;

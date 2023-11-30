@@ -75,7 +75,7 @@ public class FrameMain extends JFrame {
     }
     public static FrameMain getInstance() throws IOException {
         if(frameMain==null){
-            synchronized (KeyControl.class){
+            synchronized (FrameMain.class){
                 frameMain = new FrameMain();
             }
         }
@@ -87,6 +87,5 @@ public class FrameMain extends JFrame {
         frame.setVisible(true);
         frame.initiateUI();
         frame.requestFocusInWindow();
-        frame.addKeyListener(new KeyControl());
     }
 }

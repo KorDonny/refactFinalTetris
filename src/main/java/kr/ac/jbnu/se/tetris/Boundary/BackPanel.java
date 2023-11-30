@@ -36,13 +36,9 @@ public class BackPanel extends JPanel {
     }
     public void push(JPanel target){
         if(!viewStack.isEmpty())viewStack.peek().setVisible(false);
+        target.setOpaque(false);
         target.setVisible(true);
         viewStack.add(target);
-        if(target instanceof UICanvas&&!(target instanceof TetrisCanvas)) {
-            setGameUIFrame();
-            target.setFocusable(true); // 키입력 강제로 받도록 설정.
-            target.addKeyListener(KeyControl.getInstance());
-        }
         add(viewStack.peek());
         revalidate();
     }

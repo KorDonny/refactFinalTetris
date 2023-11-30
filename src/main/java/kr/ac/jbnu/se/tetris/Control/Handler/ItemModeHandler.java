@@ -9,6 +9,9 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.Random;
 
+import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_H;
+import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_W;
+
 public class ItemModeHandler extends NormalModeHandler implements GameModeHandler {
     private final Timer itemTimer;
     public ItemModeHandler() throws IOException {
@@ -44,17 +47,17 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
     }
     // 랜덤한 가로줄 제거
     private void removeRandomRow() {
-        int rowToRemove = (int) (Math.random() * TetrisCanvas.BoardHeight);
-        for (int i = 0; i < TetrisCanvas.BoardWidth; i++) {
-            getCanvas().board[rowToRemove * TetrisCanvas.BoardWidth + i] = Tetrominoes.NoShape;
+        int rowToRemove = (int) (Math.random() * TETRIS_CANVAS_H);
+        for (int i = 0; i < TETRIS_CANVAS_W; i++) {
+            getCanvas().board[rowToRemove * TETRIS_CANVAS_W + i] = Tetrominoes.NoShape;
         }
         getCanvas().repaint();
     }
     // 랜덤한 세로줄 제거
     private void removeRandomColumn() {
-        int colToRemove = (int) (Math.random() * TetrisCanvas.BoardWidth);
-        for (int i = 0; i < TetrisCanvas.BoardHeight; i++) {
-            getCanvas().board[i * TetrisCanvas.BoardWidth + colToRemove] = Tetrominoes.NoShape;
+        int colToRemove = (int) (Math.random() * TETRIS_CANVAS_W);
+        for (int i = 0; i < TETRIS_CANVAS_H; i++) {
+            getCanvas().board[i * TETRIS_CANVAS_W + colToRemove] = Tetrominoes.NoShape;
         }
         getCanvas().repaint();
     }
