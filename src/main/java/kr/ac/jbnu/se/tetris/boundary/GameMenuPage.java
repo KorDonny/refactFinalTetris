@@ -22,6 +22,8 @@ public class GameMenuPage extends JPanel {
                 try {
                     startGame(mode);
                 } catch (IOException | InterruptedException | ExecutionException ex) {
+                    /* Clean up whatever needs to be handled before interrupting  */
+                    Thread.currentThread().interrupt();
                     throw new RuntimeException(ex);
                 }
             });

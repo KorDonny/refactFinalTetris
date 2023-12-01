@@ -46,6 +46,8 @@ public class NormalModeHandler implements GameModeHandler {
                  try {
                      canvas.actionTrigger();
                  } catch (InterruptedException | ExecutionException e) {
+                     /* Clean up whatever needs to be handled before interrupting  */
+                     Thread.currentThread().interrupt();
                      throw new RuntimeException(e);
                  }
              }

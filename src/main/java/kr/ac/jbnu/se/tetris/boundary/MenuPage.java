@@ -31,6 +31,8 @@ public class MenuPage extends JPanel {
             try {
                 FrameMain.getBackPanel().push(new ScoreboardPage());
             } catch (ExecutionException | InterruptedException ex) {
+                /* Clean up whatever needs to be handled before interrupting  */
+                Thread.currentThread().interrupt();
                 throw new RuntimeException(ex);
             }
         });

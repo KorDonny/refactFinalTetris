@@ -37,6 +37,8 @@ public class LocalModeHandler extends NormalModeHandler implements GameModeHandl
                 try {
                     canvas.actionTrigger();
                 } catch (InterruptedException | ExecutionException e) {
+                    /* Clean up whatever needs to be handled before interrupting  */
+                    Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
                 }
             }

@@ -10,15 +10,15 @@ import java.util.concurrent.ExecutionException;
 
 public class AIModeHandler extends NormalModeHandler implements GameModeHandler{
     private static TetrisCanvas canvas;
-    private NormalModeHandler AI;
+    private NormalModeHandler ai;
     public AIModeHandler() throws IOException {
         super();
-        AI = new NormalModeHandler();
-        this.canvas = new TetrisCanvasAI();
+        ai = new NormalModeHandler();
+        canvas = new TetrisCanvasAI();
     }
     @Override
     public void startGame() throws IOException, InterruptedException, ExecutionException {
-        AI.startGame();
+        ai.startGame();
         this.connectCanvas();
         InGamePage.getInstance().add(canvas);
         canvas.start();

@@ -52,7 +52,7 @@ public class Calculator {
         return ret;
     }
 
-    private int bumpiness(int height[]) {
+    private int bumpiness(int[] height) {
         int ret = 0;
         for (int i = 1; i < TETRIS_CANVAS_W; i++) {
             ret += Math.abs(height[i - 1] - height[i]);
@@ -60,7 +60,7 @@ public class Calculator {
         return ret;
     }
 
-    private int aggregate_height(int height[]) {
+    private int aggregate_height(int[] height) {
         for (int i = 0; i < TETRIS_CANVAS_W; i++) {
             int high = TETRIS_CANVAS_H - 1;
             while (high >= 0) {
@@ -108,8 +108,8 @@ public class Calculator {
     }
 
     private void bfs(boolean[][] visited) {
-        int ud[] = { -1, 0, 1, 0 };
-        int rl[] = { 0, 1, 0, -1 };
+        int[] ud = { -1, 0, 1, 0 };
+        int[] rl = { 0, 1, 0, -1 };
 
         Queue<Point> q = new LinkedList<>();
         q.add(new Point(0, 4));

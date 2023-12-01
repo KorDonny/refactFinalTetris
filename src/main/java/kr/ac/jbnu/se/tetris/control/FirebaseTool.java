@@ -21,13 +21,12 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class FirebaseTool {
+    public static final String BEST_SCORE = "bestScore";
     private static final String DOMAIN_NAME = "https://jungboproj-default-rtdb.firebaseio.com/";
     private static final String KEY_LOCATION = "./jungboproj-firebase-adminsdk-pco24-58aac1409b.json";
-    private static final String MEMBER = "user";
     private static FirebaseTool firebaseTool = null;
     private FirebaseApp firebaseApp;
     private static Firestore db;
-    public final static String BEST_SCORE = "bestScore";
     public static FirebaseTool getInstance(){
         if (firebaseTool == null) firebaseTool = new FirebaseTool();
         return firebaseTool;
@@ -48,31 +47,20 @@ public class FirebaseTool {
         }catch (IOException e){
             throw new RuntimeException(e);
         }
-        //test for collection firestore
-//        try {
-//            forTestingUpdateScoreBoard();
-//        } catch (ExecutionException e) {
-//            throw new RuntimeException(e);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
     }
     public Account logIn(Account account){
         UserRecord userRecord;
         try{
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(firebaseApp);
-            //userRecord = firebaseAuth.getUserByProviderUid(account.getID(), account.getPW());
             userRecord = firebaseAuth.getUserByEmail(account.getID());
             if(userRecord.getUid().equals(account.getPW()))
                 System.out.println("success check");
             else{
                 return null;
             }
-        }catch (NullPointerException e){
-            System.out.println("User is null.");
-            return null;
-        }catch (FirebaseAuthException e){
-            System.out.println("Error occurs on DB stage");
+        }catch (NullPointerException | FirebaseAuthException e){
+            if(e instanceof NullPointerException) JOptionPane.showMessageDialog(null, "User is null.");
+            else if(e instanceof FirebaseAuthException) JOptionPane.showMessageDialog(null, "Error occurs on DB stage");
             return null;
         }
         return new Account(userRecord.getEmail(), userRecord.getUid().toCharArray());
@@ -93,15 +81,9 @@ public class FirebaseTool {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "회원가입에 문제가 생겼습니다. NullpointerException");
             return  false;
-        } catch (FirebaseAuthException e) {
-            JOptionPane.showMessageDialog(null, "이미 존재하는 계정 또는 DB단의 알 수 없는 오류입니다.");
-            throw new RuntimeException(e);
-        } catch (IllegalArgumentException e){
-            JOptionPane.showMessageDialog(null, "비밀번호 형식은 6자 이상입니다.");
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (FirebaseAuthException | IllegalArgumentException | ExecutionException | InterruptedException e) {
+            if(e instanceof FirebaseAuthException) JOptionPane.showMessageDialog(null, "이미 존재하는 계정 또는 DB단의 알 수 없는 오류입니다.");
+            else if(e instanceof IllegalArgumentException) JOptionPane.showMessageDialog(null, "비밀번호 형식은 6자 이상입니다.");
             throw new RuntimeException(e);
         }
     }
@@ -142,11 +124,12 @@ public class FirebaseTool {
     public void updateUserBestScore(Account account, int score, GameMode mode) throws ExecutionException, InterruptedException {
         Map<String, Object> docData = new HashMap<>();
         docData.put(BEST_SCORE, score);
-        // ...
+
         // future.get() blocks on response
-        if(getUserBestScore(account.getID(),mode)>=score) return;
-          ApiFuture<WriteResult> future = db.collection(mode.label()).document(account.getID().split("@")[0]).update(docData);
-        System.out.println("Update time : " + future.get().getUpdateTime());
+        if(getUserBestScore(account.getID(),mode)<score){
+            ApiFuture<WriteResult> future = db.collection(mode.label()).document(account.getID().split("@")[0]).update(docData);
+            System.out.println("Update time : " + future.get().getUpdateTime());
+        }
     }
     private void initScore(String userId) throws ExecutionException, InterruptedException {
         for(GameMode mode : GameMode.values()){

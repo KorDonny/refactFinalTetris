@@ -17,7 +17,7 @@ public class Entity {
     /**
      * 블럭 형상 정보 배열 n칸 x=0 ,y=1 좌표
      */
-    protected int coords[][];
+    protected int[][] coords;
     private Random random = new Random();
     public Entity(Tetrominoes shape) {
         initFunc(shape);
@@ -152,7 +152,6 @@ public class Entity {
     }
     //추가된 코드
     public int getNumOfRotate() {
-        //switch (pieceShape) { origin code
         switch (getShape()) {
             case TShape:
             case LShape:
