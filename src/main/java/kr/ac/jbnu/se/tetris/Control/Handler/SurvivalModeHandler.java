@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_H;
 import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_W;
@@ -27,15 +28,7 @@ public class SurvivalModeHandler extends NormalModeHandler implements GameModeHa
         }); // 2초마다 한 줄 추가
     }
     @Override
-    public void startGame() throws IOException, InterruptedException {
-//        tetris.remove(board); // 이전 게임 보드 제거
-//        tetris.add(board, BorderLayout.SOUTH); // 새 게임 보드 추가
-//        getBoundary();
-//        board.start();
-//        lineAdditionTimer.start();
-//        tetris.revalidate();
-//        tetris.repaint();
-//        board.requestFocusInWindow();
+    public void startGame() throws IOException, InterruptedException, ExecutionException {
         super.startGame();
         lineAdditionTimer.start();
     }

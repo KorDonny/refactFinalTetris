@@ -6,6 +6,7 @@ import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
 
 import java.io.IOException;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 public class TetrisCanvasAI extends TetrisCanvas {
 
@@ -19,14 +20,16 @@ public class TetrisCanvasAI extends TetrisCanvas {
 					actionTrigger();
 				} catch (InterruptedException e) {
 					throw new RuntimeException(e);
-				}
-			}
+				} catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 		}, 100);// 이벤트간 딜레이 400
 		aiControl = new AIControl(this);
 	}
 
 	@Override
-	protected void newPiece() throws InterruptedException {
+	protected void newPiece() throws InterruptedException, ExecutionException {
 		super.newPiece();
 		if (isStarted){
 			doControlLogic();
@@ -59,7 +62,8 @@ public class TetrisCanvasAI extends TetrisCanvas {
 
 //        canvas.dropDown();
 	}
-	public boolean tryMoveAI(Entity newPiece, int newX, int newY) {
+	@Override
+	public boolean tryMove(Entity newPiece, int newX, int newY) {
 		for (int i = 0; i < 4; ++i) {
 			int x = newX + newPiece.x(i);
 			int y = newY - newPiece.y(i);
@@ -69,8 +73,6 @@ public class TetrisCanvasAI extends TetrisCanvas {
 				return false;
 		}
 		newPiece.setPosition(newX,newY);
-		/*TestMonitor.setCurDxP1(curPiece.getCurX());
-		TestMonitor.setCurDyP1(curPiece.getCurY());*/
 		return true;
 	}
 }

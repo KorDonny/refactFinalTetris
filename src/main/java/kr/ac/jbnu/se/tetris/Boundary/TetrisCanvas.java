@@ -1,5 +1,7 @@
 package kr.ac.jbnu.se.tetris.Boundary;
 
+import kr.ac.jbnu.se.tetris.Control.FirebaseTool;
+import kr.ac.jbnu.se.tetris.Entity.Account;
 import kr.ac.jbnu.se.tetris.Entity.Entity;
 import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
 import kr.ac.jbnu.se.tetris.Sound;
@@ -7,6 +9,7 @@ import kr.ac.jbnu.se.tetris.Sound;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -48,7 +51,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	int squareHeight() { return (int) getSize().getHeight() / TETRIS_CANVAS_H; }
 	/** (x,y)에 블록 종류 */
 	public Tetrominoes shapeAt(int x, int y) { return board[(y * TETRIS_CANVAS_W) + x]; }
-	public void start() throws InterruptedException {
+	public void start() throws InterruptedException, ExecutionException {
 		clearBoard();
 		isStarted = true;
 		isFallingFinished = false;
@@ -56,7 +59,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		newPiece();
 		sound.startBgm();
 	}
-	public void actionTrigger() throws InterruptedException {
+	public void actionTrigger() throws InterruptedException, ExecutionException {
 		if (isFallingFinished) {
 			isFallingFinished = false;
 			newPiece();
@@ -120,7 +123,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			drawSquare(g, x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(), Tetrominoes.Shadow);
 		}
 	}
-	public boolean dropDown() throws InterruptedException {
+	public boolean dropDown() throws InterruptedException, ExecutionException {
 		int newY = curPiece.getCurY();
 		while (newY > 0) {
 			if (!tryMove(curPiece, curPiece.getCurX(), newY - 1))
@@ -131,7 +134,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		return true;
 	}
 	/** 블록이 한줄 아래로 내려가는 메소드*/
-	protected void oneLineDown() throws InterruptedException {
+	protected void oneLineDown() throws InterruptedException, ExecutionException {
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY() - 1))
 			pieceDropped(); //떨어지면 수행되는 메소드, 드롭다운과 동일
 	}
@@ -141,7 +144,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			board[i] = Tetrominoes.NoShape;
 	}
 	/** 현재 위치에 블록을 남기는 메소드 */
-	protected void pieceDropped() throws InterruptedException {
+	protected void pieceDropped() throws InterruptedException, ExecutionException {
 		//sound.playDropSound();
 		// 현재 위치에 블록 배치
 		for (int i = 0; i < 4; ++i) {
@@ -156,7 +159,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			newPiece();
 	}
 	/** 새 블록 생성 */
-	protected void newPiece() throws InterruptedException {
+	protected void newPiece() throws InterruptedException, ExecutionException {
 		// 블록 종류 및 위치 수정
 		curPiece.setRandomShape();
 		// 블록이 움직이지 못할 때(게임 종료)
@@ -165,10 +168,9 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			BackPanel.stopTask(this);
 			sound.stopBgm();
 			isStarted = false;
-//			if(Integer.parseInt(globalStorage.getUserBestScore())<numLinesRemoved) {
-//				globalStorage.setUserBestScore(String.valueOf(numLinesRemoved));
-//				firebaseTool.setUserBestScore(globalStorage.getUserID(), String.valueOf(numLinesRemoved));// 베스트 스코어 업데이트
-//			}
+
+			FirebaseTool.getInstance().updateUserBestScore(Account.getClientAccount(),numLinesRemoved,
+					GameMenuPage.getMode());
 		}
 	}
 	public void paintComponent(Graphics g){
@@ -261,7 +263,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		Image scaledImg = img.getScaledInstance(UICanvas.BOARD_SIZE_W, UICanvas.BOARD_SIZE_H, Image.SCALE_SMOOTH);
 		gifImage = new ImageIcon(scaledImg);
 	}
-	public void restart() throws InterruptedException {
+	public void restart() throws InterruptedException, ExecutionException {
 		clearBoard();
 		numLinesRemoved=0;
 		newPiece();

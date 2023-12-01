@@ -9,6 +9,7 @@ import kr.ac.jbnu.se.tetris.FrameMain;
 
 import java.io.IOException;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 public class NormalModeHandler implements GameModeHandler {
     private final TetrisCanvas canvas;
@@ -17,7 +18,7 @@ public class NormalModeHandler implements GameModeHandler {
     }
 
     @Override
-    public void startGame() throws IOException, InterruptedException {
+    public void startGame() throws IOException, InterruptedException, ExecutionException {
         connectCanvas();
         InGamePage.getInstance().add(canvas);
         InGamePage.getInstance().add(new UICanvas());
@@ -45,7 +46,7 @@ public class NormalModeHandler implements GameModeHandler {
              public void run() {
                  try {
                      canvas.actionTrigger();
-                 } catch (InterruptedException e) {
+                 } catch (InterruptedException | ExecutionException e) {
                      throw new RuntimeException(e);
                  }
              }

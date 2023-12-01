@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class SprintModeHandler extends NormalModeHandler implements GameModeHandler {
     private final JLabel sprintModeStatusbar;
@@ -38,7 +39,7 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
         gameClearCheckTimer.start();
     }
     @Override
-    public void startGame() throws IOException, InterruptedException {
+    public void startGame() throws IOException, InterruptedException, ExecutionException {
         super.startGame();
         updateTargetLineCount();
         updateStatusbarText();
@@ -47,7 +48,6 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
         getCanvas().add(gameClearStatusLabel);
         gameClearStatusLabel.setVisible(false);
         checkGameClear();
-        getCanvas().requestFocusInWindow();
         sprintModeStatusbar.setVisible(true);
     }
     @Override

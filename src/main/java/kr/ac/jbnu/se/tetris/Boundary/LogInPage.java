@@ -43,8 +43,8 @@ public class LogInPage extends JPanel {
         btnConfirm = new JButton("확인"); btnReject = new JButton("취소");
         idLab = new JLabel("아이디"); idLab.setOpaque(false); idLab.setForeground(Color.WHITE);
         pwLab = new JLabel("비밀번호"); pwLab.setOpaque(false); pwLab.setForeground(Color.WHITE);
-        idBox = new JTextField(); idBox.setPreferredSize(new Dimension(170, 30));
-        pwBox = new JPasswordField(); pwBox.setPreferredSize(new Dimension(170, 30));
+        idBox = new JTextField("이메일@도메인"); idBox.setPreferredSize(new Dimension(170, 30));
+        pwBox = new JPasswordField("6자 이상"); pwBox.setPreferredSize(new Dimension(170, 30));
 
         //컴포넌트들 표시를 위한 오퍼레이션 구문
         list = new JComponent[]{idLab, idBox, pwLab, pwBox, btnConfirm, btnReject};
@@ -67,21 +67,33 @@ public class LogInPage extends JPanel {
             }
         });
     }
-    public boolean checkID(String id, String pw) throws IOException {
-        if(firebaseTool.logIn(id,pw)){
-            JOptionPane.showMessageDialog(null, "반갑습니다!");
-            FrameMain.getInstance().getBackPanel().push(new MenuPage());
-            return true;
+    public boolean checkID(Account account) throws IOException {
+        if(Account.getClientAccount()==null){
+            Account.updateClientAccount(firebaseTool.logIn(account));
+            if(Account.getClientAccount()!=null){
+                JOptionPane.showMessageDialog(null, "반갑습니다!");
+                FrameMain.getInstance().getBackPanel().push(new MenuPage());
+                return true;
+            }
+            JOptionPane.showMessageDialog(null, "회원정보를 확인하세요.");
+            return false;
         }
-        JOptionPane.showMessageDialog(null, "회원정보를 확인하세요.");
-        return false;
+        else{
+            Account.updateLocalMultiAccount(firebaseTool.logIn(account));
+            if(Account.getLocalMultiAccount()!=null){
+                JOptionPane.showMessageDialog(null, "반갑습니다! 플레이어 2님!");
+                return true;
+            }
+            JOptionPane.showMessageDialog(null, "회원정보를 확인하세요.");
+            return false;
+        }
     }
     public void setBtnConfirm(){
         btnConfirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    checkID(idBox.getText(),null);
+                    checkID(new Account(idBox.getText(),pwBox.getPassword()));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }

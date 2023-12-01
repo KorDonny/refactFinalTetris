@@ -8,6 +8,7 @@ import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 public class KeyControl implements KeyListener {
     static KeyControl keyControl = null;
@@ -36,7 +37,7 @@ public class KeyControl implements KeyListener {
                     if(getPlayer(false)==null)return;
                     if(player2!=null)handlePlayerInput(player2, isDropP2, isLeftP2, isRightP2, isUpP2, isDownP2, isOneP2);
                     handlePlayerInput(player1, isDrop, isLeft, isRight, isUp, isDown, isOne);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -110,7 +111,7 @@ public class KeyControl implements KeyListener {
             isOne = key == KeyEvent.VK_R;
         }
     }
-    private void handlePlayerInput(TetrisCanvas player, boolean isDrop, boolean isLeft, boolean isRight, boolean isUp, boolean isDown, boolean isOne) throws InterruptedException {
+    private void handlePlayerInput(TetrisCanvas player, boolean isDrop, boolean isLeft, boolean isRight, boolean isUp, boolean isDown, boolean isOne) throws InterruptedException, ExecutionException {
         if (isDrop) {
             player.dropDown();
             return;

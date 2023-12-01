@@ -3,6 +3,7 @@ package kr.ac.jbnu.se.tetris;
 import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
 import kr.ac.jbnu.se.tetris.Boundary.LogInPage;
 import kr.ac.jbnu.se.tetris.Boundary.RegisterPage;
+import kr.ac.jbnu.se.tetris.Control.FirebaseTool;
 import kr.ac.jbnu.se.tetris.Control.KeyControl;
 
 import javax.imageio.ImageIO;
@@ -15,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
+import java.util.concurrent.ExecutionException;
 
 public class FrameMain extends JFrame {
     static FrameMain frameMain;
@@ -57,6 +59,7 @@ public class FrameMain extends JFrame {
 
             welcome.setForeground(Color.WHITE);
             welcome.setFont(new Font("SansSerif",Font.BOLD,FONT_TITLE));
+            welcome.setHorizontalAlignment(JLabel.CENTER);
             welcome.setOpaque(false);
 
             btnLogIn.addActionListener(new ActionListener() {
@@ -82,10 +85,11 @@ public class FrameMain extends JFrame {
         return frameMain;
     }
     public static BackPanel getBackPanel(){ return backPanel; }
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         FrameMain frame = new FrameMain();
         frame.setVisible(true);
         frame.initiateUI();
         frame.requestFocusInWindow();
+        //FirebaseTool.getInstance().forCheckBestScorers();
     }
 }

@@ -119,7 +119,7 @@ public class AIControl {
     public boolean move_down(Entity temp_block) {
         int newY = temp_block.getCurY();
         while (newY > 0) {
-            if (!canvas.tryMoveAI(temp_block, temp_block.getCurX(), newY - 1))
+            if (!canvas.tryMove(temp_block, temp_block.getCurX(), newY - 1))
                 break;
             --newY;
         }
@@ -127,13 +127,13 @@ public class AIControl {
     }
 
     private boolean move_right(Entity shape) {
-        return !canvas.tryMoveAI(shape, shape.position[0] + 1, shape.position[1]);
+        return !canvas.tryMove(shape, shape.position[0] + 1, shape.position[1]);
     }
 
     private void move_left(Entity shape) {
         int newX = shape.position[0];
         while (newX > 0) {
-            if (!canvas.tryMoveAI(shape, newX - 1, shape.position[1]))
+            if (!canvas.tryMove(shape, newX - 1, shape.position[1]))
                 break;
             --newX;
         }

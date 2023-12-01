@@ -1,6 +1,7 @@
 package kr.ac.jbnu.se.tetris.Boundary;
 
 import kr.ac.jbnu.se.tetris.Control.FirebaseTool;
+import kr.ac.jbnu.se.tetris.Entity.Account;
 import kr.ac.jbnu.se.tetris.FrameMain;
 
 import java.awt.event.ActionEvent;
@@ -17,7 +18,7 @@ public class RegisterPage extends LogInPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(FirebaseTool.getInstance().signUp(
-                        idBox.getText(), Arrays.toString(pwBox.getPassword()))
+                        new Account(idBox.getText(), pwBox.getPassword()))
                 )FrameMain.getBackPanel().pop();
             }
         });

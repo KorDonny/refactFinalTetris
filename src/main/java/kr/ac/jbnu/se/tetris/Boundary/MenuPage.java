@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class MenuPage extends JPanel {
     JButton game, score;
@@ -44,6 +45,10 @@ public class MenuPage extends JPanel {
                 try {
                     FrameMain.getInstance().getBackPanel().push(new ScoreboardPage());
                 } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (ExecutionException ex) {
+                    throw new RuntimeException(ex);
+                } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
             }

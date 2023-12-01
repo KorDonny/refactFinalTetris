@@ -8,6 +8,7 @@ import kr.ac.jbnu.se.tetris.Entity.Tetrominoes;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_H;
 import static kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas.TETRIS_CANVAS_W;
@@ -26,7 +27,7 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
 //        });
     }
     @Override
-    public void startGame() throws IOException, InterruptedException {
+    public void startGame() throws IOException, InterruptedException, ExecutionException {
         super.startGame();
         itemTimer.start();
     }

@@ -8,8 +8,10 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class GameMenuPage extends JPanel {
+    protected static GameMode curMode;
     GameMenuPage(){
         setOpaque(false);
         setLayout(new GridLayout(FrameMain.DEFAULT_VERT_GRID_ROW,FrameMain.DEFAULT_VERT_GRID_COLUMN,
@@ -19,7 +21,7 @@ public class GameMenuPage extends JPanel {
             toInsert.addActionListener(e-> {
                 try {
                     startGame(mode);
-                } catch (IOException | InterruptedException ex) {
+                } catch (IOException | InterruptedException | ExecutionException ex) {
                     throw new RuntimeException(ex);
                 }
             });
@@ -28,8 +30,9 @@ public class GameMenuPage extends JPanel {
         this.setBorder(new EmptyBorder((FrameMain.WINDOW_HEIGHT-this.getHeight())/2,
                 0,0,0));
     }
-    private void startGame(GameMode mode) throws IOException, InterruptedException {
+    private void startGame(GameMode mode) throws IOException, InterruptedException, ExecutionException {
         InGamePage.getInstance();
+        curMode = mode;
         switch (mode) {
             case NORMAL:
                 setModeHandler(new NormalModeHandler());
@@ -64,4 +67,5 @@ public class GameMenuPage extends JPanel {
     }
     public static GameModeHandler getModeHandler() { return GameModeHolder.CONTEXT_PROV.context; }
     public void setModeHandler(GameModeHandler ac) { GameModeHolder.CONTEXT_PROV.setContext(ac); }
+    protected static GameMode getMode(){ return curMode; }
 }

@@ -7,6 +7,7 @@ import kr.ac.jbnu.se.tetris.Control.KeyControl;
 import kr.ac.jbnu.se.tetris.FrameMain;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class AIModeHandler extends NormalModeHandler implements GameModeHandler{
     private static TetrisCanvas canvas;
@@ -17,12 +18,11 @@ public class AIModeHandler extends NormalModeHandler implements GameModeHandler{
         this.canvas = new TetrisCanvasAI();
     }
     @Override
-    public void startGame() throws IOException, InterruptedException {
+    public void startGame() throws IOException, InterruptedException, ExecutionException {
         AI.startGame();
         this.connectCanvas();
         InGamePage.getInstance().add(canvas);
         canvas.start();
-        AI.getCanvas().requestFocusInWindow();
     }
     @Override
     public void connectCanvas() {
