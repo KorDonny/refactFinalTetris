@@ -30,6 +30,7 @@ public class NormalModeHandler implements GameModeHandler {
     public TetrisCanvas getCanvas() { return this.canvas; }
     @Override
     public void initiateTrigger(){
+        //해당 주석구문은 추후 고려해볼 계획으로, 리팩토링시 넘어가셔도 됩니다.
 //        BackPanel.addTask(this.canvas, new TimerTask() {
 //            @Override
 //            public void run() {
@@ -46,6 +47,7 @@ public class NormalModeHandler implements GameModeHandler {
                  try {
                      canvas.actionTrigger();
                  } catch (InterruptedException | ExecutionException e) {
+                     Thread.currentThread().interrupt();
                      throw new RuntimeException(e);
                  }
              }

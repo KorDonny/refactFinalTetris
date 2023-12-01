@@ -5,6 +5,7 @@ import kr.ac.jbnu.se.tetris.entity.Entity;
 import kr.ac.jbnu.se.tetris.entity.Point;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import static kr.ac.jbnu.se.tetris.boundary.TetrisCanvas.TETRIS_CANVAS_W;
@@ -61,14 +62,16 @@ public class AIControl {
 
     private Object[] move(Entity curPiece) {
         double big_weight = Integer.MIN_VALUE;
-        Entity block, big_weight_block, temp_block;
+        Entity block;
+        Entity big_weight_block;
+        Entity temp_block;
         boolean end_right = false;
 
-        block = new Entity(Tetrominoes.NoShape);
+        block = new Entity(Tetrominoes.NO_SHAPE);
         block.copyEntity(curPiece);
         move_left(block);
-        big_weight_block = new Entity(Tetrominoes.NoShape); //ret[1] 구문 이니셜라이징이 필요하므로 넣어둠.
-        temp_block = new Entity(Tetrominoes.NoShape);
+        big_weight_block = new Entity(Tetrominoes.NO_SHAPE); //ret[1] 구문 이니셜라이징이 필요하므로 넣어둠.
+        temp_block = new Entity(Tetrominoes.NO_SHAPE);
         while (true) {
             temp_block.copyEntity(block);
             if (move_down(temp_block)) {
@@ -96,12 +99,11 @@ public class AIControl {
     private void deleteBlock(Entity shape) {
         int curX = shape.position[0];
         int curY = shape.position[1];
-        //for(int i = 0; i < shape.coords.length; i++) { origin code
         for (int i = 0; i < shape.getShapeArr().length; i++) {
             int x = curX + shape.x(i);
             int y = curY - shape.y(i);
             int idx = y * TETRIS_CANVAS_W + x;
-            canvas.getBoard()[idx] = Tetrominoes.NoShape;
+            canvas.getBoard()[idx] = Tetrominoes.NO_SHAPE;
         }
     }
 
@@ -140,9 +142,7 @@ public class AIControl {
     }
 
     private void setWeight(double[] weight) {
-        for(int i = 0; i < 4; i++){
-            this.weight[i] = weight[i];
-        }
+        this.weight = Arrays.copyOf(weight,weight.length);
     }
 
     public void setDefaultWeight() {

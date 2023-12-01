@@ -11,8 +11,18 @@ import java.util.concurrent.ExecutionException;
 
 public class KeyControl implements KeyListener {
     static KeyControl keyControl = null;
-    boolean isLeft,isRight,isUp,isDown,isOne,isDrop;
-    boolean isLeftP2,isRightP2,isUpP2,isDownP2,isOneP2,isDropP2;
+    boolean isLeft;
+    boolean isRight;
+    boolean isUp;
+    boolean isDown;
+    boolean isOne;
+    boolean isDrop;
+    boolean isLeftP2;
+    boolean isRightP2;
+    boolean isUpP2;
+    boolean isDownP2;
+    boolean isOneP2;
+    boolean isDropP2;
     static TetrisCanvas player1;
     static TetrisCanvas player2;
     public KeyControl(){
@@ -37,6 +47,8 @@ public class KeyControl implements KeyListener {
                     if(player2!=null)handlePlayerInput(player2, isDropP2, isLeftP2, isRightP2, isUpP2, isDownP2, isOneP2);
                     handlePlayerInput(player1, isDrop, isLeft, isRight, isUp, isDown, isOne);
                 } catch (InterruptedException | ExecutionException e) {
+                    /* Clean up whatever needs to be handled before interrupting  */
+                    Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
                 }
             }
@@ -65,6 +77,7 @@ public class KeyControl implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+        //nothing about it
     }
 
     @Override
@@ -72,36 +85,24 @@ public class KeyControl implements KeyListener {
         if(getPlayer(false)==null)return;
         int key = e.getKeyCode();
         if(key=='p'||key=='P'){
-            try {
-                if(player2!=null)player2.pause();
-                player1.pause();
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
+            if(player2!=null)player2.pause();
+            player1.pause();
             return;
         }
-        if(key==KeyEvent.VK_ESCAPE){
-            if(player1!=null) {
-                try {
-                    if(player2!=null)player2.pause();
-                    player1.pause();
-                    return;
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
+        if(key==KeyEvent.VK_ESCAPE&&player1!=null){
+            if(player2!=null)player2.pause();
+            player1.pause();
+            return;
         }
-        if(!isSingle()){
-            if (player2.isStarted() && getCurPiece(player2).getShape() != Tetrominoes.NoShape && !player2.isPaused()){
-                isLeftP2 = key == KeyEvent.VK_LEFT;
-                isRightP2 = key == KeyEvent.VK_RIGHT;
-                isUpP2 = key == KeyEvent.VK_UP;
-                isDownP2 = key == KeyEvent.VK_DOWN;
-                isDropP2 = key == ']' ;
-                isOneP2 = key == '[';
-            }
+        if(!isSingle()&&player2.isStarted() && getCurPiece(player2).getShape() != Tetrominoes.NO_SHAPE && !player2.isPaused()){
+            isLeftP2 = key == KeyEvent.VK_LEFT;
+            isRightP2 = key == KeyEvent.VK_RIGHT;
+            isUpP2 = key == KeyEvent.VK_UP;
+            isDownP2 = key == KeyEvent.VK_DOWN;
+            isDropP2 = key == ']' ;
+            isOneP2 = key == '[';
         }
-        if (player1.isStarted() && getCurPiece(player1).getShape() != Tetrominoes.NoShape && !player1.isPaused()){
+        if (player1.isStarted() && getCurPiece(player1).getShape() != Tetrominoes.NO_SHAPE && !player1.isPaused()){
             isLeft = key == KeyEvent.VK_A;
             isRight = key == KeyEvent.VK_D;
             isUp = key == KeyEvent.VK_W;

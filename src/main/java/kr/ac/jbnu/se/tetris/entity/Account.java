@@ -5,27 +5,9 @@ public class Account {
     private static Account localMultiAccount = null;
     private final String accountID;
     private final String accountPW;
-    public Account(String ID, char[] PW){
-        this.accountID = ID;
-        this.accountPW = String.valueOf(PW);
-    }
-    public void checkBestScore(GameMode mode, int score){
-        switch (mode){
-            case NORMAL:
-                //if()
-                break;
-            case ITEM:
-                break;
-            case SPRINT:
-                break;
-            case SURVIVAL:
-                break;
-            case MULTI:
-                break;
-            case AI:
-                break;
-        }
-        //return this.bestScore
+    public Account(String id, char[] pw){
+        this.accountID = id;
+        this.accountPW = String.valueOf(pw);
     }
     public String getID(){ return accountID; }
     public String getPW(){ return accountPW; }

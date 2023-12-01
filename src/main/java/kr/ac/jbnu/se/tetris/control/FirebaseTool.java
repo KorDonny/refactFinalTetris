@@ -19,92 +19,75 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Logger;
 
 public class FirebaseTool {
+    public static final String BEST_SCORE = "bestScore";
+    private static final Logger logger = Logger.getLogger(FirebaseTool.class.getName());
     private static final String DOMAIN_NAME = "https://jungboproj-default-rtdb.firebaseio.com/";
     private static final String KEY_LOCATION = "./jungboproj-firebase-adminsdk-pco24-58aac1409b.json";
-    private static final String MEMBER = "user";
     private static FirebaseTool firebaseTool = null;
     private FirebaseApp firebaseApp;
     private static Firestore db;
-    public final static String BEST_SCORE = "bestScore";
-    public static FirebaseTool getInstance(){
+    public static FirebaseTool getInstance() throws IOException {
         if (firebaseTool == null) firebaseTool = new FirebaseTool();
         return firebaseTool;
     }
-    public FirebaseTool(){
+    public FirebaseTool() throws IOException {
         initialize();
     }
-    public void initialize(){
-        try{
-            FileInputStream serviceAccount = new FileInputStream(KEY_LOCATION);
-            GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(credentials)
-                    .setDatabaseUrl(DOMAIN_NAME)
-                    .build();
-            firebaseApp = FirebaseApp.initializeApp(options);
-            db = FirestoreClient.getFirestore();
-        }catch (IOException e){
-            throw new RuntimeException(e);
-        }
-        //test for collection firestore
-//        try {
-//            forTestingUpdateScoreBoard();
-//        } catch (ExecutionException e) {
-//            throw new RuntimeException(e);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
+    /** Credentials는 json firebase 접근 권한 개인키, option을 통해 도메인 주소에 해당하는 DB를 접근, firebaseApp 초기화 */
+    public void initialize() throws IOException{
+        FileInputStream serviceAccount = new FileInputStream(KEY_LOCATION);
+        GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
+        FirebaseOptions options = FirebaseOptions.builder()
+                .setCredentials(credentials)
+                .setDatabaseUrl(DOMAIN_NAME)
+                .build();
+        firebaseApp = FirebaseApp.initializeApp(options);
+        initDB();
     }
+    /** 원래 static 변수는 클래스 선언과 동시에 초기화 하는게 매우 정석이며, 오류 발생을 줄일 수 있음.
+     * 그러나, 해당 방식 적용시 firebase가 아직 초기화가 안된 상태로 오류가 발생함. 이를 방지하고자 static 메소드로 생성자 단계에서
+     * 우회하여 접근.
+     * */
+    public static void initDB(){
+        db  = FirestoreClient.getFirestore();
+    }
+    /** 구형 라이브러리라 getUserByEmailWithPassword를 지원하지 않음. 정보 보안이슈 */
     public Account logIn(Account account){
         UserRecord userRecord;
         try{
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(firebaseApp);
-            //userRecord = firebaseAuth.getUserByProviderUid(account.getID(), account.getPW());
             userRecord = firebaseAuth.getUserByEmail(account.getID());
             if(userRecord.getUid().equals(account.getPW()))
-                System.out.println("success check");
+                logger.info("success check");
             else{
                 return null;
             }
         }catch (NullPointerException e){
-            System.out.println("User is null.");
+            logger.info("User is null.");
             return null;
         }catch (FirebaseAuthException e){
-            System.out.println("Error occurs on DB stage");
+            logger.info("Error occurs on DB stage");
             return null;
         }
         return new Account(userRecord.getEmail(), userRecord.getUid().toCharArray());
     }
-    public boolean signUp(Account account) {
-        try {
-            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(firebaseApp);
-            firebaseAuth.createUser(new UserRecord.CreateRequest()
-                    .setEmail(account.getID())
-                    .setUid(account.getPW())
-                    .setDisplayName(account.getID().split("@")[0]));
+    /** 구형 라이브러리라 EmailWithPassword를 지원하지 않음. 정보 보안이슈 */
+    public boolean signUp(Account account) throws NullPointerException, FirebaseAuthException, IllegalArgumentException, ExecutionException, InterruptedException{
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(firebaseApp);
+        firebaseAuth.createUser(new UserRecord.CreateRequest()
+                .setEmail(account.getID())
+                .setUid(account.getPW())
+                .setDisplayName(account.getID().split("@")[0]));
 
-            initScore(account.getID().split("@")[0]);
+        initScore(account.getID().split("@")[0]);
 
-            JOptionPane.showMessageDialog(null, "회원가입에 정상적으로 처리되었습니다.");
-            return true;
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "회원가입에 문제가 생겼습니다. NullpointerException");
-            return  false;
-        } catch (FirebaseAuthException e) {
-            JOptionPane.showMessageDialog(null, "이미 존재하는 계정 또는 DB단의 알 수 없는 오류입니다.");
-            throw new RuntimeException(e);
-        } catch (IllegalArgumentException e){
-            JOptionPane.showMessageDialog(null, "비밀번호 형식은 6자 이상입니다.");
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        JOptionPane.showMessageDialog(null, "회원가입에 정상적으로 처리되었습니다.");
+        return true;
     }
+    /** 상위 10 반환, 그러나 HashMap은 순서를 보장하지 않으므로 이후 정렬함 -> 링크드 해쉬맵을 이용해 볼 계획임 */
     public static Map<String,Integer> getModeBestScoreChart(GameMode mode) throws ExecutionException, InterruptedException {
         CollectionReference singleScore = db.collection(mode.label());
         Query query = singleScore.orderBy(BEST_SCORE, Query.Direction.DESCENDING).limit(10);
@@ -127,6 +110,7 @@ public class FirebaseTool {
         if(future.get().getData()==null)return -1;
         return Integer.parseInt(future.get().getData().get(BEST_SCORE).toString());
     }
+    /** 해당 컬렉션 하위 문서의 데이터를 덮어쓰지 않고 필요한 부분만 merge */
     private static void setUserBestScore(String userID, int score, GameMode mode) throws ExecutionException, InterruptedException {
         // Create a Map to store the data we want to set
         Map<String, Object> docData = new HashMap<>();
@@ -137,17 +121,20 @@ public class FirebaseTool {
         ApiFuture<WriteResult> future = db.collection(mode.label()).document(userID).set(docData,SetOptions.merge());
         // ...
         // future.get() blocks on response
-        System.out.println("Update time : " + future.get().getUpdateTime());
+        logger.info("Update time : " + future.get().getUpdateTime());
     }
+    /** 유저 점수보다 같거나 낮으면 return으로 미실행 -> firebase 보안규칙을 통해 db단에서 필터링하려 했으나 실패. */
     public void updateUserBestScore(Account account, int score, GameMode mode) throws ExecutionException, InterruptedException {
         Map<String, Object> docData = new HashMap<>();
         docData.put(BEST_SCORE, score);
         // ...
         // future.get() blocks on response
-        if(getUserBestScore(account.getID(),mode)>=score) return;
-          ApiFuture<WriteResult> future = db.collection(mode.label()).document(account.getID().split("@")[0]).update(docData);
-        System.out.println("Update time : " + future.get().getUpdateTime());
+        if(getUserBestScore(account.getID(),mode)<score) {
+            ApiFuture<WriteResult> future = db.collection(mode.label()).document(account.getID().split("@")[0]).update(docData);
+            logger.info("Update time : " + future.get().getUpdateTime());
+        }
     }
+    /** 계정 생성시 첫 점수판 초기화 수행 */
     private void initScore(String userId) throws ExecutionException, InterruptedException {
         for(GameMode mode : GameMode.values()){
             setUserBestScore(userId,-1,mode);
