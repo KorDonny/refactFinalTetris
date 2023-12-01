@@ -34,15 +34,15 @@ public class AIControl {
 
     public int[] findGoodPosition(Entity curPiece) {
         Point goodPosition = new Point(0, 0);
-        double big_weight = Integer.MIN_VALUE;
-        int big_weight_rotate = -1;
+        double bigWeight = Integer.MIN_VALUE;
+        int bigWeightRotate = -1;
 
         for (int j = 0; j < curPiece.getNumOfRotate(); j++) {
             Object[] ret = move(curPiece);
 
-            if (big_weight < (double) ret[0]) {
-                big_weight = (double) ret[0];
-                big_weight_rotate = j;
+            if (bigWeight < (double) ret[0]) {
+                bigWeight = (double) ret[0];
+                bigWeightRotate = j;
                 goodPosition.x = ((Entity) ret[1]).getCurX();
                 goodPosition.y = ((Entity) ret[1]).getCurY();
             }
@@ -55,53 +55,54 @@ public class AIControl {
         int[] returnData = new int[3];
         returnData[0] = goodPosition.x;
         returnData[1] = goodPosition.y;
-        returnData[2] = big_weight_rotate;
+        returnData[2] = bigWeightRotate;
         return returnData;
     }
 
     private Object[] move(Entity curPiece) {
-        double big_weight = Integer.MIN_VALUE;
-        Entity block, big_weight_block, temp_block;
-        boolean end_right = false;
+        double bigWeight = Integer.MIN_VALUE;
+        Entity block;
+        Entity bigWeightBlock;
+        Entity tempBlock;
+        boolean endWeight;
 
-        block = new Entity(Tetrominoes.NoShape);
+        block = new Entity(Tetrominoes.NO_SHAPE);
         block.copyEntity(curPiece);
-        move_left(block);
-        big_weight_block = new Entity(Tetrominoes.NoShape); //ret[1] 구문 이니셜라이징이 필요하므로 넣어둠.
-        temp_block = new Entity(Tetrominoes.NoShape);
+        moveLeft(block);
+        bigWeightBlock = new Entity(Tetrominoes.NO_SHAPE); //ret[1] 구문 이니셜라이징이 필요하므로 넣어둠.
+        tempBlock = new Entity(Tetrominoes.NO_SHAPE);
         while (true) {
-            temp_block.copyEntity(block);
-            if (move_down(temp_block)) {
+            tempBlock.copyEntity(block);
+            if (moveDown(tempBlock)) {
                 // 블럭을 아래로 다 내렸을 경우, 현재 가중치 값 계산
-                placeShape(temp_block);
+                placeShape(tempBlock);
                 double fitness = calculator.blockFitness(weight);
-                if (big_weight < fitness) {
-                    big_weight = fitness;
-                    big_weight_block.copyEntity(temp_block);
+                if (bigWeight < fitness) {
+                    bigWeight = fitness;
+                    bigWeightBlock.copyEntity(tempBlock);
                 }
-                deleteBlock(temp_block);
+                deleteBlock(tempBlock);
             }
             // 그 후, 우측으로 이동
-            end_right = move_right(block);
-            if (end_right) {
+            endWeight = moveRight(block);
+            if (endWeight) {
                 break;
             }
         }
         Object[] ret = new Object[2];
-        ret[0] = big_weight;
-        ret[1] = big_weight_block;
+        ret[0] = bigWeight;
+        ret[1] = bigWeightBlock;
         return ret;
     }
 
     private void deleteBlock(Entity shape) {
         int curX = shape.position[0];
         int curY = shape.position[1];
-        //for(int i = 0; i < shape.coords.length; i++) { origin code
         for (int i = 0; i < shape.getShapeArr().length; i++) {
             int x = curX + shape.x(i);
             int y = curY - shape.y(i);
             int idx = y * TETRIS_CANVAS_W + x;
-            canvas.getBoard()[idx] = Tetrominoes.NoShape;
+            canvas.getBoard()[idx] = Tetrominoes.NO_SHAPE;
         }
     }
 
@@ -116,21 +117,21 @@ public class AIControl {
         }
     }
 
-    public boolean move_down(Entity temp_block) {
-        int newY = temp_block.getCurY();
+    public boolean moveDown(Entity tempBlock) {
+        int newY = tempBlock.getCurY();
         while (newY > 0) {
-            if (!canvas.tryMove(temp_block, temp_block.getCurX(), newY - 1))
+            if (!canvas.tryMove(tempBlock, tempBlock.getCurX(), newY - 1))
                 break;
             --newY;
         }
         return true;
     }
 
-    private boolean move_right(Entity shape) {
+    private boolean moveRight(Entity shape) {
         return !canvas.tryMove(shape, shape.position[0] + 1, shape.position[1]);
     }
 
-    private void move_left(Entity shape) {
+    private void moveLeft(Entity shape) {
         int newX = shape.position[0];
         while (newX > 0) {
             if (!canvas.tryMove(shape, newX - 1, shape.position[1]))

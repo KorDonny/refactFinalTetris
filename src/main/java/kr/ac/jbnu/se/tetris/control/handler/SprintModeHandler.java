@@ -1,6 +1,5 @@
 package kr.ac.jbnu.se.tetris.control.handler;
 
-import kr.ac.jbnu.se.tetris.boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.control.KeyControl;
 import kr.ac.jbnu.se.tetris.FrameMain;
 
@@ -16,7 +15,6 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
     private int targetLineCount; // 목표 라인 개수
     private boolean gameClearAchieved; // Game Clear 상태 여부
     private final Random random;
-    private NormalModeHandler normal;
     public SprintModeHandler() throws IOException {
         super();
         this.sprintModeStatusbar = new JLabel();

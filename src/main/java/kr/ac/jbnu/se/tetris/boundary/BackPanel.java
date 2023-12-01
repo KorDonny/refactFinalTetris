@@ -20,7 +20,7 @@ public class BackPanel extends JPanel {
     static Timer timer;
     static HashMap<Object,TimerTask> timerMap;
     BufferedImage background;
-    final String backgroundPath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/background.png";
+    static final String backgroundPath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/background.png";
     boolean isGameFirst;
     public BackPanel() throws IOException {
         viewStack = new Stack<>();

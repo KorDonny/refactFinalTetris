@@ -112,7 +112,7 @@ public class Entity {
      * 복사된 entity를 newPiece에 전달, tryMove가 처리. 좌회전
      */
     public void rotateLeft() {
-        if (getShape() == Tetrominoes.SquareShape) // 블록이 사각형인 경우 종료
+        if (getShape() == Tetrominoes.SQUARE_SHAPE) // 블록이 사각형인 경우 종료
             return;
         int[][] result = new int[4][2];
         for (int i = 0; i < 4; ++i) {
@@ -129,7 +129,7 @@ public class Entity {
      * 복사된 entity를 newPiece에 전달, tryMove가 처리. 우회전
      */
     public void rotateRight() {
-        if (getShape() == Tetrominoes.SquareShape) // 블록이 사각형인 경우 종료
+        if (getShape() == Tetrominoes.SQUARE_SHAPE) // 블록이 사각형인 경우 종료
             return;
         int[][] result = new int[4][2];
         for (int i = 0; i < 4; ++i) {
@@ -153,17 +153,17 @@ public class Entity {
     //추가된 코드
     public int getNumOfRotate() {
         switch (getShape()) {
-            case TShape:
-            case LShape:
-            case MirroredLShape:
+            case T_SHAPE:
+            case L_SHAPE:
+            case MIRRORED_L_SHAPE:
                 return 4;
-            case ZShape:
-            case SShape:
-            case LineShape:
+            case Z_SHAPE:
+            case S_SHAPE:
+            case LINE_SHAPE:
                 return 2;
-            case SquareShape:
+            case SQUARE_SHAPE:
                 return 1;
-            case NoShape:
+            case NO_SHAPE:
             default:
                 return 0;
         }

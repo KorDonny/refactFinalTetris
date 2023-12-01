@@ -5,8 +5,6 @@ import kr.ac.jbnu.se.tetris.control.KeyControl;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -47,9 +45,9 @@ public class SurvivalModeHandler extends NormalModeHandler implements GameModeHa
         // 랜덤한 위치에 한 칸 뚫린 라인 생성
         for (int x = 0; x < TETRIS_CANVAS_W; x++) {
             if (x != holePosition) {
-                getCanvas().getBoard()[x] = Tetrominoes.GrayLineShape;
+                getCanvas().getBoard()[x] = Tetrominoes.GRAY_LINE_SHAPE;
             } else {
-                getCanvas().getBoard()[x] = Tetrominoes.NoShape;
+                getCanvas().getBoard()[x] = Tetrominoes.NO_SHAPE;
             }
         }
     }

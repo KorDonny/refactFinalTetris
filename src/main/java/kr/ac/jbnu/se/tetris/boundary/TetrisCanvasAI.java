@@ -19,6 +19,8 @@ public class TetrisCanvasAI extends TetrisCanvas {
 				try {
 					actionTrigger();
 				} catch (InterruptedException |ExecutionException e) {
+					/* Clean up whatever needs to be handled before interrupting  */
+					Thread.currentThread().interrupt();
 					throw new RuntimeException(e);
 				}
             }
@@ -45,7 +47,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 		curPiece.setRandomShape();
 		// 블록이 움직이지 못할 때(게임 종료)
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
-			curPiece = new Entity(Tetrominoes.NoShape); // 떨어지는 블록 없앰
+			curPiece = new Entity(Tetrominoes.NO_SHAPE); // 떨어지는 블록 없앰
 			BackPanel.stopTask(this);
 
 			isStarted = false;
@@ -56,7 +58,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 	}
 
 	public void doControlLogic() {
-		Entity tmpEntity = new Entity(Tetrominoes.NoShape);
+		Entity tmpEntity = new Entity(Tetrominoes.NO_SHAPE);
 		tmpEntity.copyEntity(getCurPiece());
 		int[] goodPosition = aiControl.findGoodPosition(tmpEntity);
 
@@ -81,7 +83,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 			int y = newY - newPiece.y(i);
 			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
 				return false;
-			if (shapeAt(x, y) != Tetrominoes.NoShape)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
+			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
 				return false;
 		}
 		newPiece.setPosition(newX,newY);
@@ -110,7 +112,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 			boolean lineIsFull = true;
 			// i번째 행에 비어있는 칸이 있으면 break 작동
 			for (int j = 0; j < TETRIS_CANVAS_W; ++j) {
-				if (shapeAt(j, i) == Tetrominoes.NoShape) {
+				if (shapeAt(j, i) == Tetrominoes.NO_SHAPE) {
 					lineIsFull = false;
 					break;
 				}
@@ -128,7 +130,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 		if (numFullLines > 0) {
 			numLinesRemoved += numFullLines;
 			isFallingFinished = true;
-			curPiece = new Entity(Tetrominoes.NoShape);
+			curPiece = new Entity(Tetrominoes.NO_SHAPE);
 			repaint();
 		}
 	}

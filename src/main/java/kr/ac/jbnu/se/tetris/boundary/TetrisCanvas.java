@@ -48,8 +48,8 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	static int imgIdx = 0;
 
 	public TetrisCanvas() throws IOException {
-		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
-		shadowPiece = new Entity(Tetrominoes.NoShape);
+		curPiece = new Entity(Tetrominoes.NO_SHAPE); // 현재 블록
+		shadowPiece = new Entity(Tetrominoes.NO_SHAPE);
 		board = new Tetrominoes[TETRIS_CANVAS_W * TETRIS_CANVAS_H]; // 1차원 배열의 칸 생성
 		sound = new Sound();
 	}
@@ -112,13 +112,13 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		for (int i = 0; i < TETRIS_CANVAS_H; ++i) {
 			for (int j = 0; j < TETRIS_CANVAS_W; ++j) {
 				Tetrominoes shape = shapeAt(j, TETRIS_CANVAS_H - i - 1);
-				if (shape != Tetrominoes.NoShape)
+				if (shape != Tetrominoes.NO_SHAPE)
 					drawSquare(g, 0 + j * squareWidth(), boardTop + i * squareHeight(), shape);
 			}
 		}
 
 		// 떨어지는 블록 관련 색칠
-		if (curPiece.getShape() != Tetrominoes.NoShape) {
+		if (curPiece.getShape() != Tetrominoes.NO_SHAPE) {
 			// 그림자 생성
 			shadowPiece.copyEntity(curPiece);
 			int newY = shadowPiece.getCurY();
@@ -133,7 +133,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 				int x = shadowPiece.getCurX() + shadowPiece.x(i);
 				int y = shadowPiece.getCurY() - shadowPiece.y(i);
 				drawSquare(g, x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
-						Tetrominoes.Shadow);
+						Tetrominoes.SHADOW);
 			}
 
 			// 떨어지는 블록 색칠
@@ -168,7 +168,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	/** 모든 칸을 빈 공간(NoShape블록)으로 초기화 */
 	public void clearBoard() {
 		for (int i = 0; i < TETRIS_CANVAS_H * TETRIS_CANVAS_W; ++i)
-			board[i] = Tetrominoes.NoShape;
+			board[i] = Tetrominoes.NO_SHAPE;
 	}
 
 	/** 현재 위치에 블록을 남기는 메소드 */
@@ -193,7 +193,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		curPiece.setRandomShape();
 		// 블록이 움직이지 못할 때(게임 종료)
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
-			curPiece = new Entity(Tetrominoes.NoShape); // 떨어지는 블록 없앰
+			curPiece = new Entity(Tetrominoes.NO_SHAPE); // 떨어지는 블록 없앰
 			BackPanel.stopTask(this);
 			sound.stopBgm();
 			isStarted = false;
@@ -216,7 +216,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			int y = newY - newPiece.y(i);
 			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
 				return false;
-			if (shapeAt(x, y) != Tetrominoes.NoShape)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
+			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
 				return false;
 		}
 		curPiece = newPiece;
@@ -231,7 +231,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			int y = newY - newPiece.y(i);
 			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
 				return false;
-			if (shapeAt(x, y) != Tetrominoes.NoShape)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
+			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
 				return false;
 		}
 		newPiece.setPosition(newX,newY);
@@ -248,7 +248,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			boolean lineIsFull = true;
 			// i번째 행에 비어있는 칸이 있으면 break 작동
 			for (int j = 0; j < TETRIS_CANVAS_W; ++j) {
-				if (shapeAt(j, i) == Tetrominoes.NoShape) {
+				if (shapeAt(j, i) == Tetrominoes.NO_SHAPE) {
 					lineIsFull = false;
 					break;
 				}
@@ -266,7 +266,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		if (numFullLines > 0) {
 			numLinesRemoved += numFullLines;
 			isFallingFinished = true;
-			curPiece = new Entity(Tetrominoes.NoShape);
+			curPiece = new Entity(Tetrominoes.NO_SHAPE);
 			sound.playRemoveSound();
 			repaint();
 		}

@@ -77,13 +77,10 @@ public class FirebaseTool {
 
             JOptionPane.showMessageDialog(null, "회원가입에 정상적으로 처리되었습니다.");
             return true;
-        } catch (NullPointerException e) {
+        }catch (FirebaseAuthException | IllegalArgumentException | ExecutionException | InterruptedException | NullPointerException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "회원가입에 문제가 생겼습니다. NullpointerException");
-            return  false;
-        } catch (FirebaseAuthException | IllegalArgumentException | ExecutionException | InterruptedException e) {
-            if(e instanceof FirebaseAuthException) JOptionPane.showMessageDialog(null, "이미 존재하는 계정 또는 DB단의 알 수 없는 오류입니다.");
-            else if(e instanceof IllegalArgumentException) JOptionPane.showMessageDialog(null, "비밀번호 형식은 6자 이상입니다.");
+            /* Clean up whatever needs to be handled before interrupting  */
+            Thread.currentThread().interrupt();
             throw new RuntimeException(e);
         }
     }

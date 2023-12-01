@@ -19,11 +19,11 @@ public class Calculator {
     public Double blockFitness(double[] weight) {
         double result = 0.0;
 
-        int hc = hole_count();
-        int cl = complete_line();
+        int hc = holeCount();
+        int cl = completeLine();
 
         int[] height = new int[TETRIS_CANVAS_H];
-        int ah = aggregate_height(height);
+        int ah = aggregateHeight(height);
         int b = bumpiness(height);
 
         result += ah * weight[0];
@@ -31,17 +31,16 @@ public class Calculator {
         result += b * weight[2];
         result += cl * weight[3];
 
-        //System.out.println("h : " + hc + " c : " + cl + " bw : " + b + " ah : " + ah);
         return result;
     }
 
     // 완성된 줄을 찾는 메소드
-    private int complete_line() {
+    private int completeLine() {
         int ret = 0;
         for (int i = 0; i < TETRIS_CANVAS_H; i++) {
             int j;
             for (j = 0; j < TETRIS_CANVAS_W; j++) {
-                if (canvas.getBoard()[j * TETRIS_CANVAS_W + i] == Tetrominoes.NoShape)
+                if (canvas.getBoard()[j * TETRIS_CANVAS_W + i] == Tetrominoes.NO_SHAPE)
                     break;
             }
 
@@ -60,11 +59,11 @@ public class Calculator {
         return ret;
     }
 
-    private int aggregate_height(int[] height) {
+    private int aggregateHeight(int[] height) {
         for (int i = 0; i < TETRIS_CANVAS_W; i++) {
             int high = TETRIS_CANVAS_H - 1;
             while (high >= 0) {
-                if (canvas.getBoard()[high * TETRIS_CANVAS_W + i] != Tetrominoes.NoShape) {
+                if (canvas.getBoard()[high * TETRIS_CANVAS_W + i] != Tetrominoes.NO_SHAPE) {
                     break;
                 }
                 high--;
@@ -80,13 +79,13 @@ public class Calculator {
     }
 
     // 테트리스 블럭들 사이에 존재하는 구멍을 구하는 메소드
-    private int hole_count() {
+    private int holeCount() {
         boolean[][] visited = new boolean[TETRIS_CANVAS_H][TETRIS_CANVAS_W];
 
         // 테트리스 보드판에 0이 아닌 지점을 찾는다.
         for (int i = 0; i < TETRIS_CANVAS_H; i++) {
             for (int j = 0; j < TETRIS_CANVAS_W; j++) {
-                if (canvas.getBoard()[i * TETRIS_CANVAS_W + j] != Tetrominoes.NoShape)
+                if (canvas.getBoard()[i * TETRIS_CANVAS_W + j] != Tetrominoes.NO_SHAPE)
                     visited[i][j] = true;
             }
         }

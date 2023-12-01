@@ -15,6 +15,7 @@ import static kr.ac.jbnu.se.tetris.boundary.TetrisCanvas.TETRIS_CANVAS_W;
 
 public class ItemModeHandler extends NormalModeHandler implements GameModeHandler {
     private final Timer itemTimer;
+    Random random;
     public ItemModeHandler() throws IOException {
         super();
         // 아이템 타이머 생성 및 리스너 등록
@@ -23,6 +24,7 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
     @Override
     public void startGame() throws IOException, InterruptedException, ExecutionException {
         super.startGame();
+        random = new Random();
         itemTimer.start();
     }
     @Override
@@ -31,7 +33,6 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
     public TetrisCanvas getCanvas() { return super.getCanvas(); }
     // 랜덤한 가로줄 또는 세로줄 제거
     private void removeRandomLine() {
-        Random random = new Random();
         int item = random.nextInt(2); // 0 또는 1 (가로줄 또는 세로줄)
 
         if (item == 0) {
@@ -44,7 +45,7 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
     private void removeRandomRow() {
         int rowToRemove = (int) (Math.random() * TETRIS_CANVAS_H);
         for (int i = 0; i < TETRIS_CANVAS_W; i++) {
-            getCanvas().getBoard()[rowToRemove * TETRIS_CANVAS_W + i] = Tetrominoes.NoShape;
+            getCanvas().getBoard()[rowToRemove * TETRIS_CANVAS_W + i] = Tetrominoes.NO_SHAPE;
         }
         getCanvas().repaint();
     }
@@ -52,7 +53,7 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
     private void removeRandomColumn() {
         int colToRemove = (int) (Math.random() * TETRIS_CANVAS_W);
         for (int i = 0; i < TETRIS_CANVAS_H; i++) {
-            getCanvas().getBoard()[i * TETRIS_CANVAS_W + colToRemove] = Tetrominoes.NoShape;
+            getCanvas().getBoard()[i * TETRIS_CANVAS_W + colToRemove] = Tetrominoes.NO_SHAPE;
         }
         getCanvas().repaint();
     }
