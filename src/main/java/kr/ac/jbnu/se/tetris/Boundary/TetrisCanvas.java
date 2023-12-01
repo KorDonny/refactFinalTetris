@@ -99,28 +99,32 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			}
 		}
 
-		// 떨어지는 블록 색칠
+		// 떨어지는 블록 관련 색칠
 		if (curPiece.getShape() != Tetrominoes.NoShape) {
+			// 그림자 생성
+			shadowPiece.copyEntity(curPiece);
+			int newY = shadowPiece.getCurY();
+			while (newY > 0) {
+				if (!tryMoveA(shadowPiece, shadowPiece.getCurX(), newY - 1))
+					break;
+				--newY;
+			}
+
+			// 블록 그림자 색칠
+			for (int i = 0; i < 4; ++i) {
+				int x = shadowPiece.getCurX() + shadowPiece.x(i);
+				int y = shadowPiece.getCurY() - shadowPiece.y(i);
+				drawSquare(g, x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
+						Tetrominoes.Shadow);
+			}
+
+			// 떨어지는 블록 색칠
 			for (int i = 0; i < 4; ++i) {
 				int x = curPiece.getCurX() + curPiece.x(i);
 				int y = curPiece.getCurY() - curPiece.y(i);
 				drawSquare(g, 0 + x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
 						curPiece.getShape());
 			}
-		}
-
-		// 블록 그림자 색칠
-		shadowPiece.copyEntity(curPiece);
-		int newY = shadowPiece.getCurY();
-		while (newY > 0) {
-			if (!tryMoveA(shadowPiece, shadowPiece.getCurX(), newY - 1))
-				break;
-			--newY;
-		}
-		for (int i = 0; i < 4; ++i) {
-			int x = shadowPiece.getCurX() + shadowPiece.x(i);
-			int y = shadowPiece.getCurY() - shadowPiece.y(i);
-			drawSquare(g, x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(), Tetrominoes.Shadow);
 		}
 	}
 	public boolean dropDown() throws InterruptedException, ExecutionException {
