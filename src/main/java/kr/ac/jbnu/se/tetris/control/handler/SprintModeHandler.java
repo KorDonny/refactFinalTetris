@@ -35,7 +35,8 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
         updateTargetLineCount();
         updateStatusbarText();
         gameClearAchieved = false;
-        getCanvas().setLayout(new OverlayLayout(getCanvas()));
+        getCanvas().setLayout(new BoxLayout(getCanvas(), BoxLayout.Y_AXIS));
+        getCanvas().add(sprintModeStatusbar);
         getCanvas().add(gameClearStatusLabel);
         gameClearStatusLabel.setVisible(false);
         checkGameClear();
@@ -48,6 +49,7 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
     public void checkGameClear() {
         if (getCanvas().getNumLinesRemoved() >= targetLineCount && !gameClearAchieved) {
             gameClearAchieved = true;
+            getCanvas().setStarted(false);
             gameClearStatusLabel.setText("Game Clear!");
             gameClearStatusLabel.setVisible(true);
             //BackPanel.resumeTask();
@@ -61,13 +63,16 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
     }
     private void updateStatusbarText() {
         sprintModeStatusbar.setText("Remove " + targetLineCount + " lines!");
-    }
+        sprintModeStatusbar.setOpaque(false);
+        sprintModeStatusbar.setForeground(Color.WHITE);
+        sprintModeStatusbar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sprintModeStatusbar.setFont(new Font("SansSerif", Font.BOLD, 20));    }
     private void initGameClearStatusLabel() {
-        this.gameClearStatusLabel = new JLabel("Game Clear!");
-        this.gameClearStatusLabel.setForeground(Color.YELLOW);
-        this.gameClearStatusLabel.setBackground(Color.BLACK);
-        this.gameClearStatusLabel.setOpaque(true);
-        this.gameClearStatusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.gameClearStatusLabel.setFont(new Font("SansSerif", Font.BOLD, 50)); // 폰트 및 크기 설정
+        gameClearStatusLabel = new JLabel("Game Clear!");
+        gameClearStatusLabel.setForeground(Color.YELLOW);
+        gameClearStatusLabel.setBackground(Color.BLACK);
+        gameClearStatusLabel.setOpaque(true);
+        gameClearStatusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        gameClearStatusLabel.setFont(new Font("SansSerif", Font.BOLD, 40));
     }
 }

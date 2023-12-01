@@ -183,7 +183,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		// 완성된 라인 확인
 		removeFullLines();
 		// 완성된 줄이 있다면 작동 안함
-		if (!isFallingFinished)
+		if (!isFallingFinished && isStarted)
 			newPiece();
 	}
 
@@ -288,6 +288,11 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	public Entity getCurPiece(){ return curPiece; }
 
 	public boolean isPaused(){ return isPaused; }
+
+	public void setStarted(boolean started) {
+		this.isStarted = started;
+		if(!isStarted)sound.stopBgm();
+	}
 
 	public boolean isStarted(){ return isStarted; }
 

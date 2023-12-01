@@ -33,6 +33,11 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
     public TetrisCanvas getCanvas() { return super.getCanvas(); }
     // 랜덤한 가로줄 또는 세로줄 제거
     private void removeRandomLine() {
+        if (!getCanvas().isStarted()) {
+            itemTimer.stop();
+            return;
+        }
+
         int item = random.nextInt(2); // 0 또는 1 (가로줄 또는 세로줄)
 
         if (item == 0) {
