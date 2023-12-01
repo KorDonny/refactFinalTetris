@@ -20,21 +20,12 @@ public class SurvivalModeHandler extends NormalModeHandler implements GameModeHa
     public SurvivalModeHandler() throws IOException {
         super();
         this.random = new Random();
-        this.lineAdditionTimer = new Timer(2000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                doLogic();
-            }
-        }); // 2초마다 한 줄 추가
+        this.lineAdditionTimer = new Timer(2000, e -> doLogic()); // 2초마다 한 줄 추가
     }
     @Override
     public void startGame() throws IOException, InterruptedException, ExecutionException {
         super.startGame();
         lineAdditionTimer.start();
-    }
-    @Override
-    public TetrisCanvas getCanvas() {
-        return super.getCanvas();
     }
     @Override
     public void connectCanvas() {
@@ -52,9 +43,9 @@ public class SurvivalModeHandler extends NormalModeHandler implements GameModeHa
         // 랜덤한 위치에 한 칸 뚫린 라인 생성
         for (int x = 0; x < TETRIS_CANVAS_W; x++) {
             if (x != holePosition) {
-                getCanvas().getBoard()[x] = Tetrominoes.GrayLineShape;
+                getCanvas().getBoard()[x] = Tetrominoes.GRAY_LINE_SHAPE;
             } else {
-                getCanvas().getBoard()[x] = Tetrominoes.NoShape;
+                getCanvas().getBoard()[x] = Tetrominoes.NO_SHAPE;
             }
         }
     }

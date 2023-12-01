@@ -7,29 +7,27 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_HEIGHT;
 import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_WIDTH;
 
 public class BackPanel extends JPanel {
-    Stack<JPanel> viewStack;
+    private Deque<JPanel> viewStack;
     static Timer timer;
     static HashMap<Object,TimerTask> timerMap;
-    BufferedImage background;
-    final String backgroundPath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/background.png";
+    BufferedImage backgroundImg;
+    static final String BACKGROUND_PATH = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/background.png";
     boolean isGameFirst;
     public BackPanel() throws IOException {
-        viewStack = new Stack<>();
-        background = ImageIO.read(new File(backgroundPath));
+        viewStack = new ArrayDeque<>();
+        backgroundImg = ImageIO.read(new File(BACKGROUND_PATH));
         isGameFirst = false;
     }
-
+    @Override
     public void paintComponent(Graphics g){
-        g.drawImage(background.getScaledInstance(WINDOW_WIDTH,WINDOW_HEIGHT,Image.SCALE_SMOOTH),
+        g.drawImage(backgroundImg.getScaledInstance(WINDOW_WIDTH,WINDOW_HEIGHT,Image.SCALE_SMOOTH),
                 0,0,null);
     }
     public void push(JPanel target){
@@ -51,6 +49,7 @@ public class BackPanel extends JPanel {
     public void setBorder(int top, int left, int bottom, int right) {
         super.setBorder(new EmptyBorder(top, left, bottom, right));
     }
+    /** timer는 하나로 관리하고 Task를 넣고자 함. SonarLint 리팩토링은 V와 computeIfAbsent에 대한 숙지가 되지 않아 리팩토링 금지 */
     public static void addTask(Object obj, TimerTask task,long period){
         if(timer==null)timer = new Timer("Game Timer");
         if(timerMap==null)timerMap = new HashMap<>();
@@ -62,21 +61,25 @@ public class BackPanel extends JPanel {
     public static TimerTask getTask(Object obj){ return timerMap.get(obj); }
     public static void removeTask(Object obj){ if(timerMap.get(obj)!=null)timerMap.get(obj).cancel(); }
     public static void stopTask(Object obj) {
-        synchronized (obj) {
-            try {
-                TimerTask task = timerMap.get(obj);
-                if (task != null) {
-                    task.cancel();
-                    timerMap.remove(obj);
-                }
-                obj.notify();  // 대기 중인 스레드에게 안전하게 진행할 수 있음을 알림
-            } catch (IllegalMonitorStateException e) {
-                e.printStackTrace();
-            }
+        TimerTask task = timerMap.get(obj);
+        if(task == null)return;
+        synchronized (task){
+            task.cancel();
+            timerMap.remove(obj);
+            obj.notifyAll();  // 대기 중인 스레드에게 안전하게 진행할 수 있음을 알림
+        }
+
+    }
+    public static void resumeTask(Object obj){
+        synchronized (timerMap.get(obj)){
+            timerMap.get(obj).notifyAll();
         }
     }
-    public static void resumeTask(Object obj){ timerMap.get(obj).notify(); }
-    public static void resumeAllTask(){ timer.notifyAll(); }
+    public static void resumeAllTask(){
+        synchronized (timer){
+            timer.notifyAll();
+        }
+    }
     public void setGameUIFrame(){
         setBorder(25,100,75,100);
     }

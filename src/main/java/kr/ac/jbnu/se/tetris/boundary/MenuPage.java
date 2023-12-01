@@ -5,13 +5,11 @@ import kr.ac.jbnu.se.tetris.FrameMain;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public class MenuPage extends JPanel {
-    JButton game, score;
+    JButton game;
+    JButton score;
     enum Menu{
         GAME_MENU("게임 시작"),SCORE_BOARD("랭킹");
         private final String label;
@@ -28,29 +26,15 @@ public class MenuPage extends JPanel {
                 FrameMain.GRID_WGAP,FrameMain.GRID_VGAP));
 
         game = new JButton(Menu.GAME_MENU.label());
-        game.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    FrameMain.getInstance().getBackPanel().push(new GameMenuPage());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
+        game.addActionListener(e -> FrameMain.getBackPanel().push(new GameMenuPage()));
+
         score = new JButton(Menu.SCORE_BOARD.label());
-        score.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    FrameMain.getInstance().getBackPanel().push(new ScoreboardPage());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (ExecutionException ex) {
-                    throw new RuntimeException(ex);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
+        score.addActionListener(e -> {
+            try {
+                FrameMain.getBackPanel().push(new ScoreboardPage());
+            } catch (ExecutionException | InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(ex);
             }
         });
         add(game);

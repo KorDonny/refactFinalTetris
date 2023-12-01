@@ -22,16 +22,14 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	 *    board의 인덱스값은 십의 자릿수가 y, 일의 자릿수가 x를 나타냄 <br/>
 	 *    ex) (3,1)의 위치를 인덱싱하려면 -> board[13]
 	 */
-	private Tetrominoes[] board;
+	private final Tetrominoes[] board;
 	/** 화면의 가로칸 수 */
 	public static final int TETRIS_CANVAS_W = 10;
 	/** 화면의 세로칸 수 */
 	public static final int TETRIS_CANVAS_H = 22;
-	/** 기본 프레임 딜레이 400 */ //딜레이 구성 변경 로직 구현하여 난이도 조절 가능할 것이라고 추측됨.
-	/** ture : 블록이 바닥에 닿은 상태 <br/>
-	 * false : 블록이 낙하중인 상태 */
+	/** true : 블록이 바닥에 닿은 상태  false : 블록이 낙하중인 상태 */
 	boolean isFallingFinished = false;
-	/** 게임 시작 여부 */ //KeyControl 클래스가 static이어서, 한 보드가 false되버리면 키 감지 로직 멈추는 현상 있음, 확인 요망
+	/** 게임 시작 여부 */
 	boolean isStarted = false;
 	/** 게임 일시정지 여부 */
 	boolean isPaused = false;
@@ -43,13 +41,13 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	Entity curPiece;
 	Entity shadowPiece;
 	private Sound sound;
-	private String gifImagePath;
+	private String gifImagePathTCanvas;
 	private String[] animatedImagePath;
 	static int imgIdx = 0;
 
 	public TetrisCanvas() throws IOException {
-		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
-		shadowPiece = new Entity(Tetrominoes.NoShape);
+		curPiece = new Entity(Tetrominoes.NO_SHAPE); // 현재 블록
+		shadowPiece = new Entity(Tetrominoes.NO_SHAPE);
 		board = new Tetrominoes[TETRIS_CANVAS_W * TETRIS_CANVAS_H]; // 1차원 배열의 칸 생성
 		sound = new Sound();
 	}
@@ -81,10 +79,11 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	 * 일시정지 메소드
 	 * 추후 pause이펙트를 공통으로 걸려면, timer에 대한 처리가 필요할 것으로 보임.
 	 * */
-	public void pause() throws InterruptedException {
+	public void pause(){
 		if (!isStarted)
 			return;
 		isPaused = !isPaused;
+		//이 구문도 sonarLint 오류 구문 스킵하셔도 됩니다.
 		if (isPaused) {
 			//BackPanel.stopTask(this);
 			sound.stopBgm();
@@ -94,6 +93,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		}
 		repaint();
 	}
+	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 
@@ -104,13 +104,13 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		for (int i = 0; i < TETRIS_CANVAS_H; ++i) {
 			for (int j = 0; j < TETRIS_CANVAS_W; ++j) {
 				Tetrominoes shape = shapeAt(j, TETRIS_CANVAS_H - i - 1);
-				if (shape != Tetrominoes.NoShape)
+				if (shape != Tetrominoes.NO_SHAPE)
 					drawSquare(g, 0 + j * squareWidth(), boardTop + i * squareHeight(), shape);
 			}
 		}
 
 		// 떨어지는 블록 관련 색칠
-		if (curPiece.getShape() != Tetrominoes.NoShape) {
+		if (curPiece.getShape() != Tetrominoes.NO_SHAPE) {
 			// 그림자 생성
 			shadowPiece.copyEntity(curPiece);
 			int newY = shadowPiece.getCurY();
@@ -125,7 +125,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 				int x = shadowPiece.getCurX() + shadowPiece.x(i);
 				int y = shadowPiece.getCurY() - shadowPiece.y(i);
 				drawSquare(g, x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
-						Tetrominoes.Shadow);
+						Tetrominoes.SHADOW);
 			}
 
 			// 떨어지는 블록 색칠
@@ -157,7 +157,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	/** 모든 칸을 빈 공간(NoShape블록)으로 초기화 */
 	public void clearBoard() {
 		for (int i = 0; i < TETRIS_CANVAS_H * TETRIS_CANVAS_W; ++i)
-			board[i] = Tetrominoes.NoShape;
+			board[i] = Tetrominoes.NO_SHAPE;
 	}
 	/** 현재 위치에 블록을 남기는 메소드 */
 	protected void pieceDropped() throws InterruptedException, ExecutionException {
@@ -180,13 +180,18 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		curPiece.setRandomShape();
 		// 블록이 움직이지 못할 때(게임 종료)
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
-			curPiece = new Entity(Tetrominoes.NoShape); // 떨어지는 블록 없앰
+			curPiece = new Entity(Tetrominoes.NO_SHAPE); // 떨어지는 블록 없앰
 			BackPanel.stopTask(this);
 			sound.stopBgm();
 			isStarted = false;
 
-			FirebaseTool.getInstance().updateUserBestScore(Account.getClientAccount(),numLinesRemoved,
-					GameMenuPage.getMode());
+			//아래 구문은 throws 구문에 묶지 마세요. 다른 메소드들에도 throws Exception이 추가되어야 합니다.
+			try {
+				FirebaseTool.getInstance().updateUserBestScore(Account.getClientAccount(),numLinesRemoved,
+						GameMenuPage.getMode());
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 	@Override
@@ -201,7 +206,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			int y = newY - newPiece.y(i);
 			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
 				return false;
-			if (shapeAt(x, y) != Tetrominoes.NoShape)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
+			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
 				return false;
 		}
 		curPiece = newPiece;
@@ -216,7 +221,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			int y = newY - newPiece.y(i);
 			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
 				return false;
-			if (shapeAt(x, y) != Tetrominoes.NoShape)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
+			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
 				return false;
 		}
 		newPiece.setPosition(newX,newY);
@@ -233,7 +238,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			boolean lineIsFull = true;
 			// i번째 행에 비어있는 칸이 있으면 break 작동
 			for (int j = 0; j < TETRIS_CANVAS_W; ++j) {
-				if (shapeAt(j, i) == Tetrominoes.NoShape) {
+				if (shapeAt(j, i) == Tetrominoes.NO_SHAPE) {
 					lineIsFull = false;
 					break;
 				}
@@ -251,7 +256,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		if (numFullLines > 0) {
 			numLinesRemoved += numFullLines;
 			isFallingFinished = true;
-			curPiece = new Entity(Tetrominoes.NoShape);
+			curPiece = new Entity(Tetrominoes.NO_SHAPE);
 			sound.playRemoveSound();
 			repaint();
 		}
@@ -274,12 +279,12 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	public int getNumLinesRemoved() { return numLinesRemoved; }
 	@Override
 	public synchronized void setImage() throws IOException {
-		gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/resource/image/backGif2.gif";
+		gifImagePathTCanvas = "./src/main/java/kr/ac/jbnu/se/tetris/resource/image/backGif2.gif";
 		animatedImagePath = new String[]{
 				"./src/main/java/kr/ac/jbnu/se/tetris/resource/image/backGif2.gif"
 		};
 
-		gifImage = new ImageIcon(ImageIO.read(new File(gifImagePath)));
+		gifImage = new ImageIcon(ImageIO.read(new File(gifImagePathTCanvas)));
 		Image img = gifImage.getImage();
 		Image scaledImg = img.getScaledInstance(UICanvas.BOARD_SIZE_W, UICanvas.BOARD_SIZE_H, Image.SCALE_SMOOTH);
 		gifImage = new ImageIcon(scaledImg);
@@ -287,7 +292,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 
 			@Override
 			public void run() {
-				gifImagePath = animatedImagePath[imgIdx++];
+				gifImagePathTCanvas = animatedImagePath[imgIdx++];
 				if(imgIdx == animatedImagePath.length) imgIdx = 0;
 			}
 		},150);

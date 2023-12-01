@@ -22,6 +22,7 @@ public class GameMenuPage extends JPanel {
                 try {
                     startGame(mode);
                 } catch (IOException | InterruptedException | ExecutionException ex) {
+                    Thread.currentThread().interrupt();
                     throw new RuntimeException(ex);
                 }
             });
@@ -30,7 +31,7 @@ public class GameMenuPage extends JPanel {
         this.setBorder(new EmptyBorder((FrameMain.WINDOW_HEIGHT-this.getHeight())/2,
                 0,0,0));
     }
-    private void startGame(GameMode mode) throws IOException, InterruptedException, ExecutionException {
+    private static void startGame(GameMode mode) throws IOException, InterruptedException, ExecutionException {
         InGamePage.getInstance();
         curMode = mode;
         switch (mode) {
@@ -58,14 +59,12 @@ public class GameMenuPage extends JPanel {
     }
     private static class GameModeHolder {
         private static final InnerContextResource CONTEXT_PROV = new InnerContextResource();
-        private GameModeHolder() { super(); }
     }
     private static final class InnerContextResource {
         private GameModeHandler context;
-        private InnerContextResource() { super(); }
-        private void setContext(GameModeHandler context) {this.context = context; }
+        private void setContext(GameModeHandler context) { this.context = context; }
     }
     public static GameModeHandler getModeHandler() { return GameModeHolder.CONTEXT_PROV.context; }
-    public void setModeHandler(GameModeHandler ac) { GameModeHolder.CONTEXT_PROV.setContext(ac); }
+    public static void setModeHandler(GameModeHandler ac) { GameModeHolder.CONTEXT_PROV.setContext(ac); }
     protected static GameMode getMode(){ return curMode; }
 }
