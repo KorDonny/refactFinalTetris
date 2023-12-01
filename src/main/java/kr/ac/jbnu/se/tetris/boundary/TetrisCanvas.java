@@ -185,7 +185,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		// 완성된 라인 확인
 		removeFullLines();
 		// 완성된 줄이 있다면 작동 안함
-		if (!isFallingFinished)
+		if (!isFallingFinished && isStarted)
 			newPiece();
 	}
 
@@ -291,10 +291,17 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 
 	public boolean isPaused(){ return isPaused; }
 
+	//pause()랑 내용 겹침 확인 요망
+//	public void setStarted(boolean started) {
+//		this.isStarted = started;
+//		if(!isStarted)sound.stopBgm();
+//	}
+
 	public boolean isStarted(){ return isStarted; }
 
 	public int getNumLinesRemoved() { return numLinesRemoved; }
 
+	//이미지 애니메이션 구현해보고자 함. 미구현시 animatedImagePath 배열 삭제 요망
 	@Override
 	public synchronized void setImage() throws IOException {
 		gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/resource/image/backGif2.gif";
@@ -316,6 +323,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		},150);
 	}
 
+	//재시작 화면 기능 미구현할 시 삭제 요망.
 	public void restart() throws InterruptedException, ExecutionException {
 		clearBoard();
 		numLinesRemoved=0;

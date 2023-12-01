@@ -14,11 +14,10 @@ public class NormalModeHandler implements GameModeHandler {
     private final TetrisCanvas canvas;
     public NormalModeHandler() throws IOException {
         this.canvas = new TetrisCanvas();
+        connectCanvas();
     }
-
     @Override
     public void startGame() throws IOException, InterruptedException, ExecutionException {
-        connectCanvas();
         InGamePage.getInstance().add(canvas);
         InGamePage.getInstance().add(new UICanvas());
         canvas.start();

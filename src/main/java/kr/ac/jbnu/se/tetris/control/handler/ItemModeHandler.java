@@ -1,6 +1,5 @@
 package kr.ac.jbnu.se.tetris.control.handler;
 
-import kr.ac.jbnu.se.tetris.control.KeyControl;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 
 import javax.swing.*;
@@ -25,16 +24,17 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
         random = new Random();
         itemTimer.start();
     }
-    @Override
-    public void connectCanvas() { KeyControl.updatePlayer(getCanvas()); }
     // 랜덤한 가로줄 또는 세로줄 제거
     private void removeRandomLine() {
-        int item = random.nextInt(2); // 0 또는 1 (가로줄 또는 세로줄)
-
-        if (item == 0) {
-            removeRandomRow();
+        if (!this.getCanvas().isStarted()) {
+            this.itemTimer.stop();
         } else {
-            removeRandomColumn();
+            int item = this.random.nextInt(2);
+            if (item == 0) {
+                this.removeRandomRow();
+            } else {
+                this.removeRandomColumn();
+            }
         }
     }
     // 랜덤한 가로줄 제거 기존 int형 캐스팅시엔 소숫점 무조건 폐기

@@ -1,6 +1,7 @@
 package kr.ac.jbnu.se.tetris.control;
 
 import kr.ac.jbnu.se.tetris.boundary.BackPanel;
+import kr.ac.jbnu.se.tetris.boundary.TetrisCanvasAI;
 import kr.ac.jbnu.se.tetris.entity.Entity;
 import kr.ac.jbnu.se.tetris.boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
@@ -132,7 +133,7 @@ public class KeyControl implements KeyListener {
     int getY(TetrisCanvas player){ return getCurPiece(player).getCurY(); }
     public static void updatePlayer(TetrisCanvas player){
         if(player1==null)player1=player;
-        else player2=player;
+        else if(!(player instanceof TetrisCanvasAI))player2=player;
     }
     public static KeyControl getInstance(){
         if(keyControl==null){

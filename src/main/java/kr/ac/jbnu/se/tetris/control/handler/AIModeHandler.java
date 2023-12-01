@@ -10,19 +10,11 @@ import java.util.concurrent.ExecutionException;
 
 public class AIModeHandler extends NormalModeHandler implements GameModeHandler{
     private static TetrisCanvas canvas;
-
-    static {
-        try {
-            canvas = new TetrisCanvasAI();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private NormalModeHandler ai;
     public AIModeHandler() throws IOException {
         super();
         ai = new NormalModeHandler();
+        canvas = new TetrisCanvasAI();
     }
     @Override
     public void startGame() throws IOException, InterruptedException, ExecutionException {
@@ -33,8 +25,8 @@ public class AIModeHandler extends NormalModeHandler implements GameModeHandler{
     }
     @Override
     public void connectCanvas() {
-        KeyControl.updatePlayer(canvas);
+        KeyControl.updatePlayer(this.canvas);
     }
     @Override
-    public TetrisCanvas getCanvas() { return canvas; }
+    public TetrisCanvas getCanvas() { return this.canvas; }
 }
