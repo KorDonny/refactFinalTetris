@@ -8,7 +8,8 @@ import java.awt.*;
 import java.util.concurrent.ExecutionException;
 
 public class MenuPage extends JPanel {
-    JButton game, score;
+    JButton game;
+    JButton score;
     enum Menu{
         GAME_MENU("게임 시작"),SCORE_BOARD("랭킹");
         private final String label;

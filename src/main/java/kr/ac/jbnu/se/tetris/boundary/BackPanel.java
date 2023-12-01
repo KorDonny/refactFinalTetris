@@ -7,44 +7,43 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_HEIGHT;
 import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_WIDTH;
 
 public class BackPanel extends JPanel {
-    Stack<JPanel> viewStack;
+    Deque<JPanel> viewStack;
     static Timer timer;
     static HashMap<Object,TimerTask> timerMap;
-    BufferedImage background;
-    static final String backgroundPath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/background.png";
+    BufferedImage backImg;
+    static final String BACK_IMG_PATH = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/background.png";
     boolean isGameFirst;
     public BackPanel() throws IOException {
-        viewStack = new Stack<>();
-        background = ImageIO.read(new File(backgroundPath));
+        viewStack = new ArrayDeque<>();
+        backImg = ImageIO.read(new File(BACK_IMG_PATH));
         isGameFirst = false;
     }
-
+    @Override
     public void paintComponent(Graphics g){
-        g.drawImage(background.getScaledInstance(WINDOW_WIDTH,WINDOW_HEIGHT,Image.SCALE_SMOOTH),
+        g.drawImage(backImg.getScaledInstance(WINDOW_WIDTH,WINDOW_HEIGHT,Image.SCALE_SMOOTH),
                 0,0,null);
     }
+    /** 디큐의 최상단에 삽입, 이후 상단 표시 ~= 화면 진입 @ 디큐 기능 문제시 error 반환 (peek은 null리턴) */
     public void push(JPanel target){
-        if(!viewStack.isEmpty())viewStack.peek().setVisible(false);
+        if(!viewStack.isEmpty())viewStack.getFirst().setVisible(false);
         target.setOpaque(false);
         target.setVisible(true);
-        viewStack.add(target);
-        add(viewStack.peek());
+        viewStack.addFirst(target);
+        add(viewStack.getFirst());
         revalidate();
     }
-    /** 뷰 스택의 최상단을 가리고, 이후 제거 및 다음 최상단 표시 ~= 뒤로가기. */
+    /** 뷰 스택의 최상단을 가리고, 이후 제거 및 다음 최상단 표시 ~= 뒤로가기 @ 표시할 요소가 디큐에 없으면 error반환 (poll은 null리턴) */
     public void pop(){
         if(viewStack.isEmpty())return;
-        viewStack.pop().setVisible(false);
-        viewStack. peek().setVisible(true);
+        viewStack.removeFirst().setVisible(false);
+        viewStack.getFirst().setVisible(true);
         this.revalidate();
     }
     /** 바깥여백. */

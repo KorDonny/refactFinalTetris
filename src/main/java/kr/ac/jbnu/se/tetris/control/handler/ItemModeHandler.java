@@ -1,7 +1,5 @@
 package kr.ac.jbnu.se.tetris.control.handler;
 
-//import kr.ac.jbnu.se.tetris.Boundary.TestMonitor;
-import kr.ac.jbnu.se.tetris.boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.control.KeyControl;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 
@@ -29,8 +27,6 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
     }
     @Override
     public void connectCanvas() { KeyControl.updatePlayer(getCanvas()); }
-    @Override
-    public TetrisCanvas getCanvas() { return super.getCanvas(); }
     // 랜덤한 가로줄 또는 세로줄 제거
     private void removeRandomLine() {
         int item = random.nextInt(2); // 0 또는 1 (가로줄 또는 세로줄)
@@ -41,9 +37,9 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
             removeRandomColumn();
         }
     }
-    // 랜덤한 가로줄 제거
+    // 랜덤한 가로줄 제거 기존 int형 캐스팅시엔 소숫점 무조건 폐기
     private void removeRandomRow() {
-        int rowToRemove = (int) (Math.random() * TETRIS_CANVAS_H);
+        int rowToRemove = random.nextInt(TETRIS_CANVAS_H-1);;
         for (int i = 0; i < TETRIS_CANVAS_W; i++) {
             getCanvas().getBoard()[rowToRemove * TETRIS_CANVAS_W + i] = Tetrominoes.NO_SHAPE;
         }
@@ -51,7 +47,7 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
     }
     // 랜덤한 세로줄 제거
     private void removeRandomColumn() {
-        int colToRemove = (int) (Math.random() * TETRIS_CANVAS_W);
+        int colToRemove = random.nextInt(TETRIS_CANVAS_W-1);;
         for (int i = 0; i < TETRIS_CANVAS_H; i++) {
             getCanvas().getBoard()[i * TETRIS_CANVAS_W + colToRemove] = Tetrominoes.NO_SHAPE;
         }

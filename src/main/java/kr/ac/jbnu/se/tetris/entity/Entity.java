@@ -1,5 +1,6 @@
 package kr.ac.jbnu.se.tetris.entity;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import static kr.ac.jbnu.se.tetris.boundary.TetrisCanvas.TETRIS_CANVAS_H;
@@ -72,11 +73,7 @@ public class Entity {
         return coords;
     }
     public void setShapeArr(int[][] coords) {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 2; j++) {
-                this.coords[i][j] = coords[i][j];
-            }
-        }
+        this.coords = Arrays.copyOf(coords,coords.length);
     }
     /**
      * 블록의 가장 왼쪽 칸의 x좌표를 반환
@@ -144,9 +141,11 @@ public class Entity {
     }
     /**
      * 블럭 초기화시점에 랜덤화
+     * 현재 사용 블럭은 1~7까지의 enum들만 사용.
+     * 그외의 것들은 기능적 블럭
      */
     public void setRandomShape() {
-        int x = Math.abs(random.nextInt()) % 7 + 1;
+        int x = random.nextInt(6) % 7 + 1;
         Tetrominoes[] values = Tetrominoes.values();
         initFunc(values[x]);
     }

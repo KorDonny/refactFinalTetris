@@ -5,6 +5,7 @@ import kr.ac.jbnu.se.tetris.entity.Entity;
 import kr.ac.jbnu.se.tetris.entity.Point;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import static kr.ac.jbnu.se.tetris.boundary.TetrisCanvas.TETRIS_CANVAS_W;
@@ -141,9 +142,7 @@ public class AIControl {
     }
 
     private void setWeight(double[] weight) {
-        for(int i = 0; i < 4; i++){
-            this.weight[i] = weight[i];
-        }
+        this.weight = Arrays.copyOf(weight,weight.length);
     }
 
     public void setDefaultWeight() {
