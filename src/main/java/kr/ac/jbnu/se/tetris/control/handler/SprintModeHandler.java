@@ -27,13 +27,7 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
 
         // 게임 클리어 확인용 타이머 초기화 (1초마다 체크)
         Timer gameClearCheckTimer; // 게임 클리어 확인용 타이머
-        gameClearCheckTimer = new Timer(1000, e -> {
-            try {
-                checkGameClear();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+        gameClearCheckTimer = new Timer(1000, e -> checkGameClear());
         gameClearCheckTimer.setInitialDelay(1000); // 최초 딜레이 설정
         gameClearCheckTimer.start();
     }
@@ -53,9 +47,7 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
     public void connectCanvas() {
         KeyControl.updatePlayer(getCanvas());
     }
-    @Override
-    public TetrisCanvas getCanvas() {return super.getCanvas();}
-    public void checkGameClear() throws IOException {
+    public void checkGameClear() {
         if (getCanvas().getNumLinesRemoved() >= targetLineCount && !gameClearAchieved) {
             gameClearAchieved = true;
             gameClearStatusLabel.setText("Game Clear!");
@@ -77,7 +69,7 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
         this.gameClearStatusLabel.setForeground(Color.YELLOW);
         this.gameClearStatusLabel.setBackground(Color.BLACK);
         this.gameClearStatusLabel.setOpaque(true);
-        this.gameClearStatusLabel.setHorizontalAlignment(JLabel.CENTER);
+        this.gameClearStatusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         this.gameClearStatusLabel.setFont(new Font("SansSerif", Font.BOLD, 50)); // 폰트 및 크기 설정
     }
 }

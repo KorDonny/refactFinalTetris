@@ -8,14 +8,14 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 
 public class LogInPage extends JPanel {
     JButton btnConfirm;
     JButton btnReject;
     HintTextField idBox;
     HintPasswordField pwBox;
-    JLabel idLab, pwLab;
+    JLabel idLab;
+    JLabel pwLab;
     GridLayout layout;
     FlowLayout layout1;
     FlowLayout layout2;
@@ -61,12 +61,7 @@ public class LogInPage extends JPanel {
         //확인버튼 액션 = 조건 참일시 MenuPage로 진입
         setBtnConfirm();
         //취소버튼 액션 = 메인 화면으로 회귀
-        btnReject.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FrameMain.getBackPanel().pop();
-            }
-        });
+        btnReject.addActionListener(e -> FrameMain.getBackPanel().pop());
     }
     public boolean checkID(Account account) {
         if(Account.getClientAccount()==null){

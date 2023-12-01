@@ -10,11 +10,21 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 public class KeyControl implements KeyListener {
-    static KeyControl keyControl = null;
-    boolean isLeft,isRight,isUp,isDown,isOne,isDrop;
-    boolean isLeftP2,isRightP2,isUpP2,isDownP2,isOneP2,isDropP2;
+    static KeyControl keyControl;
     static TetrisCanvas player1;
     static TetrisCanvas player2;
+    boolean isLeft;
+    boolean isRight;
+    boolean isUp;
+    boolean isDown;
+    boolean isOne;
+    boolean isDrop;
+    boolean isLeftP2;
+    boolean isRightP2;
+    boolean isUpP2;
+    boolean isDownP2;
+    boolean isOneP2;
+    boolean isDropP2;
     public KeyControl(){
         isLeft=false;
         isRight=false;
@@ -65,6 +75,7 @@ public class KeyControl implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+        //nothing to do
     }
 
     @Override
@@ -72,23 +83,15 @@ public class KeyControl implements KeyListener {
         if(getPlayer(false)==null)return;
         int key = e.getKeyCode();
         if(key=='p'||key=='P'){
-            try {
-                if(player2!=null)player2.pause();
-                player1.pause();
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
+            if(player2!=null)player2.pause();
+            player1.pause();
             return;
         }
         if(key==KeyEvent.VK_ESCAPE){
             if(player1!=null) {
-                try {
-                    if(player2!=null)player2.pause();
-                    player1.pause();
-                    return;
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
+                if(player2!=null)player2.pause();
+                player1.pause();
+                return;
             }
         }
         if(!isSingle()){

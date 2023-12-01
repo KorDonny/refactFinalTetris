@@ -18,11 +18,9 @@ public class TetrisCanvasAI extends TetrisCanvas {
 			public void run() {
 				try {
 					actionTrigger();
-				} catch (InterruptedException e) {
+				} catch (InterruptedException |ExecutionException e) {
 					throw new RuntimeException(e);
-				} catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
+				}
             }
 		}, 100);// 이벤트간 딜레이 400
 		aiControl = new AIControl(this);
@@ -58,9 +56,9 @@ public class TetrisCanvasAI extends TetrisCanvas {
 	}
 
 	public void doControlLogic() {
-		Entity tmp_Entity = new Entity(Tetrominoes.NoShape);
-		tmp_Entity.copyEntity(getCurPiece());
-		int[] goodPosition = aiControl.findGoodPosition(tmp_Entity);
+		Entity tmpEntity = new Entity(Tetrominoes.NoShape);
+		tmpEntity.copyEntity(getCurPiece());
+		int[] goodPosition = aiControl.findGoodPosition(tmpEntity);
 
 		for (int i = goodPosition[2]; i > 0; i--) {
 			curPiece.rotateRight();

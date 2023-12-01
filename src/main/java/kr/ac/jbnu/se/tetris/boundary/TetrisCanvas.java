@@ -53,12 +53,16 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		board = new Tetrominoes[TETRIS_CANVAS_W * TETRIS_CANVAS_H]; // 1차원 배열의 칸 생성
 		sound = new Sound();
 	}
+
 	/** 칸의 가로 길이 */
 	int squareWidth() { return (int) getSize().getWidth() / TETRIS_CANVAS_W; }
+
 	/** 칸의 세로 길이 */
 	int squareHeight() { return (int) getSize().getHeight() / TETRIS_CANVAS_H; }
+
 	/** (x,y)에 블록 종류 */
 	public Tetrominoes shapeAt(int x, int y) { return board[(y * TETRIS_CANVAS_W) + x]; }
+
 	public void start() throws InterruptedException, ExecutionException {
 		clearBoard();
 		isStarted = true;
@@ -68,6 +72,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		sound.startBgm();
 		droppedTime = 0;
 	}
+
 	public void actionTrigger() throws InterruptedException, ExecutionException {
 		if (isFallingFinished) {
 			isFallingFinished = false;
@@ -77,11 +82,12 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			oneLineDown();
 		}
 	}
+
 	/**
 	 * 일시정지 메소드
 	 * 추후 pause이펙트를 공통으로 걸려면, timer에 대한 처리가 필요할 것으로 보임.
 	 * */
-	public void pause() throws InterruptedException {
+	public void pause() {
 		if (!isStarted)
 			return;
 		isPaused = !isPaused;
@@ -94,6 +100,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		}
 		repaint();
 	}
+
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -138,6 +145,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			}
 		}
 	}
+
 	public boolean dropDown() throws InterruptedException, ExecutionException {
 		if(System.currentTimeMillis() - droppedTime < 200){ return false; }
 		int newY = curPiece.getCurY();
@@ -150,16 +158,19 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		pieceDropped();
 		return true;
 	}
+
 	/** 블록이 한줄 아래로 내려가는 메소드*/
 	protected void oneLineDown() throws InterruptedException, ExecutionException {
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY() - 1))
 			pieceDropped(); //떨어지면 수행되는 메소드, 드롭다운과 동일
 	}
+
 	/** 모든 칸을 빈 공간(NoShape블록)으로 초기화 */
 	public void clearBoard() {
 		for (int i = 0; i < TETRIS_CANVAS_H * TETRIS_CANVAS_W; ++i)
 			board[i] = Tetrominoes.NoShape;
 	}
+
 	/** 현재 위치에 블록을 남기는 메소드 */
 	protected void pieceDropped() throws InterruptedException, ExecutionException {
 		if(isStarted())sound.playDropSound();
@@ -175,6 +186,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		if (!isFallingFinished)
 			newPiece();
 	}
+
 	/** 새 블록 생성 */
 	protected void newPiece() throws InterruptedException, ExecutionException {
 		// 블록 종류 및 위치 수정
@@ -190,10 +202,12 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 					GameMenuPage.getMode());
 		}
 	}
+
 	@Override
 	public void paintComponent(Graphics g){
 		gifImage.paintIcon(this, g, 0, 0);
 	}
+
 	/** 블록 움직일 수 있는지 여부 반환<br/>
 	 *  만약 움직일 수 있다면 움직이는 메서드 */
 	public boolean tryMove(Entity newPiece, int newX, int newY) {
@@ -257,6 +271,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			repaint();
 		}
 	}
+
 	/** 칸을 블록의 종류에 맞게 색칠하는 메소드 */
 	protected void drawSquare(Graphics g, int x, int y, Tetrominoes shape) {
 		Color tmpcolor = shape.getColor();
@@ -269,10 +284,15 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		g.drawLine(x + 1, y + squareHeight() - 1, x + squareWidth() - 1, y + squareHeight() - 1);
 		g.drawLine(x + squareWidth() - 1, y + squareHeight() - 1, x + squareWidth() - 1, y + 1);
 	}
+
 	public Entity getCurPiece(){ return curPiece; }
+
 	public boolean isPaused(){ return isPaused; }
+
 	public boolean isStarted(){ return isStarted; }
+
 	public int getNumLinesRemoved() { return numLinesRemoved; }
+
 	@Override
 	public synchronized void setImage() throws IOException {
 		gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/resource/image/backGif2.gif";
@@ -293,10 +313,12 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			}
 		},150);
 	}
+
 	public void restart() throws InterruptedException, ExecutionException {
 		clearBoard();
 		numLinesRemoved=0;
 		newPiece();
 	}
+
 	public Tetrominoes[] getBoard(){ return board; }
 }

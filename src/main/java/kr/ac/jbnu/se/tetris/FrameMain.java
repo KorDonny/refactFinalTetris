@@ -7,20 +7,16 @@ import kr.ac.jbnu.se.tetris.boundary.RegisterPage;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
 public class FrameMain extends JFrame {
-    public final static int WINDOW_WIDTH = 1200;
-    public final static int WINDOW_HEIGHT = 800;
-    public final static int FONT_TITLE  = 20;
-    public final static int FONT_DEFAULT = 10;
-    public final static int DEFAULT_VERT_GRID_ROW = 15;
-    public final static int DEFAULT_VERT_GRID_COLUMN = 1;
-    public final static int GRID_VGAP = 10;
-    public final static int GRID_WGAP = 0;
+    public static final int WINDOW_WIDTH = 1200;
+    public static final int WINDOW_HEIGHT = 800;
+    public static final int FONT_TITLE  = 20;
+    public static final int FONT_DEFAULT = 10;
+    public static final int DEFAULT_VERT_GRID_ROW = 15;
+    public static final int DEFAULT_VERT_GRID_COLUMN = 1;
+    public static final int GRID_VGAP = 10;
+    public static final int GRID_WGAP = 0;
     JLayeredPane contentPane;
     static FrameMain frameMain;
     static BackPanel backPanel;
@@ -64,7 +60,7 @@ public class FrameMain extends JFrame {
 
             welcome.setForeground(Color.WHITE);
             welcome.setFont(new Font("SansSerif",Font.BOLD,FONT_TITLE));
-            welcome.setHorizontalAlignment(JLabel.CENTER);
+            welcome.setHorizontalAlignment(SwingConstants.CENTER);
             welcome.setOpaque(false);
 
             btnLogIn.addActionListener(e -> backPanel.push(new LogInPage()));
@@ -84,7 +80,7 @@ public class FrameMain extends JFrame {
         return frameMain;
     }
     public static BackPanel getBackPanel(){ return backPanel; }
-    public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         FrameMain frame = new FrameMain();
         frame.setVisible(true);
         frame.initiateUI();

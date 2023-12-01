@@ -20,12 +20,7 @@ public class SurvivalModeHandler extends NormalModeHandler implements GameModeHa
     public SurvivalModeHandler() throws IOException {
         super();
         this.random = new Random();
-        this.lineAdditionTimer = new Timer(2000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                doLogic();
-            }
-        }); // 2초마다 한 줄 추가
+        this.lineAdditionTimer = new Timer(2000, e -> doLogic()); // 2초마다 한 줄 추가
     }
     @Override
     public void startGame() throws IOException, InterruptedException, ExecutionException {
