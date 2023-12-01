@@ -7,14 +7,13 @@ import kr.ac.jbnu.se.tetris.FrameMain;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.IOException;
 
 public class LogInPage extends JPanel {
     JButton btnConfirm, btnReject;
-    JTextField idBox;
-    JPasswordField pwBox;
+    HintTextField idBox;
+    HintPasswordField pwBox;
     JLabel idLab, pwLab;
     GridLayout layout;
     FlowLayout layout1, layout2;
@@ -43,8 +42,8 @@ public class LogInPage extends JPanel {
         btnConfirm = new JButton("확인"); btnReject = new JButton("취소");
         idLab = new JLabel("아이디"); idLab.setOpaque(false); idLab.setForeground(Color.WHITE);
         pwLab = new JLabel("비밀번호"); pwLab.setOpaque(false); pwLab.setForeground(Color.WHITE);
-        idBox = new JTextField("이메일@도메인"); idBox.setPreferredSize(new Dimension(170, 30));
-        pwBox = new JPasswordField("6자 이상"); pwBox.setPreferredSize(new Dimension(170, 30));
+        idBox = new HintTextField("이메일@도메인"); idBox.setPreferredSize(new Dimension(170, 30));
+        pwBox = new HintPasswordField("6자 이상"); pwBox.setPreferredSize(new Dimension(170, 30));
 
         //컴포넌트들 표시를 위한 오퍼레이션 구문
         list = new JComponent[]{idLab, idBox, pwLab, pwBox, btnConfirm, btnReject};
@@ -99,5 +98,62 @@ public class LogInPage extends JPanel {
                 }
             }
         });
+    }
+
+    class HintTextField extends JTextField {
+        private String hint;
+
+        public HintTextField(String hint) {
+            this.hint = hint;
+            setForeground(Color.GRAY);
+
+            // 텍스트 필드가 포커스를 얻거나 잃을 때 이벤트 처리
+            addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    if (getText().equals(hint)) {
+                        setText("");
+                        setForeground(Color.BLACK);
+                    }
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (getText().isEmpty()) {
+                        setText(hint);
+                        setForeground(Color.GRAY);
+                    }
+                }
+            });
+        }
+    }
+
+    class HintPasswordField extends JPasswordField {
+        private String hint;
+
+        public HintPasswordField(String hint) {
+            this.hint = hint;
+            setEchoChar((char) 0); // 초기에는 힌트가 보이도록
+
+            addFocusListener(new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                    if (String.valueOf(getPassword()).equals(hint)) {
+                        setText("");
+                        setEchoChar('•'); // 입력이 시작되면 가려지도록
+                    }
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (String.valueOf(getPassword()).isEmpty()) {
+                        setText(hint);
+                        setEchoChar((char) 0);
+                    }
+                }
+            });
+
+            setText(hint);
+        }
     }
 }
