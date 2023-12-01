@@ -9,11 +9,12 @@ import kr.ac.jbnu.se.tetris.Sound;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 //상속클래스 = Jpanel
+public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터페이스 = 액션리스너 //상속클래스 = Jpanel
 	/**
 	 *  게임 화면을 구성하는 칸 <br/>
 	 *    해당 칸에 어떤 블록이 들어있는지 저장하는 변수 <br/>
@@ -36,9 +37,15 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	boolean isPaused = false;
 	/** 지워진 라인 갯수 */
 	int numLinesRemoved = 0;
+	/** 스페이스바 처리 시간 간격 조절 위한 인수 */
+	private long droppedTime;
 	/** 현재 떨어지는 블록 */
 	Entity curPiece, shadowPiece;;
 	public Sound sound;
+	private String gifImagePath;
+	private String[] animatedImagePath;
+	static int imgIdx = 0;
+
 	public TetrisCanvas() throws IOException {
 		curPiece = new Entity(Tetrominoes.NoShape); // 현재 블록
 		shadowPiece = new Entity(Tetrominoes.NoShape);
@@ -58,12 +65,14 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		numLinesRemoved = 0;
 		newPiece();
 		sound.startBgm();
+		droppedTime = 0;
 	}
 	public void actionTrigger() throws InterruptedException, ExecutionException {
 		if (isFallingFinished) {
 			isFallingFinished = false;
 			newPiece();
 		} else {
+			if(isPaused())return;
 			oneLineDown();
 		}
 	}
@@ -76,10 +85,10 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			return;
 		isPaused = !isPaused;
 		if (isPaused) {
-			BackPanel.stopTask(this);
+			//BackPanel.stopTask(this);
 			sound.stopBgm();
 		} else {
-			BackPanel.resumeTask(this);
+			//BackPanel.resumeTask(this);
 			sound.startBgm();
 		}
 		repaint();
@@ -128,12 +137,14 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		}
 	}
 	public boolean dropDown() throws InterruptedException, ExecutionException {
+		if(System.currentTimeMillis() - droppedTime < 200){ return false; }
 		int newY = curPiece.getCurY();
 		while (newY > 0) {
 			if (!tryMove(curPiece, curPiece.getCurX(), newY - 1))
 				break;
 			--newY;
 		}
+		droppedTime = System.currentTimeMillis();
 		pieceDropped();
 		return true;
 	}
@@ -149,7 +160,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	}
 	/** 현재 위치에 블록을 남기는 메소드 */
 	protected void pieceDropped() throws InterruptedException, ExecutionException {
-		//sound.playDropSound();
+		if(isStarted())sound.playDropSound();
 		// 현재 위치에 블록 배치
 		for (int i = 0; i < 4; ++i) {
 			int x = curPiece.getCurX() + curPiece.x(i);
@@ -177,6 +188,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 					GameMenuPage.getMode());
 		}
 	}
+	@Override
 	public void paintComponent(Graphics g){
 		gifImage.paintIcon(this, g, 0, 0);
 	}
@@ -239,7 +251,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			numLinesRemoved += numFullLines;
 			isFallingFinished = true;
 			curPiece = new Entity(Tetrominoes.NoShape);
-			//sound.playRemoveSound();
+			sound.playRemoveSound();
 			repaint();
 		}
 	}
@@ -262,10 +274,22 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	@Override
 	public void setImage() throws IOException {
 		gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/backGif2.gif";
+		animatedImagePath = new String[]{
+				"./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/backGif2.gif"
+		};
+
 		gifImage = new ImageIcon(ImageIO.read(new File(gifImagePath)));
 		Image img = gifImage.getImage();
 		Image scaledImg = img.getScaledInstance(UICanvas.BOARD_SIZE_W, UICanvas.BOARD_SIZE_H, Image.SCALE_SMOOTH);
 		gifImage = new ImageIcon(scaledImg);
+		BackPanel.addTask(this,new TimerTask() {
+
+			@Override
+			public void run() {
+				gifImagePath = animatedImagePath[imgIdx++];
+				if(imgIdx == animatedImagePath.length) imgIdx = 0;
+			}
+		},150);
 	}
 	public void restart() throws InterruptedException, ExecutionException {
 		clearBoard();

@@ -5,7 +5,6 @@ import kr.ac.jbnu.se.tetris.Boundary.InGamePage;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.Boundary.UICanvas;
 import kr.ac.jbnu.se.tetris.Control.KeyControl;
-import kr.ac.jbnu.se.tetris.FrameMain;
 
 import java.io.IOException;
 import java.util.TimerTask;

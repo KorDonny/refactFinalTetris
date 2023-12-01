@@ -90,6 +90,5 @@ public class FrameMain extends JFrame {
         frame.setVisible(true);
         frame.initiateUI();
         frame.requestFocusInWindow();
-        //FirebaseTool.getInstance().forCheckBestScorers();
     }
 }
