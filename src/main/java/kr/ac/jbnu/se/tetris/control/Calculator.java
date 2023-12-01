@@ -118,8 +118,8 @@ public class Calculator {
             Point cur = q.poll();
 
             for (int i = 0; i < 4; i++) {
-                int nx = cur.x + ud[i];
-                int ny = cur.y + rl[i];
+                int nx = cur.getX() + ud[i];
+                int ny = cur.getY() + rl[i];
 
                 if (nx < 0 || nx >= TETRIS_CANVAS_H || ny < 0 || ny >= TETRIS_CANVAS_W || visited[nx][ny])
                     continue;

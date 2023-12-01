@@ -43,11 +43,12 @@ public class FirebaseTool {
                     .setDatabaseUrl(DOMAIN_NAME)
                     .build();
             firebaseApp = FirebaseApp.initializeApp(options);
-            db = FirestoreClient.getFirestore();
+            initStore();
         }catch (IOException e){
             throw new RuntimeException(e);
         }
     }
+    private static void initStore(){ db = FirestoreClient.getFirestore(); }
     public Account logIn(Account account){
         UserRecord userRecord;
         try{

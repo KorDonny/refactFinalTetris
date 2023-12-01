@@ -92,10 +92,12 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			return;
 		isPaused = !isPaused;
 		if (isPaused) {
-			//BackPanel.stopTask(this);
+			//다이어그램 작업 또는 최종 제출때 삭제 요망
+//			BackPanel.stopTask(this);
 			sound.stopBgm();
 		} else {
-			//BackPanel.resumeTask(this);
+			//다이어그램 작업 또는 최종 제출때 삭제 요망
+//			BackPanel.resumeTask(this);
 			sound.startBgm();
 		}
 		repaint();

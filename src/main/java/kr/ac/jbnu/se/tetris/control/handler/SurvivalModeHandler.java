@@ -1,7 +1,5 @@
 package kr.ac.jbnu.se.tetris.control.handler;
 
-import kr.ac.jbnu.se.tetris.boundary.TetrisCanvas;
-import kr.ac.jbnu.se.tetris.control.KeyControl;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 
 import javax.swing.*;
@@ -24,14 +22,6 @@ public class SurvivalModeHandler extends NormalModeHandler implements GameModeHa
     public void startGame() throws IOException, InterruptedException, ExecutionException {
         super.startGame();
         lineAdditionTimer.start();
-    }
-    @Override
-    public TetrisCanvas getCanvas() {
-        return super.getCanvas();
-    }
-    @Override
-    public void connectCanvas() {
-        KeyControl.updatePlayer(getCanvas());
     }
     public void doLogic() {
         if (!getCanvas().isStarted()) return;

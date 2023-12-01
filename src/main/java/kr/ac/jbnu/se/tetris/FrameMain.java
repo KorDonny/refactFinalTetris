@@ -43,11 +43,11 @@ public class FrameMain extends JFrame {
     }
     /** 우회 접근을 해야 컴포넌트가 안가려짐. 생성자에서 연결시 버튼이나 라벨들이 가리는 문제점 존재 */
     public void initiateUI(){
-        backPanel.push(new UIPanel(this));
+        backPanel.push(new UIPanel());
     }
     /** 기초 진입화면 */
     class UIPanel extends JPanel{
-        UIPanel(FrameMain main){
+        UIPanel(){
             setOpaque(false);
             setLayout(new GridLayout(DEFAULT_VERT_GRID_ROW,DEFAULT_VERT_GRID_COLUMN,GRID_WGAP,GRID_VGAP));
 

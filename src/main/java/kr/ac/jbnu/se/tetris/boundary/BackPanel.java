@@ -2,7 +2,6 @@ package kr.ac.jbnu.se.tetris.boundary;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,7 +13,7 @@ import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_HEIGHT;
 import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_WIDTH;
 
 public class BackPanel extends JPanel {
-    Deque<JPanel> viewStack;
+    private Deque<JPanel> viewStack;
     static Timer timer;
     static HashMap<Object,TimerTask> timerMap;
     BufferedImage backImg;
@@ -46,10 +45,6 @@ public class BackPanel extends JPanel {
         viewStack.getFirst().setVisible(true);
         this.revalidate();
     }
-    /** 바깥여백. */
-    public void setBorder(int top, int left, int bottom, int right) {
-        super.setBorder(new EmptyBorder(top, left, bottom, right));
-    }
     public static void addTask(Object obj, TimerTask task,long period){
         if(timer==null)timer = new Timer("Game Timer");
         if(timerMap==null)timerMap = new HashMap<>();
@@ -58,7 +53,15 @@ public class BackPanel extends JPanel {
             timer.scheduleAtFixedRate(task,0,period);
         }
     }
+    /*
+    * Timer 중앙화, Task에 period만 전달하여 수행. 단, delay는 빠짐.
+    * 문제점 : 동기화 문제(기술 이해도 부족), obj의 주소값을 전달하여 인덱싱 하려 했으나
+    * 같은 종류의 클래스가 들어가면 같이 취소되버림.
+    * -------------최종 코드 제출시 삭제 예정(다이어그램 도시 과정때 삭제후 작업 요망)------------------
+    * */
+    /** 특정 타이머 태스크 존재시 반환 */
     public static TimerTask getTask(Object obj){ return timerMap.get(obj); }
+    /** 특정 타이머 태스크만 삭제 */
     public static void removeTask(Object obj){ if(timerMap.get(obj)!=null)timerMap.get(obj).cancel(); }
     public static void stopTask(Object obj) {
         synchronized (obj) {
@@ -74,10 +77,9 @@ public class BackPanel extends JPanel {
             }
         }
     }
+    /** 특정 스레드만 wait 상태에서 재시작 */
     public static void resumeTask(Object obj){ timerMap.get(obj).notify(); }
+    /** 모든 스레드 재시작  */
     public static void resumeAllTask(){ timer.notifyAll(); }
-    public void setGameUIFrame(){
-        setBorder(25,100,75,100);
-    }
     public static Timer getTimer(){ return timer; }
 }

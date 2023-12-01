@@ -11,7 +11,7 @@ public class UICanvas extends JPanel implements CanvasInterface{
     static final int BOARD_SIZE_W = 350;
     static final int BOARD_SIZE_H = 700;
     ImageIcon gifImage;
-    String gifImagePath;
+    private String gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/resource/image/uiGif.gif";
     public UICanvas() throws IOException {
         setOpaque(false);
         setPreferredSize(new Dimension(BOARD_SIZE_W,BOARD_SIZE_H));
@@ -29,7 +29,6 @@ public class UICanvas extends JPanel implements CanvasInterface{
     }
     @Override
     public void setImage() throws IOException {
-        gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/resource/image/uiGif.gif";
         gifImage = new ImageIcon(ImageIO.read(new File(gifImagePath)));
         scaleImage();
     }

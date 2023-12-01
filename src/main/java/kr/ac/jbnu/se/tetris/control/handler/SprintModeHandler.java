@@ -50,7 +50,8 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
             gameClearAchieved = true;
             gameClearStatusLabel.setText("Game Clear!");
             gameClearStatusLabel.setVisible(true);
-            //BackPanel.resumeTask();
+            //최종 제출 또는 다이어그램 작성시 삭제 요망
+//            BackPanel.resumeTask();
             getCanvas().setEnabled(false);
             FrameMain.getBackPanel().repaint();
         }

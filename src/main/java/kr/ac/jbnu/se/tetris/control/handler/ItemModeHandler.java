@@ -39,7 +39,7 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
     }
     // 랜덤한 가로줄 제거 기존 int형 캐스팅시엔 소숫점 무조건 폐기
     private void removeRandomRow() {
-        int rowToRemove = random.nextInt(TETRIS_CANVAS_H-1);;
+        int rowToRemove = random.nextInt(TETRIS_CANVAS_H-1);
         for (int i = 0; i < TETRIS_CANVAS_W; i++) {
             getCanvas().getBoard()[rowToRemove * TETRIS_CANVAS_W + i] = Tetrominoes.NO_SHAPE;
         }
@@ -47,7 +47,7 @@ public class ItemModeHandler extends NormalModeHandler implements GameModeHandle
     }
     // 랜덤한 세로줄 제거
     private void removeRandomColumn() {
-        int colToRemove = random.nextInt(TETRIS_CANVAS_W-1);;
+        int colToRemove = random.nextInt(TETRIS_CANVAS_W-1);
         for (int i = 0; i < TETRIS_CANVAS_H; i++) {
             getCanvas().getBoard()[i * TETRIS_CANVAS_W + colToRemove] = Tetrominoes.NO_SHAPE;
         }

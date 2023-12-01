@@ -34,7 +34,7 @@ public class GameMenuPage extends JPanel {
     }
     private void startGame(GameMode mode) throws IOException, InterruptedException, ExecutionException {
         InGamePage.getInstance();
-        curMode = mode;
+        setMode(mode);
         switch (mode) {
             case NORMAL:
                 setModeHandler(new NormalModeHandler());
@@ -70,4 +70,5 @@ public class GameMenuPage extends JPanel {
     public static GameModeHandler getModeHandler() { return GameModeHolder.CONTEXT_PROV.context; }
     public void setModeHandler(GameModeHandler ac) { GameModeHolder.CONTEXT_PROV.setContext(ac); }
     protected static GameMode getMode(){ return curMode; }
+    private static void setMode(GameMode mode){ curMode = mode; }
 }

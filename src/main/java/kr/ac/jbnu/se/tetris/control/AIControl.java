@@ -44,8 +44,8 @@ public class AIControl {
             if (bigWeight < (double) ret[0]) {
                 bigWeight = (double) ret[0];
                 bigWeightRotate = j;
-                goodPosition.x = ((Entity) ret[1]).getCurX();
-                goodPosition.y = ((Entity) ret[1]).getCurY();
+                goodPosition.setX(((Entity) ret[1]).getCurX());
+                goodPosition.setY(((Entity) ret[1]).getCurY());
             }
 
             // 블럭 회전
@@ -54,8 +54,8 @@ public class AIControl {
 
         // 가장 최적의 위치 좌표와 화전 횟수
         int[] returnData = new int[3];
-        returnData[0] = goodPosition.x;
-        returnData[1] = goodPosition.y;
+        returnData[0] = goodPosition.getX();
+        returnData[1] = goodPosition.getY();
         returnData[2] = bigWeightRotate;
         return returnData;
     }
@@ -97,8 +97,8 @@ public class AIControl {
     }
 
     private void deleteBlock(Entity shape) {
-        int curX = shape.position[0];
-        int curY = shape.position[1];
+        int curX = shape.getCurX();
+        int curY = shape.getCurY();
         for (int i = 0; i < shape.getShapeArr().length; i++) {
             int x = curX + shape.x(i);
             int y = curY - shape.y(i);
@@ -108,8 +108,8 @@ public class AIControl {
     }
 
     private void placeShape(Entity shape) {
-        int curX = shape.position[0];
-        int curY = shape.position[1];
+        int curX = shape.getCurX();
+        int curY = shape.getCurY();
         for (int i = 0; i < 4; i++) {
             int x = curX + shape.x(i);
             int y = curY - shape.y(i);
@@ -129,13 +129,13 @@ public class AIControl {
     }
 
     private boolean moveRight(Entity shape) {
-        return !canvas.tryMove(shape, shape.position[0] + 1, shape.position[1]);
+        return !canvas.tryMove(shape, shape.getCurX() + 1, shape.getCurY());
     }
 
     private void moveLeft(Entity shape) {
-        int newX = shape.position[0];
+        int newX = shape.getCurX();
         while (newX > 0) {
-            if (!canvas.tryMove(shape, newX - 1, shape.position[1]))
+            if (!canvas.tryMove(shape, newX - 1, shape.getCurY()))
                 break;
             --newX;
         }

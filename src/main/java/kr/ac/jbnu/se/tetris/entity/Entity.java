@@ -10,7 +10,7 @@ public class Entity {
     /**
      * Boundary클래스의 curX=0, curY=1가 Entity에게 승계
      */
-    public int[] position = new int[2];
+    private int[] position = new int[2];
     /**
      * 블럭 형상 정보 식별자
      */
