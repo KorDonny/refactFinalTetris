@@ -112,18 +112,20 @@ public class KeyControl implements KeyListener {
         }
     }
     private void handlePlayerInput(TetrisCanvas player, boolean isDrop, boolean isLeft, boolean isRight, boolean isUp, boolean isDown, boolean isOne) throws InterruptedException, ExecutionException {
-        if (isDrop) {
-            player.dropDown();
-            return;
+        synchronized (getCurPiece(player)){
+            if (isDrop) {
+                player.dropDown();
+                return;
+            }
+            int newX = getX(player);
+            int newY = getY(player);
+            if(isOne) --newY;
+            if(isUp && !isDown) getCurPiece(player).rotateLeft();
+            else if(isDown && !isUp) getCurPiece(player).rotateRight();
+            if(isLeft && !isRight) player.tryMove(getCurPiece(player), --newX, newY);
+            else if(isRight && !isLeft) player.tryMove(getCurPiece(player), ++newX, newY);
+            else player.tryMove(getCurPiece(player),newX, newY);
         }
-        int newX = getX(player);
-        int newY = getY(player);
-        if(isOne) --newY;
-        if(isUp && !isDown) getCurPiece(player).rotateLeft();
-        else if(isDown && !isUp) getCurPiece(player).rotateRight();
-        if(isLeft && !isRight) --newX;
-        else if(isRight && !isLeft) ++newX;
-        player.tryMove(getCurPiece(player), newX, newY);
     }
     Entity getCurPiece(TetrisCanvas player){ return player.getCurPiece(); }
     int getX(TetrisCanvas player){ return getCurPiece(player).getCurX(); }

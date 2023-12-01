@@ -80,7 +80,6 @@ public class Sound {
         bgmClip.start();
         bgmClip.loop(Clip.LOOP_CONTINUOUSLY);
     }
-
     public void playDropSound() {
         dropSoundClip.setFramePosition(0);
         dropSoundClip.start();

@@ -24,6 +24,10 @@ public class UICanvas extends JPanel implements CanvasInterface{
         setImage();
     }
     @Override
+    public void paintComponent(Graphics g){
+        gifImage.paintIcon(this, g, 0, 0);
+    }
+    @Override
     public void setImage() throws IOException {
         gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/uiGif.gif";
         gifImage = new ImageIcon(ImageIO.read(new File(gifImagePath)));
