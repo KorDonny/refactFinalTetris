@@ -62,11 +62,6 @@ public class TetrisCanvasAI extends TetrisCanvas {
 		tmp_Entity.copyEntity(getCurPiece());
 		int[] goodPosition = aiControl.findGoodPosition(tmp_Entity);
 
-//		for (int i = 0; i < 3; i++) {
-//			System.out.println("goodPosition[" + i + "] : " + goodPosition[i]);
-//		}
-//		System.out.println("----------------------------");
-
 		for (int i = goodPosition[2]; i > 0; i--) {
 			curPiece.rotateRight();
 		}
@@ -80,8 +75,6 @@ public class TetrisCanvasAI extends TetrisCanvas {
 				num++;
 			}
 		}
-
-//        canvas.dropDown();
 	}
 	@Override
 	public boolean tryMove(Entity newPiece, int newX, int newY) {

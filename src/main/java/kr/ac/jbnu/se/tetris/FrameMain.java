@@ -13,16 +13,27 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public class FrameMain extends JFrame {
-    static FrameMain frameMain;
+    public final static int WINDOW_WIDTH = 1200;
+    public final static int WINDOW_HEIGHT = 800;
+    public final static int FONT_TITLE  = 20;
+    public final static int FONT_DEFAULT = 10;
+    public final static int DEFAULT_VERT_GRID_ROW = 15;
+    public final static int DEFAULT_VERT_GRID_COLUMN = 1;
+    public final static int GRID_VGAP = 10;
+    public final static int GRID_WGAP = 0;
     JLayeredPane contentPane;
-    public final static int WINDOW_WIDTH = 1200, WINDOW_HEIGHT = 800, FONT_TITLE  = 20, FONT_DEFAULT = 10,
-    DEFAULT_VERT_GRID_ROW = 15,DEFAULT_VERT_GRID_COLUMN = 1,GRID_VGAP = 10, GRID_WGAP = 0;
+    static FrameMain frameMain;
     static BackPanel backPanel;
+    static {
+        try {
+            backPanel = new BackPanel();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public FrameMain() throws IOException {
-        frameMain = this;
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        backPanel = new BackPanel();
 
         contentPane = new JLayeredPane();
         contentPane.setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
@@ -56,14 +67,8 @@ public class FrameMain extends JFrame {
             welcome.setHorizontalAlignment(JLabel.CENTER);
             welcome.setOpaque(false);
 
-            btnLogIn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) { backPanel.push(new LogInPage()); }
-            });
-            btnRegister.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) { backPanel.push(new RegisterPage()); }
-            });
+            btnLogIn.addActionListener(e -> backPanel.push(new LogInPage()));
+            btnRegister.addActionListener(e -> backPanel.push(new RegisterPage()));
 
             add(welcome);
             add(btnLogIn);

@@ -94,6 +94,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		}
 		repaint();
 	}
+	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 

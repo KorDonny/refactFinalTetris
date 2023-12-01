@@ -11,12 +11,14 @@ import java.awt.event.*;
 import java.io.IOException;
 
 public class LogInPage extends JPanel {
-    JButton btnConfirm, btnReject;
+    JButton btnConfirm;
+    JButton btnReject;
     HintTextField idBox;
     HintPasswordField pwBox;
     JLabel idLab, pwLab;
     GridLayout layout;
-    FlowLayout layout1, layout2;
+    FlowLayout layout1;
+    FlowLayout layout2;
     JComponent[] list;
     FirebaseTool firebaseTool;
     public LogInPage(){
@@ -66,12 +68,12 @@ public class LogInPage extends JPanel {
             }
         });
     }
-    public boolean checkID(Account account) throws IOException {
+    public boolean checkID(Account account) {
         if(Account.getClientAccount()==null){
             Account.updateClientAccount(firebaseTool.logIn(account));
             if(Account.getClientAccount()!=null){
                 JOptionPane.showMessageDialog(null, "반갑습니다!");
-                FrameMain.getInstance().getBackPanel().push(new MenuPage());
+                FrameMain.getBackPanel().push(new MenuPage());
                 return true;
             }
             JOptionPane.showMessageDialog(null, "회원정보를 확인하세요.");
@@ -88,16 +90,7 @@ public class LogInPage extends JPanel {
         }
     }
     public void setBtnConfirm(){
-        btnConfirm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    checkID(new Account(idBox.getText(),pwBox.getPassword()));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
+        btnConfirm.addActionListener(e -> checkID(new Account(idBox.getText(),pwBox.getPassword())));
     }
 
     class HintTextField extends JTextField {

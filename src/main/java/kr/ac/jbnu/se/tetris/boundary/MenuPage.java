@@ -28,29 +28,17 @@ public class MenuPage extends JPanel {
                 FrameMain.GRID_WGAP,FrameMain.GRID_VGAP));
 
         game = new JButton(Menu.GAME_MENU.label());
-        game.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    FrameMain.getInstance().getBackPanel().push(new GameMenuPage());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
+        game.addActionListener(e -> {
+            FrameMain.getBackPanel().push(new GameMenuPage());
         });
         score = new JButton(Menu.SCORE_BOARD.label());
-        score.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    FrameMain.getInstance().getBackPanel().push(new ScoreboardPage());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (ExecutionException ex) {
-                    throw new RuntimeException(ex);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
+        score.addActionListener(e -> {
+            try {
+                FrameMain.getBackPanel().push(new ScoreboardPage());
+            } catch (ExecutionException ex) {
+                throw new RuntimeException(ex);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
             }
         });
         add(game);
