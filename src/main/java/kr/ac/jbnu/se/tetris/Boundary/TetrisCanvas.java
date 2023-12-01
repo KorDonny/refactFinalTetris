@@ -142,7 +142,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	}
 	/** 현재 위치에 블록을 남기는 메소드 */
 	protected void pieceDropped() throws InterruptedException {
-		//sound.playDropSound();
+		sound.playDropSound();
 		// 현재 위치에 블록 배치
 		for (int i = 0; i < 4; ++i) {
 			int x = curPiece.getCurX() + curPiece.x(i);
@@ -233,7 +233,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			numLinesRemoved += numFullLines;
 			isFallingFinished = true;
 			curPiece = new Entity(Tetrominoes.NoShape);
-			//sound.playRemoveSound();
+			sound.playRemoveSound();
 			repaint();
 		}
 	}
