@@ -1,21 +1,15 @@
 package kr.ac.jbnu.se.tetris;
 
-import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
-import kr.ac.jbnu.se.tetris.Boundary.LogInPage;
-import kr.ac.jbnu.se.tetris.Boundary.RegisterPage;
-import kr.ac.jbnu.se.tetris.Control.FirebaseTool;
-import kr.ac.jbnu.se.tetris.Control.KeyControl;
+import kr.ac.jbnu.se.tetris.boundary.BackPanel;
+import kr.ac.jbnu.se.tetris.boundary.LogInPage;
+import kr.ac.jbnu.se.tetris.boundary.RegisterPage;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 
 public class FrameMain extends JFrame {

@@ -3,9 +3,9 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/src/kr/ac/jbnu/se/tetris/Board.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java/kr/ac/jbnu/se/tetris/Boundary/TetrisCanvas.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/kr/ac/jbnu/se/tetris/Shape.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java/kr/ac/jbnu/se/tetris/Tetris.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/kr/ac/jbnu/se/tetris/boundary/TetrisCanvas.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>
 </project>
