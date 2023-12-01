@@ -11,8 +11,8 @@ public class Sound {
 
     public Sound() {
         setBgm();
-        //setDropSound();
-        //setRemoveSound();
+        setDropSound();
+        setRemoveSound();
     }
 
     private synchronized void setBgm() {
@@ -27,9 +27,23 @@ public class Sound {
 
     private synchronized void setDropSound() {
         File dropSoundFile = new File("./src/main/java/kr/ac/jbnu/se/tetris/Resource/music/drop.wav");
-        try {
-            dropSoundClip = AudioSystem.getClip();
-            dropSoundClip.open(AudioSystem.getAudioInputStream(dropSoundFile));
+
+        try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(dropSoundFile)) {
+            // 명시적으로 원하는 오디오 포맷을 설정
+            AudioFormat desiredFormat = new AudioFormat(
+                    AudioFormat.Encoding.PCM_SIGNED, // 인코딩 타입
+                    44100,                           // 샘플 레이트
+                    16,                              // 비트 해상도
+                    2,                               // 채널 수 (1: 모노, 2: 스테레오)
+                    4,                               // 프레임 사이즈
+                    44100,                           // 프레임 레이트
+                    false                            // 빅 엔디안 여부
+            );
+
+            try (AudioInputStream formattedAudioInputStream = AudioSystem.getAudioInputStream(desiredFormat, audioInputStream)) {
+                dropSoundClip = AudioSystem.getClip();
+                dropSoundClip.open(formattedAudioInputStream);
+            }
         } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
             e.printStackTrace();
         }
@@ -37,9 +51,22 @@ public class Sound {
 
     private synchronized void setRemoveSound() {
         File removeSoundFile = new File("./src/main/java/kr/ac/jbnu/se/tetris/Resource/music/remove.wav");
-        try {
-            removeSoundClip = AudioSystem.getClip();
-            removeSoundClip.open(AudioSystem.getAudioInputStream(removeSoundFile));
+        try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(removeSoundFile)) {
+            // 명시적으로 원하는 오디오 포맷을 설정
+            AudioFormat desiredFormat = new AudioFormat(
+                    AudioFormat.Encoding.PCM_SIGNED, // 인코딩 타입
+                    44100,                           // 샘플 레이트
+                    16,                              // 비트 해상도
+                    2,                               // 채널 수 (1: 모노, 2: 스테레오)
+                    4,                               // 프레임 사이즈
+                    44100,                           // 프레임 레이트
+                    false                            // 빅 엔디안 여부
+            );
+
+            try (AudioInputStream formattedAudioInputStream = AudioSystem.getAudioInputStream(desiredFormat, audioInputStream)) {
+                removeSoundClip = AudioSystem.getClip();
+                removeSoundClip.open(formattedAudioInputStream);
+            }
         } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
             e.printStackTrace();
         }
