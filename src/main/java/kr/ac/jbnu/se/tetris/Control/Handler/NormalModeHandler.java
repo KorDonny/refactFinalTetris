@@ -1,7 +1,6 @@
 package kr.ac.jbnu.se.tetris.Control.Handler;
 
 import kr.ac.jbnu.se.tetris.Boundary.BackPanel;
-import kr.ac.jbnu.se.tetris.Boundary.InGamePage;
 import kr.ac.jbnu.se.tetris.Boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.Boundary.UICanvas;
 import kr.ac.jbnu.se.tetris.Control.KeyControl;

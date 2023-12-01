@@ -99,17 +99,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			}
 		}
 
-		// 떨어지는 블록 색칠
-		if (curPiece.getShape() != Tetrominoes.NoShape) {
-			for (int i = 0; i < 4; ++i) {
-				int x = curPiece.getCurX() + curPiece.x(i);
-				int y = curPiece.getCurY() - curPiece.y(i);
-				drawSquare(g, 0 + x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
-						curPiece.getShape());
-			}
-		}
-
-		// 블록 그림자 색칠
+		// 블록 그림자 위치 변경
 		shadowPiece.copyEntity(curPiece);
 		int newY = shadowPiece.getCurY();
 		while (newY > 0) {
@@ -117,10 +107,21 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 				break;
 			--newY;
 		}
-		for (int i = 0; i < 4; ++i) {
-			int x = shadowPiece.getCurX() + shadowPiece.x(i);
-			int y = shadowPiece.getCurY() - shadowPiece.y(i);
-			drawSquare(g, x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(), Tetrominoes.Shadow);
+
+		// 움직이는 블록 색칠
+		if (curPiece.getShape() != Tetrominoes.NoShape) {
+			for (int i = 0; i < 4; ++i) {
+				// 블록 그림자 색칙
+				int x = shadowPiece.getCurX() + shadowPiece.x(i);
+				int y = shadowPiece.getCurY() - shadowPiece.y(i);
+				drawSquare(g, x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(), Tetrominoes.Shadow);
+
+				// 떨어지는 블록 색칠
+				x = curPiece.getCurX() + curPiece.x(i);
+				y = curPiece.getCurY() - curPiece.y(i);
+				drawSquare(g, 0 + x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
+						curPiece.getShape());
+			}
 		}
 	}
 	public boolean dropDown() throws InterruptedException, ExecutionException {
