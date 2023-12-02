@@ -2,15 +2,15 @@ package kr.ac.jbnu.se.tetris.boundary;
 
 import kr.ac.jbnu.se.tetris.entity.Entity;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
-import org.checkerframework.checker.units.qual.C;
 
-import javax.swing.*;
 import java.awt.*;
 
-public class Preview extends JPanel{
+public class Preview {
 
     private final int previewNum;
     private Entity[] previewList;
+
+    private Graphics g;
 
     private final int PREVIEW_CANVAS_W = 4;
     private final int PREVIEW_CANVAS_H;
@@ -27,21 +27,6 @@ public class Preview extends JPanel{
         PREVIEW_CANVAS_H = 4 * previewNum;
         squareWidth = PREVIEW_SIZE_W / PREVIEW_CANVAS_W;
         squareHeight = PREVIEW_SIZE_H / PREVIEW_CANVAS_H;
-        setPreferredSize(new Dimension(PREVIEW_SIZE_W, PREVIEW_SIZE_H));
-        setBackground(new Color(0, 0, 0, 0));
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        for (int num = 0; num < previewNum; num++){
-            for (int i = 0; i < 4; ++i) {
-                int x = 1 + previewList[num].x(i);
-                int y = (PREVIEW_CANVAS_H - 4 - num * 4) + 1 - previewList[num].y(i);
-                drawSquare(g, x * squareWidth, (PREVIEW_CANVAS_H - y - 1) * squareHeight,
-                        previewList[num].getShape());
-            }
-        }
     }
 
     private void drawSquare(Graphics g, int x, int y, Tetrominoes shape) {
@@ -58,8 +43,18 @@ public class Preview extends JPanel{
         g.drawLine(x2, y2, x2, y + 1);
     }
 
-    public void drawPreview(Entity[] previewList) {
+    public void drawPreview(Graphics g) {
+        for (int num = 0; num < previewNum; num++){
+            for (int i = 0; i < 4; ++i) {
+                int x = 1 + previewList[num].x(i);
+                int y = (PREVIEW_CANVAS_H - 4 - num * 4) + 1 - previewList[num].y(i);
+                drawSquare(g, x * squareWidth, (PREVIEW_CANVAS_H - y - 1) * squareHeight,
+                        previewList[num].getShape());
+            }
+        }
+    }
+
+    public void updatePreviewList(Entity[] previewList) {
         this.previewList = previewList;
-        repaint();
     }
 }

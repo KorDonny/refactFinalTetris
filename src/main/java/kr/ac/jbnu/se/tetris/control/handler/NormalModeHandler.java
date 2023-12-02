@@ -19,7 +19,9 @@ public class NormalModeHandler implements GameModeHandler {
     @Override
     public void startGame() throws IOException, InterruptedException, ExecutionException {
         InGamePage.getInstance().add(canvas);
-        InGamePage.getInstance().add(new UICanvas());
+        UICanvas uiCanvas = new UICanvas();
+        InGamePage.getInstance().add(uiCanvas);
+        canvas.setUiCanvas(uiCanvas);
         canvas.start();
         initiateTrigger();
     }

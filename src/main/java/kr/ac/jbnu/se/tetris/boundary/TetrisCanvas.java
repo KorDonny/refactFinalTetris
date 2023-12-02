@@ -5,7 +5,7 @@ import kr.ac.jbnu.se.tetris.entity.Account;
 import kr.ac.jbnu.se.tetris.entity.Entity;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 import kr.ac.jbnu.se.tetris.Sound;
-import org.checkerframework.checker.units.qual.N;
+import org.checkerframework.checker.guieffect.qual.UI;
 
 import java.awt.*;
 import java.io.File;
@@ -25,7 +25,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	 */
 	private Tetrominoes[] board;
 
-	private Preview preview;
+	private UICanvas uiCanvas;
 
 	private final int previewNum = 5;
 	public Entity[] previewList = new Entity[previewNum];
@@ -54,7 +54,6 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	static int imgIdx = 0;
 
 	public TetrisCanvas() throws IOException {
-		preview = new Preview(previewNum);
 		curPiece = new Entity(Tetrominoes.NO_SHAPE); // 현재 블록
 		shadowPiece = new Entity(Tetrominoes.NO_SHAPE);
 		for (int i = 0; i < previewNum; i++) previewList[i] = new Entity(Tetrominoes.NO_SHAPE);
@@ -207,7 +206,9 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		for(int i = 0; i < previewNum - 1; i++)previewList[i].copyEntity(previewList[i + 1]);
 		previewList[previewNum - 1].setRandomShape();
 
-		preview.drawPreview(previewList);
+		uiCanvas.getPreview(previewNum).updatePreviewList(previewList);
+		uiCanvas.setPreview1FlagTrue();
+		uiCanvas.repaint();
 
 		// 블록이 움직이지 못할 때(게임 종료)
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
@@ -215,7 +216,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			BackPanel.stopTask(this);
 			sound.stopBgm();
 			isStarted = false;
-
+			uiCanvas.setPreview1FlagFalse();
 			FirebaseTool.getInstance().updateUserBestScore(Account.getClientAccount(),numLinesRemoved,
 					GameMenuPage.getMode());
 		}
@@ -348,5 +349,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 
 	public Tetrominoes[] getBoard(){ return board; }
 
-	public Preview getPreview(){return preview; }
+	public void setUiCanvas(UICanvas uiCanvas) {
+		this.uiCanvas = uiCanvas;
+	}
 }
