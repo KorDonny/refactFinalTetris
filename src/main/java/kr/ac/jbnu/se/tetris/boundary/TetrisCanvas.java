@@ -5,6 +5,7 @@ import kr.ac.jbnu.se.tetris.entity.Account;
 import kr.ac.jbnu.se.tetris.entity.Entity;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 import kr.ac.jbnu.se.tetris.Sound;
+import org.checkerframework.checker.units.qual.N;
 
 import java.awt.*;
 import java.io.File;
@@ -23,6 +24,11 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	 *    ex) (3,1)의 위치를 인덱싱하려면 -> board[13]
 	 */
 	private Tetrominoes[] board;
+
+	private Preview preview;
+
+	private final int previewNum = 5;
+	public Entity[] previewList = new Entity[previewNum];
 	/** 화면의 가로칸 수 */
 	public static final int TETRIS_CANVAS_W = 10;
 	/** 화면의 세로칸 수 */
@@ -48,8 +54,10 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	static int imgIdx = 0;
 
 	public TetrisCanvas() throws IOException {
+		preview = new Preview(previewNum);
 		curPiece = new Entity(Tetrominoes.NO_SHAPE); // 현재 블록
 		shadowPiece = new Entity(Tetrominoes.NO_SHAPE);
+		for (int i = 0; i < previewNum; i++) previewList[i] = new Entity(Tetrominoes.NO_SHAPE);
 		board = new Tetrominoes[TETRIS_CANVAS_W * TETRIS_CANVAS_H]; // 1차원 배열의 칸 생성
 		sound = new Sound();
 	}
@@ -68,6 +76,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		isStarted = true;
 		isFallingFinished = false;
 		numLinesRemoved = 0;
+		for (int i = 0; i < previewNum; i++) previewList[i].setRandomShape();
 		newPiece();
 		sound.startBgm();
 		droppedTime = 0;
@@ -192,7 +201,14 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	/** 새 블록 생성 */
 	protected void newPiece() throws InterruptedException, ExecutionException {
 		// 블록 종류 및 위치 수정
-		curPiece.setRandomShape();
+//		curPiece.setRandomShape();
+
+		curPiece.copyEntity(previewList[0]);
+		for(int i = 0; i < previewNum - 1; i++)previewList[i].copyEntity(previewList[i + 1]);
+		previewList[previewNum - 1].setRandomShape();
+
+		preview.drawPreview(previewList);
+
 		// 블록이 움직이지 못할 때(게임 종료)
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
 			curPiece = new Entity(Tetrominoes.NO_SHAPE); // 떨어지는 블록 없앰
@@ -331,4 +347,6 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	}
 
 	public Tetrominoes[] getBoard(){ return board; }
+
+	public Preview getPreview(){return preview; }
 }
