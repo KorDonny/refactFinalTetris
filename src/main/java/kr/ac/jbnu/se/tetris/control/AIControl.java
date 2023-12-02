@@ -49,7 +49,7 @@ public class AIControl {
             }
 
             // 블럭 회전
-            curPiece.rotateRight();
+            curPiece.rotateRight(canvas.getBoard());
         }
 
         // 가장 최적의 위치 좌표와 화전 횟수

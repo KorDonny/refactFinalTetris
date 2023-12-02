@@ -9,8 +9,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
 public class TetrisCanvasAI extends TetrisCanvas {
-
-	private AIControl aiControl;
 	public TetrisCanvasAI() throws IOException {
 		super();
 		BackPanel.addTask("Canvas AI Logic", new TimerTask() {
@@ -25,7 +23,6 @@ public class TetrisCanvasAI extends TetrisCanvas {
 				}
             }
 		}, 100);// 이벤트간 딜레이 400
-		aiControl = new AIControl(this);
 	}
 	@Override
 	public void start() throws InterruptedException, ExecutionException {
@@ -60,10 +57,10 @@ public class TetrisCanvasAI extends TetrisCanvas {
 	public void doControlLogic() {
 		Entity tmpEntity = new Entity(Tetrominoes.NO_SHAPE);
 		tmpEntity.copyEntity(getCurPiece());
-		int[] goodPosition = aiControl.findGoodPosition(tmpEntity);
+		int[] goodPosition = new AIControl(this).findGoodPosition(tmpEntity);
 
 		for (int i = goodPosition[2]; i > 0; i--) {
-			curPiece.rotateRight();
+			curPiece.rotateRight(getBoard());
 		}
 		int num = curPiece.getCurX() - goodPosition[0];
 		while (num != 0){
