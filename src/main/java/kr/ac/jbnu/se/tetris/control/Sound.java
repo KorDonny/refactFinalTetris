@@ -1,4 +1,6 @@
-package kr.ac.jbnu.se.tetris;
+package kr.ac.jbnu.se.tetris.control;
+
+import kr.ac.jbnu.se.tetris.FrameMain;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -8,7 +10,9 @@ public class Sound {
     private Clip bgmClip;
     private Clip dropSoundClip;
     private Clip removeSoundClip;
-
+    private final static String BGM_MUSIC_PATH = FrameMain.MUSIC_DIR_PATH+"bgm.wav";
+    private final static String DROP_MUSIC_PATH = FrameMain.MUSIC_DIR_PATH+"drop.wav";
+    private final static String REMOVE_MUSIC_PATH = FrameMain.MUSIC_DIR_PATH+"remove.wav";
     public Sound() {
         setBgm();
         setDropSound();
@@ -16,7 +20,7 @@ public class Sound {
     }
 
     private synchronized void setBgm() {
-        File bgmFile = new File("./src/main/java/kr/ac/jbnu/se/tetris/resource/music/bgm.wav");
+        File bgmFile = new File(BGM_MUSIC_PATH);
         try {
             bgmClip = AudioSystem.getClip();
             bgmClip.open(AudioSystem.getAudioInputStream(bgmFile));
@@ -26,7 +30,7 @@ public class Sound {
     }
 
     private synchronized void setDropSound() {
-        File dropSoundFile = new File("./src/main/java/kr/ac/jbnu/se/tetris/resource/music/drop.wav");
+        File dropSoundFile = new File(DROP_MUSIC_PATH);
 
         try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(dropSoundFile)) {
             // 명시적으로 원하는 오디오 포맷을 설정
@@ -50,7 +54,7 @@ public class Sound {
     }
 
     private synchronized void setRemoveSound() {
-        File removeSoundFile = new File("./src/main/java/kr/ac/jbnu/se/tetris/resource/music/remove.wav");
+        File removeSoundFile = new File(REMOVE_MUSIC_PATH);
         try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(removeSoundFile)) {
             // 명시적으로 원하는 오디오 포맷을 설정
             AudioFormat desiredFormat = new AudioFormat(

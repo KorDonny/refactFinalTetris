@@ -3,18 +3,15 @@ package kr.ac.jbnu.se.tetris.boundary;
 import kr.ac.jbnu.se.tetris.control.FirebaseTool;
 import kr.ac.jbnu.se.tetris.entity.Account;
 import kr.ac.jbnu.se.tetris.entity.Entity;
+import kr.ac.jbnu.se.tetris.entity.TetrisCanvasBuff;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
-import kr.ac.jbnu.se.tetris.Sound;
+import kr.ac.jbnu.se.tetris.control.Sound;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
-import javax.imageio.ImageIO;
-import javax.swing.*;
 
-public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터페이스 = 액션리스너 //상속클래스 = Jpanel
+public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 //상속클래스 = Jpanel
 	/**
 	 *  게임 화면을 구성하는 칸 <br/>
 	 *    해당 칸에 어떤 블록이 들어있는지 저장하는 변수 <br/>
@@ -43,15 +40,14 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	Entity curPiece;
 	Entity shadowPiece;
 	private Sound sound;
-	private String gifImagePath;
-	private String[] animatedImagePath;
-	static int imgIdx = 0;
+    TetrisCanvasBuff tBuff;
 
 	public TetrisCanvas() throws IOException {
 		curPiece = new Entity(Tetrominoes.NO_SHAPE); // 현재 블록
 		shadowPiece = new Entity(Tetrominoes.NO_SHAPE);
 		board = new Tetrominoes[TETRIS_CANVAS_W * TETRIS_CANVAS_H]; // 1차원 배열의 칸 생성
 		sound = new Sound();
+        tBuff = new TetrisCanvasBuff();
 	}
 
 	/** 칸의 가로 길이 */
@@ -200,12 +196,8 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 					GameMenuPage.getMode());
 		}
 	}
-
 	@Override
-	public void paintComponent(Graphics g){
-		gifImage.paintIcon(this, g, 0, 0);
-	}
-
+	public void paintComponent(Graphics g){ g.drawImage(tBuff.getSprite(),0,0,null); }
 	/** 블록 움직일 수 있는지 여부 반환<br/>
 	 *  만약 움직일 수 있다면 움직이는 메서드 */
 	public boolean tryMove(Entity newPiece, int newX, int newY) {
@@ -222,7 +214,6 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		repaint();
 		return true;
 	}
-
 	public boolean tryMoveA(Entity newPiece, int newX, int newY) {
 		for (int i = 0; i < 4; ++i) {
 			int x = newX + newPiece.x(i);
@@ -236,7 +227,6 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		repaint();
 		return true;
 	}
-
 	/** 완성된 줄 제거 */
 	protected void removeFullLines() {
 		int numFullLines = 0; // 완성된 줄의 수
@@ -269,7 +259,6 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			repaint();
 		}
 	}
-
 	/** 칸을 블록의 종류에 맞게 색칠하는 메소드 */
 	protected void drawSquare(Graphics g, int x, int y, Tetrominoes shape) {
 		Color tmpcolor = shape.getColor();
@@ -282,43 +271,15 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		g.drawLine(x + 1, y + squareHeight() - 1, x + squareWidth() - 1, y + squareHeight() - 1);
 		g.drawLine(x + squareWidth() - 1, y + squareHeight() - 1, x + squareWidth() - 1, y + 1);
 	}
-
 	public Entity getCurPiece(){ return curPiece; }
-
 	public boolean isPaused(){ return isPaused; }
-
 	public boolean isStarted(){ return isStarted; }
-
 	public int getNumLinesRemoved() { return numLinesRemoved; }
-
-	//이미지 애니메이션 구현해보고자 함. 미구현시 animatedImagePath 배열 삭제 요망
-	@Override
-	public synchronized void setImage() throws IOException {
-		gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/resource/image/backGif2.gif";
-		animatedImagePath = new String[]{
-				"./src/main/java/kr/ac/jbnu/se/tetris/resource/image/backGif2.gif"
-		};
-
-		gifImage = new ImageIcon(ImageIO.read(new File(gifImagePath)));
-		Image img = gifImage.getImage();
-		Image scaledImg = img.getScaledInstance(UICanvas.BOARD_SIZE_W, UICanvas.BOARD_SIZE_H, Image.SCALE_SMOOTH);
-		gifImage = new ImageIcon(scaledImg);
-		BackPanel.addTask(this,new TimerTask() {
-
-			@Override
-			public void run() {
-				gifImagePath = animatedImagePath[imgIdx++];
-				if(imgIdx == animatedImagePath.length) imgIdx = 0;
-			}
-		},150);
-	}
-
 	//재시작 화면 기능 미구현할 시 삭제 요망.
 	public void restart() throws InterruptedException, ExecutionException {
 		clearBoard();
 		numLinesRemoved=0;
 		newPiece();
 	}
-
 	public Tetrominoes[] getBoard(){ return board; }
 }

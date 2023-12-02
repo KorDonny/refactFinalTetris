@@ -1,5 +1,7 @@
 package kr.ac.jbnu.se.tetris.boundary;
 
+import kr.ac.jbnu.se.tetris.FrameMain;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +19,7 @@ public class BackPanel extends JPanel {
     static Timer timer;
     static HashMap<Object,TimerTask> timerMap;
     BufferedImage backImg;
-    static final String BACK_IMG_PATH = "./src/main/java/kr/ac/jbnu/se/tetris/Resource/Image/background.png";
+    static final String BACK_IMG_PATH = FrameMain.IMAGE_DIR_PATH+"background.png";
     boolean isGameFirst;
     public BackPanel() throws IOException {
         viewStack = new ArrayDeque<>();

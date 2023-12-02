@@ -9,6 +9,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.IOException;
 public class FrameMain extends JFrame {
+    public static final String RESOURCE_PATH = "./src/main/java/kr/ac/jbnu/se/tetris/resource/";
+    public static final String IMAGE_DIR_PATH = RESOURCE_PATH+"image/";
+    public static final String MUSIC_DIR_PATH = RESOURCE_PATH+"music/";
     public static final int WINDOW_WIDTH = 1200;
     public static final int WINDOW_HEIGHT = 800;
     public static final int FONT_TITLE  = 20;
