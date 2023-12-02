@@ -92,12 +92,8 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			return;
 		isPaused = !isPaused;
 		if (isPaused) {
-			//다이어그램 작업 또는 최종 제출때 삭제 요망
-//			BackPanel.stopTask(this);
 			sound.stopBgm();
 		} else {
-			//다이어그램 작업 또는 최종 제출때 삭제 요망
-//			BackPanel.resumeTask(this);
 			sound.startBgm();
 		}
 		repaint();
@@ -290,12 +286,6 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	public Entity getCurPiece(){ return curPiece; }
 
 	public boolean isPaused(){ return isPaused; }
-
-	//pause()랑 내용 겹침 확인 요망
-//	public void setStarted(boolean started) {
-//		this.isStarted = started;
-//		if(!isStarted)sound.stopBgm();
-//	}
 
 	public boolean isStarted(){ return isStarted; }
 

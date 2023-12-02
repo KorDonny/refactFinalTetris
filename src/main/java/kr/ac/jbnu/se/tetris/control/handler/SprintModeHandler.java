@@ -1,6 +1,5 @@
 package kr.ac.jbnu.se.tetris.control.handler;
 
-import kr.ac.jbnu.se.tetris.control.KeyControl;
 import kr.ac.jbnu.se.tetris.FrameMain;
 
 import javax.swing.*;
@@ -45,13 +44,9 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
     public void checkGameClear() {
         if (getCanvas().getNumLinesRemoved() >= targetLineCount && !gameClearAchieved) {
             gameClearAchieved = true;
-            //pause랑 내용이 곂침. 확인 후 삭제 요망
-//            getCanvas().setStarted(false);
             getCanvas().pause();
             gameClearStatusLabel.setText("Game Clear!");
             gameClearStatusLabel.setVisible(true);
-            //최종 제출 또는 다이어그램 작성시 삭제 요망
-//            BackPanel.resumeTask();
             getCanvas().setEnabled(false);
             FrameMain.getBackPanel().repaint();
         }

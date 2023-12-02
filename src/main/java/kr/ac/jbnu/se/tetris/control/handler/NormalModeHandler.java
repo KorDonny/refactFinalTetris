@@ -29,17 +29,6 @@ public class NormalModeHandler implements GameModeHandler {
     public TetrisCanvas getCanvas() { return this.canvas; }
     @Override
     public void initiateTrigger(){
-        //다이어그램 작업 또는 최종 제출때 삭제 요망
-//        BackPanel.addTask(this.canvas, new TimerTask() {
-//            @Override
-//            public void run() {
-//                try {
-//                    canvas.actionTrigger();
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }, 400);
          BackPanel.getTimer().scheduleAtFixedRate(new TimerTask() {
              @Override
              public void run() {
