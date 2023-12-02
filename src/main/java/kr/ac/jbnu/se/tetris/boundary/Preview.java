@@ -9,24 +9,21 @@ public class Preview {
 
     private final int previewNum;
     private Entity[] previewList;
+    private final int squareWidth = 20; // 각 블록의 넓이
+    private final int squareHeight = 20; // 각 블록의 높이
+    private final int BOARD_SIZE_W;
+    private final int BOARD_SIZE_H;
+    private int correctionValue = 5;
+    private boolean ReadyFlag = false;
 
-    private Graphics g;
-
-    private final int PREVIEW_CANVAS_W = 4;
-    private final int PREVIEW_CANVAS_H;
-
-    static final int PREVIEW_SIZE_W = 120; // 지금:120->30, 원래:350->1개의 넓이 35
-    static final int PREVIEW_SIZE_H = 600; // 지금:600->30, 원래:700->1개의 높이 31.818181...
-
-    private final int squareWidth;
-    private final int squareHeight;
-
-    public Preview(int previewNum) {
+    public Preview(int previewNum, boolean isSub, int BOARD_SIZE_W, int BOARD_SIZE_H) {
         this.previewNum = previewNum;
         previewList = new Entity[previewNum];
-        PREVIEW_CANVAS_H = 4 * previewNum;
-        squareWidth = PREVIEW_SIZE_W / PREVIEW_CANVAS_W;
-        squareHeight = PREVIEW_SIZE_H / PREVIEW_CANVAS_H;
+        this.BOARD_SIZE_W = BOARD_SIZE_W;
+        this.BOARD_SIZE_H = BOARD_SIZE_H;
+        if (isSub) {
+            this.correctionValue = BOARD_SIZE_W - (4 * squareWidth) - 5;
+        }
     }
 
     private void drawSquare(Graphics g, int x, int y, Tetrominoes shape) {
@@ -47,8 +44,10 @@ public class Preview {
         for (int num = 0; num < previewNum; num++){
             for (int i = 0; i < 4; ++i) {
                 int x = 1 + previewList[num].x(i);
-                int y = (PREVIEW_CANVAS_H - 4 - num * 4) + 1 - previewList[num].y(i);
-                drawSquare(g, x * squareWidth, (PREVIEW_CANVAS_H - y - 1) * squareHeight,
+                int y = 2 - previewList[num].y(i);
+                drawSquare(g,
+                        x * squareWidth + correctionValue,
+                        y * squareHeight + (4 * num * squareHeight) + num * 5,
                         previewList[num].getShape());
             }
         }
@@ -56,5 +55,17 @@ public class Preview {
 
     public void updatePreviewList(Entity[] previewList) {
         this.previewList = previewList;
+    }
+
+    public void setReadyFlagTrue() {
+        ReadyFlag = true;
+    }
+
+    public void setReadyFlagFalse() {
+        ReadyFlag = false;
+    }
+
+    public boolean checkReady() {
+        return ReadyFlag;
     }
 }

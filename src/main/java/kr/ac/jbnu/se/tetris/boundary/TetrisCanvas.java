@@ -5,7 +5,6 @@ import kr.ac.jbnu.se.tetris.entity.Account;
 import kr.ac.jbnu.se.tetris.entity.Entity;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 import kr.ac.jbnu.se.tetris.Sound;
-import org.checkerframework.checker.guieffect.qual.UI;
 
 import java.awt.*;
 import java.io.File;
@@ -26,6 +25,8 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 	private Tetrominoes[] board;
 
 	private UICanvas uiCanvas;
+
+	private Preview preview = null;
 
 	private final int previewNum = 5;
 	public Entity[] previewList = new Entity[previewNum];
@@ -206,8 +207,8 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 		for(int i = 0; i < previewNum - 1; i++)previewList[i].copyEntity(previewList[i + 1]);
 		previewList[previewNum - 1].setRandomShape();
 
-		uiCanvas.getPreview(previewNum).updatePreviewList(previewList);
-		uiCanvas.setPreview1FlagTrue();
+		preview.updatePreviewList(previewList);
+		preview.setReadyFlagTrue();
 		uiCanvas.repaint();
 
 		// 블록이 움직이지 못할 때(게임 종료)
@@ -216,7 +217,7 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 			BackPanel.stopTask(this);
 			sound.stopBgm();
 			isStarted = false;
-			uiCanvas.setPreview1FlagFalse();
+			preview.setReadyFlagFalse();
 			FirebaseTool.getInstance().updateUserBestScore(Account.getClientAccount(),numLinesRemoved,
 					GameMenuPage.getMode());
 		}
@@ -349,7 +350,8 @@ public class TetrisCanvas extends UICanvas implements CanvasInterface{//인터�
 
 	public Tetrominoes[] getBoard(){ return board; }
 
-	public void setUiCanvas(UICanvas uiCanvas) {
+	public void setUICanvas(UICanvas uiCanvas) {
 		this.uiCanvas = uiCanvas;
+		preview = uiCanvas.getPreview(previewNum);
 	}
 }

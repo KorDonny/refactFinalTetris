@@ -12,8 +12,9 @@ public class UICanvas extends JPanel implements CanvasInterface{
     static final int BOARD_SIZE_H = 700;
     ImageIcon gifImage;
     private String gifImagePath = "./src/main/java/kr/ac/jbnu/se/tetris/resource/image/uiGif.gif";
-    private Preview preview = null;
-    private boolean preview1Flag = false;
+
+    private Preview mainPreview = null;
+    private Preview subPreview = null;
 
     public UICanvas() throws IOException {
         setOpaque(false);
@@ -31,8 +32,11 @@ public class UICanvas extends JPanel implements CanvasInterface{
     public void paint(Graphics g) {
         super.paint(g);
 
-        if (preview1Flag){
-            preview.drawPreview(g);
+        if (mainPreview != null && mainPreview.checkReady()){
+            mainPreview.drawPreview(g);
+        }
+        if (subPreview != null && subPreview.checkReady()){
+            subPreview.drawPreview(g);
         }
     }
 
@@ -53,14 +57,13 @@ public class UICanvas extends JPanel implements CanvasInterface{
     }
 
     public Preview getPreview(int previewNum) {
-        if (preview == null) preview = new Preview(previewNum);
-        return preview;
-    }
-
-    public void setPreview1FlagTrue(){
-        preview1Flag = true;
-    }
-    public void setPreview1FlagFalse(){
-        preview1Flag = false;
+        if (mainPreview == null) {
+            mainPreview = new Preview(previewNum, false, BOARD_SIZE_W, BOARD_SIZE_H);
+            return mainPreview;
+        } else if (subPreview == null) {
+            subPreview = new Preview(previewNum, true, BOARD_SIZE_W, BOARD_SIZE_H);
+            return subPreview;
+        }
+        return null;
     }
 }
