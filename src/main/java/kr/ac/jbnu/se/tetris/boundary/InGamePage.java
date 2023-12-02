@@ -12,6 +12,7 @@ import static kr.ac.jbnu.se.tetris.boundary.UICanvas.BOARD_SIZE_W;
 
 public class InGamePage extends JPanel {
     private static InGamePage instance = null;
+
     InGamePage(){
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(BOARD_SIZE_W*3,BOARD_SIZE_H));
@@ -25,10 +26,12 @@ public class InGamePage extends JPanel {
     public Component add(Component comp) {
         comp.setVisible(true);
         if(comp instanceof TetrisCanvas){
-            if(this.getComponentCount() == 2) add(comp,BorderLayout.EAST);
-            else add(comp,BorderLayout.WEST);
+            if(this.getComponentCount() == 2) add(comp, BorderLayout.EAST);
+            else add(comp, BorderLayout.WEST);
         }
-        else if(comp instanceof UICanvas)add(comp,BorderLayout.CENTER);
+        else if(comp instanceof UICanvas) {
+            add(comp, BorderLayout.CENTER);
+        }
         revalidate();
         return comp;
     }

@@ -20,6 +20,13 @@ public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 /
 	 *    ex) (3,1)의 위치를 인덱싱하려면 -> board[13]
 	 */
 	private Tetrominoes[] board;
+
+	private UICanvas uiCanvas;
+
+	private Preview preview = null;
+
+	private final int previewNum = 5;
+	public Entity[] previewList = new Entity[previewNum];
 	/** 화면의 가로칸 수 */
 	public static final int TETRIS_CANVAS_W = 10;
 	/** 화면의 세로칸 수 */
@@ -45,6 +52,7 @@ public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 /
 	public TetrisCanvas() throws IOException {
 		curPiece = new Entity(Tetrominoes.NO_SHAPE); // 현재 블록
 		shadowPiece = new Entity(Tetrominoes.NO_SHAPE);
+		for (int i = 0; i < previewNum; i++) previewList[i] = new Entity(Tetrominoes.NO_SHAPE);
 		board = new Tetrominoes[TETRIS_CANVAS_W * TETRIS_CANVAS_H]; // 1차원 배열의 칸 생성
 		sound = new Sound();
         tBuff = new TetrisCanvasBuff();
@@ -64,6 +72,7 @@ public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 /
 		isStarted = true;
 		isFallingFinished = false;
 		numLinesRemoved = 0;
+		for (int i = 0; i < previewNum; i++) previewList[i].setRandomShape();
 		newPiece();
 		sound.startBgm();
 		droppedTime = 0;
@@ -184,14 +193,23 @@ public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 /
 	/** 새 블록 생성 */
 	protected void newPiece() throws InterruptedException, ExecutionException {
 		// 블록 종류 및 위치 수정
-		curPiece.setRandomShape();
+//		curPiece.setRandomShape();
+
+		curPiece.copyEntity(previewList[0]);
+		for(int i = 0; i < previewNum - 1; i++)previewList[i].copyEntity(previewList[i + 1]);
+		previewList[previewNum - 1].setRandomShape();
+
+		preview.updatePreviewList(previewList);
+		preview.setReadyFlagTrue();
+		uiCanvas.repaint();
+
 		// 블록이 움직이지 못할 때(게임 종료)
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
 			curPiece = new Entity(Tetrominoes.NO_SHAPE); // 떨어지는 블록 없앰
 			BackPanel.stopTask(this);
 			sound.stopBgm();
 			isStarted = false;
-
+			preview.setReadyFlagFalse();
 			FirebaseTool.getInstance().updateUserBestScore(Account.getClientAccount(),numLinesRemoved,
 					GameMenuPage.getMode());
 		}
@@ -282,4 +300,9 @@ public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 /
 		newPiece();
 	}
 	public Tetrominoes[] getBoard(){ return board; }
+
+	public void setUICanvas(UICanvas uiCanvas) {
+		this.uiCanvas = uiCanvas;
+		preview = uiCanvas.getPreview(previewNum);
+	}
 }

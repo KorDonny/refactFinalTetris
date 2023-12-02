@@ -12,14 +12,17 @@ import java.util.concurrent.ExecutionException;
 
 public class NormalModeHandler implements GameModeHandler {
     private final TetrisCanvas canvas;
+    private final UICanvas uiCanvas;
     public NormalModeHandler() throws IOException {
         this.canvas = new TetrisCanvas();
+        uiCanvas = new UICanvas();
         connectCanvas();
     }
     @Override
     public void startGame() throws IOException, InterruptedException, ExecutionException {
         InGamePage.getInstance().add(canvas);
-        InGamePage.getInstance().add(new UICanvas());
+        InGamePage.getInstance().add(uiCanvas);
+        canvas.setUICanvas(uiCanvas);
         canvas.start();
         initiateTrigger();
     }
@@ -41,5 +44,9 @@ public class NormalModeHandler implements GameModeHandler {
                  }
              }
          },0,400);
+    }
+
+    public UICanvas getUiCanvas() {
+        return uiCanvas;
     }
 }

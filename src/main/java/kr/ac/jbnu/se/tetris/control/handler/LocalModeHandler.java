@@ -21,6 +21,7 @@ public class LocalModeHandler extends NormalModeHandler implements GameModeHandl
     public void startGame() throws IOException, InterruptedException, ExecutionException {
         normal.startGame();
         InGamePage.getInstance().add(canvas);
+        canvas.setUICanvas(normal.getUiCanvas());
         connectCanvas();
         canvas.start();
         initiateTrigger();

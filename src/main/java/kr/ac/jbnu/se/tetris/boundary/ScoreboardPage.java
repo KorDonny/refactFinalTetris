@@ -39,7 +39,6 @@ public class ScoreboardPage extends JPanel {
             colmTag.setFont(new Font("SansSerif",Font.BOLD,FONT_DEFAULT));
             add(colmTag);
         }
-        int idx = 0;
         for (int i = 0; i < INDEX_TOP10*(GameMode.values().length+1); i++){
             JLabel colmTag;
             if(i%7==0){
@@ -47,7 +46,9 @@ public class ScoreboardPage extends JPanel {
             }
             else{
                 colmTag = new JLabel(
-                        nameTag[i%7-1].toArray()[idx%INDEX_TOP10]+" - "+resultArr[i%7-1].get(nameTag[i%7-1].toArray()[idx++%INDEX_TOP10]).toString()
+                        nameTag[i%7-1].toArray()[i/7] +
+                                " - " + resultArr[i%7-1].get(nameTag[i%7-1]
+                                .toArray()[i/7]).toString()
                 );
             }
             colmTag.setHorizontalAlignment(CENTER);
