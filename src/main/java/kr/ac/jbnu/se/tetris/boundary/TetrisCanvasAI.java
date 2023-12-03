@@ -9,12 +9,9 @@ import kr.ac.jbnu.se.tetris.entity.numeric.Tetrominoes;
 import java.io.IOException;
 
 public class TetrisCanvasAI extends TetrisCanvas {
-
-	private AIControl aiControl;
 	private final WorkFlow aiWorks = new WorkFlow(this);
 	public TetrisCanvasAI() throws IOException {
 		super();
-		aiControl = new AIControl(this);
 	}
 	@Override
 	public void start(){
@@ -36,7 +33,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 	protected void newPiece(){
 		curPiece.setRandomShape();
 		// 블록이 움직이지 못할 때(게임 종료)
-		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
+		if (!tryMoveCurPiece(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
 			curPiece = new Block(Tetrominoes.NO_SHAPE); // 떨어지는 블록 없앰
 			TimerManager.removeTask(aiWorks);
 			isStarted = false;
@@ -57,27 +54,15 @@ public class TetrisCanvasAI extends TetrisCanvas {
 		int num = curPiece.getCurX() - goodPosition[0];
 		while (num != 0){
 			if (num > 0) {
-				tryMove(curPiece, curPiece.getCurX() - 1, curPiece.getCurY());
+				tryMoveCurPiece(curPiece, curPiece.getCurX() - 1, curPiece.getCurY());
 				num--;
 			} else if (num < 0) {
-				tryMove(curPiece, curPiece.getCurX() + 1, curPiece.getCurY());
+				tryMoveCurPiece(curPiece, curPiece.getCurX() + 1, curPiece.getCurY());
 				num++;
 			}
 		}
 	}
-	@Override
-	public boolean tryMove(Block newPiece, int newX, int newY) {
-		for (int i = 0; i < 4; ++i) {
-			int x = newX + newPiece.x(i);
-			int y = newY - newPiece.y(i);
-			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
-				return false;
-			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
-				return false;
-		}
-		newPiece.setPosition(newX,newY);
-		return true;
-	}
+
 	@Override
 	protected void pieceDropped(){
 		// 현재 위치에 블록 배치

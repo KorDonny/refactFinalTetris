@@ -143,7 +143,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		shadowPiece.copyEntity(curPiece);
 		int newY = shadowPiece.getCurY();
 		while (newY > 0) {
-			if (!tryMoveA(shadowPiece, shadowPiece.getCurX(), newY - 1))
+			if (!tryMovePiece(shadowPiece, shadowPiece.getCurX(), newY - 1))
 				break;
 			--newY;
 		}
@@ -169,7 +169,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		if(System.currentTimeMillis() - droppedTime < 200){ return false; }
 		int newY = curPiece.getCurY();
 		while (newY > 0) {
-			if (!tryMove(curPiece, curPiece.getCurX(), newY - 1))
+			if (!tryMoveCurPiece(curPiece, curPiece.getCurX(), newY - 1))
 				break;
 			--newY;
 		}
@@ -180,7 +180,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 
 	/** 블록이 한줄 아래로 내려가는 메소드*/
 	protected void oneLineDown() throws InterruptedException, ExecutionException {
-		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY() - 1))
+		if (!tryMoveCurPiece(curPiece, curPiece.getCurX(), curPiece.getCurY() - 1))
 			pieceDropped(); //떨어지면 수행되는 메소드, 드롭다운과 동일
 	}
 
@@ -218,7 +218,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		uiCanvas.repaint();
 
 		// 블록이 움직이지 못할 때(게임 종료)
-		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
+		if (!tryMoveCurPiece(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
 			curPiece = new Block(Tetrominoes.NO_SHAPE); // 떨어지는 블록 없앰
 			TimerManager.removeTask(tetrisWork);
 			sound.stopBgm();
@@ -231,21 +231,16 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	public void paintComponent(Graphics g){ g.drawImage(tBuff.getSprite(),0,0,null); }
 	/** 블록 움직일 수 있는지 여부 반환<br/>
 	 *  만약 움직일 수 있다면 움직이는 메서드 */
-	public boolean tryMove(Block newPiece, int newX, int newY) {
-		for (int i = 0; i < 4; ++i) {
-			int x = newX + newPiece.x(i);
-			int y = newY - newPiece.y(i);
-			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
-				return false;
-			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
-				return false;
+	public boolean tryMoveCurPiece(Block newPiece, int newX, int newY) {
+		if (!tryMovePiece(newPiece, newX, newY)) {
+			return false;
 		}
 		curPiece = newPiece;
 		curPiece.setPosition(newX,newY);
 		repaint();
 		return true;
 	}
-	public boolean tryMoveA(Block newPiece, int newX, int newY) {
+	public boolean tryMovePiece(Block newPiece, int newX, int newY) {
 		for (int i = 0; i < 4; ++i) {
 			int x = newX + newPiece.x(i);
 			int y = newY - newPiece.y(i);
@@ -255,7 +250,6 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 				return false;
 		}
 		newPiece.setPosition(newX,newY);
-		repaint();
 		return true;
 	}
 	/** 완성된 줄 제거 */

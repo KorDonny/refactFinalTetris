@@ -143,9 +143,9 @@ public class KeyControl implements KeyListener {
             if(isOne) --newY;
             if(isUp && !isDown) getCurPiece(player).rotateLeft(player.getBoard()); // 원래 코드 getCurPiece(player).rotateLeft();
             else if(isDown && !isUp) getCurPiece(player).rotateRight(player.getBoard()); // 원래 코드 getCurPiece(player).rotateRight();
-            if(isLeft && !isRight) player.tryMove(getCurPiece(player), --newX, newY);
-            else if(isRight && !isLeft) player.tryMove(getCurPiece(player), ++newX, newY);
-            else player.tryMove(getCurPiece(player),newX, newY);
+            if(isLeft && !isRight) player.tryMoveCurPiece(getCurPiece(player), --newX, newY);
+            else if(isRight && !isLeft) player.tryMoveCurPiece(getCurPiece(player), ++newX, newY);
+            else player.tryMoveCurPiece(getCurPiece(player),newX, newY);
         }
     }
     Block getCurPiece(TetrisCanvas player){ return player.getCurPiece(); }

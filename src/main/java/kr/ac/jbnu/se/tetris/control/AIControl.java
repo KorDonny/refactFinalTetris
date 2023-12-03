@@ -5,7 +5,6 @@ import kr.ac.jbnu.se.tetris.entity.Point;
 import kr.ac.jbnu.se.tetris.boundary.TetrisCanvasAI;
 import kr.ac.jbnu.se.tetris.entity.numeric.Tetrominoes;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -112,7 +111,7 @@ public class AIControl {
     public boolean moveDown(Block tempBlock) {
         int newY = tempBlock.getCurY();
         while (newY > 0) {
-            if (!canvas.tryMove(tempBlock, tempBlock.getCurX(), newY - 1))
+            if (!canvas.tryMovePiece(tempBlock, tempBlock.getCurX(), newY - 1))
                 break;
             --newY;
         }
@@ -120,13 +119,13 @@ public class AIControl {
     }
 
     private boolean moveRight(Block shape) {
-        return !canvas.tryMove(shape, shape.getCurX() + 1, shape.getCurY());
+        return !canvas.tryMovePiece(shape, shape.getCurX() + 1, shape.getCurY());
     }
 
     private void moveLeft(Block shape) {
         int newX = shape.getCurX();
         while (newX > 0) {
-            if (!canvas.tryMove(shape, newX - 1, shape.getCurY()))
+            if (!canvas.tryMovePiece(shape, newX - 1, shape.getCurY()))
                 break;
             --newX;
         }
