@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import static javax.swing.SwingConstants.CENTER;
-import static kr.ac.jbnu.se.tetris.FrameMain.FONT_DEFAULT;
+import static kr.ac.jbnu.se.tetris.FrameMain.*;
 
 public class ScoreboardPage extends JPanel {
     GridLayout scoreLayout;
@@ -22,6 +22,7 @@ public class ScoreboardPage extends JPanel {
     ScoreboardPage() throws ExecutionException, InterruptedException {
         scoreLayout = new GridLayout(0, GameMode.values().length+1,BUTTON_GAP/2,BUTTON_GAP/2);
         setLayout(scoreLayout);
+        setSize(new Dimension((int) (WINDOW_WIDTH/1.2), (int) (WINDOW_HEIGHT/1.2)));
 
         JButton backBtn = new JButton("<");
         backBtn.setVisible(true);

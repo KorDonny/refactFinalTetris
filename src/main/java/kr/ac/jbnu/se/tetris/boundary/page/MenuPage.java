@@ -9,6 +9,9 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_HEIGHT;
+import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_WIDTH;
+
 public class MenuPage extends JPanel {
     JButton game;
     JButton score;
@@ -26,7 +29,7 @@ public class MenuPage extends JPanel {
         setOpaque(false);
         setLayout(new GridLayout(FrameMain.DEFAULT_VERT_GRID_ROW,FrameMain.DEFAULT_VERT_GRID_COLUMN,
                 FrameMain.GRID_WGAP,FrameMain.GRID_VGAP));
-
+        setSize(new Dimension(WINDOW_WIDTH/4,WINDOW_HEIGHT/4));
         game = new JButton(Menu.GAME_MENU.label());
         game.addActionListener(e -> {
             try {

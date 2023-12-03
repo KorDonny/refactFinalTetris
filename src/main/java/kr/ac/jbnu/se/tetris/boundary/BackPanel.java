@@ -4,6 +4,7 @@ import kr.ac.jbnu.se.tetris.FrameMain;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -21,19 +22,22 @@ public class BackPanel extends JPanel {
     }
     BufferedImage backImg;
     static final String BACK_IMG_PATH = FrameMain.IMAGE_DIR_PATH+"background.png";
-    boolean isGameFirst;
     public BackPanel() throws IOException {
         backImg = ImageIO.read(new File(BACK_IMG_PATH));
-        isGameFirst = false;
+        setPreferredSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
     }
     @Override
     public void paintComponent(Graphics g){
+        int x = (getWidth() - WINDOW_WIDTH) / 2;
+        int y = (getHeight() - WINDOW_HEIGHT) / 2;
         g.drawImage(backImg.getScaledInstance(WINDOW_WIDTH,WINDOW_HEIGHT,Image.SCALE_SMOOTH),
-                0,0,null);
+                x,y,null);
     }
     /** 디큐의 최상단에 삽입, 이후 상단 표시 ~= 화면 진입 @ 디큐 기능 문제시 error 반환 (peek은 null리턴) */
     public void push(JPanel target){
         if(!viewStack.isEmpty())viewStack.getFirst().setVisible(false);
+        setBorder(new EmptyBorder((WINDOW_WIDTH-target.getWidth())/2,(WINDOW_HEIGHT-target.getHeight())/2,(WINDOW_WIDTH-target.getWidth())/2,(WINDOW_HEIGHT-target.getHeight())/2));
+        setBorder(BorderFactory.createEmptyBorder());
         target.setOpaque(false);
         target.setVisible(true);
         viewStack.addFirst(target);

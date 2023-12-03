@@ -1,7 +1,10 @@
 package kr.ac.jbnu.se.tetris.boundary.page;
 
 import kr.ac.jbnu.se.tetris.*;
+import kr.ac.jbnu.se.tetris.boundary.BackPanel;
+import kr.ac.jbnu.se.tetris.boundary.UICanvas;
 import kr.ac.jbnu.se.tetris.control.FirebaseTool;
+import kr.ac.jbnu.se.tetris.control.TimerManager;
 import kr.ac.jbnu.se.tetris.control.handler.*;
 import kr.ac.jbnu.se.tetris.entity.Account;
 import kr.ac.jbnu.se.tetris.entity.numeric.GameMode;
@@ -12,12 +15,16 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_HEIGHT;
+import static kr.ac.jbnu.se.tetris.FrameMain.WINDOW_WIDTH;
+
 public class GameMenuPage extends JPanel {
     static GameMode curMode;
     GameMenuPage(){
         setOpaque(false);
         setLayout(new GridLayout(FrameMain.DEFAULT_VERT_GRID_ROW,FrameMain.DEFAULT_VERT_GRID_COLUMN,
                 FrameMain.GRID_WGAP,FrameMain.GRID_VGAP));
+        setSize(new Dimension(WINDOW_WIDTH/2,WINDOW_HEIGHT/4));
         for(GameMode mode : GameMode.values()){
             JButton toInsert = new JButton(mode.label());
             toInsert.addActionListener(e-> {
@@ -35,8 +42,6 @@ public class GameMenuPage extends JPanel {
                 0,0,0));
     }
     private void startGame(GameMode mode) throws IOException, InterruptedException, ExecutionException {
-        InGamePage.getInstance();
-        setMode(mode);
         switch (mode) {
             case NORMAL:
                 setModeHandler(new NormalModeHandler());
@@ -57,10 +62,13 @@ public class GameMenuPage extends JPanel {
                 // Local 대전, 세컨 계정 연동
                 while(true){
                     if(checkSecondAccount()) break;
+                    return;
                 }
                 setModeHandler(new LocalModeHandler());
                 break;
         }
+        InGamePage.getInstance();
+        setMode(mode);
         getModeHandler().startGame();
     }
     private static class GameModeHolder {
@@ -71,7 +79,7 @@ public class GameMenuPage extends JPanel {
         private void setContext(GameModeHandler context) {this.context = context; }
     }
     public static GameModeHandler getModeHandler() { return GameModeHolder.CONTEXT_PROV.context; }
-    public void setModeHandler(GameModeHandler ac) { GameModeHolder.CONTEXT_PROV.setContext(ac); }
+    public static void setModeHandler(GameModeHandler ac) { GameModeHolder.CONTEXT_PROV.setContext(ac); }
     private static void setMode(GameMode mode){ curMode = mode; }
     public static GameMode getMode(){ return curMode; }
     private boolean checkSecondAccount(){
@@ -79,21 +87,29 @@ public class GameMenuPage extends JPanel {
         optionCustom.setLayout(new GridLayout(1, 2));
         optionCustom.setOpaque(false);
         JTextField[] infoField = new JTextField[]{
-                new JTextField("ID"),
-                new JPasswordField("PW")
+                new HintTextField("ID"),
+                new HintPasswordField("PW")
         };
         for (JTextField field : infoField){
             field.setVisible(true);
+            field.setSize(150, 20);
             optionCustom.add(field);
             optionCustom.add(Box.createHorizontalStrut(10));
         }
         optionCustom.setVisible(true);
         int result = JOptionPane.showConfirmDialog(this, optionCustom,
-                "Please Enter EMAIL and PW Values", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
+                "Please Enter EMAIL and PW Values", JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
             return FirebaseTool.getInstance().logIn(new Account(infoField[0].getText(),
                     ((JPasswordField)infoField[1]).getPassword())) != null;
         }
         return false;
+    }
+    public static synchronized void resetMenu() throws IOException {
+        setMode(null);
+        setModeHandler(null);
+        UICanvas.exitProg();
+        BackPanel.getInstance().pop();
+        TimerManager.exitProg();
     }
 }

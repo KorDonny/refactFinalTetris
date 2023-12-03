@@ -9,12 +9,11 @@ import kr.ac.jbnu.se.tetris.entity.numeric.Tetrominoes;
 import java.io.IOException;
 
 public class TetrisCanvasAI extends TetrisCanvas {
-
-	private AIControl aiControl;
+	//private AIControl aiControl;
 	private final WorkFlow aiWorks = new WorkFlow(this);
 	public TetrisCanvasAI() throws IOException {
 		super();
-		aiControl = new AIControl(this);
+		//aiControl = new AIControl(this);
 	}
 	@Override
 	public void start(){
@@ -76,6 +75,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 				return false;
 		}
 		newPiece.setPosition(newX,newY);
+		repaint();
 		return true;
 	}
 	@Override

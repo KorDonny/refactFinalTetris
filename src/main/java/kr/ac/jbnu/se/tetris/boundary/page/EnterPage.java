@@ -13,6 +13,7 @@ public class EnterPage extends JPanel{
     public EnterPage(){
         setOpaque(false);
         setLayout(new GridLayout(DEFAULT_VERT_GRID_ROW,DEFAULT_VERT_GRID_COLUMN,GRID_WGAP,GRID_VGAP));
+        setSize(new Dimension(WINDOW_WIDTH/6,WINDOW_HEIGHT/6));
 
         int uiTopMargin = (WINDOW_HEIGHT)/3;
         setBorder(new EmptyBorder(uiTopMargin,0,0,0));

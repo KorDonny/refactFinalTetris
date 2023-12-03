@@ -14,7 +14,6 @@ import com.google.firebase.cloud.FirestoreClient;
 import kr.ac.jbnu.se.tetris.entity.Account;
 import kr.ac.jbnu.se.tetris.entity.numeric.GameMode;
 import kr.ac.jbnu.se.tetris.boundary.BackPanel;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -85,7 +84,7 @@ public class FirebaseTool {
             throw new RuntimeException(e);
         }
     }
-    public static Map<String,Integer> getModeBestScoreChart(@NotNull GameMode mode) throws ExecutionException, InterruptedException {
+    public static Map<String,Integer> getModeBestScoreChart(GameMode mode) throws ExecutionException, InterruptedException {
         CollectionReference singleScore = db.collection(mode.label());
         Query query = singleScore.orderBy(BEST_SCORE, Query.Direction.DESCENDING).limit(10);
         ApiFuture<QuerySnapshot> querySnapshot = query.get();

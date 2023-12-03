@@ -1,13 +1,13 @@
 package kr.ac.jbnu.se.tetris.boundary;
 
 import kr.ac.jbnu.se.tetris.control.Sound;
+import kr.ac.jbnu.se.tetris.control.TetrisTimerTask;
 import kr.ac.jbnu.se.tetris.control.TimerManager;
 import kr.ac.jbnu.se.tetris.entity.*;
 import kr.ac.jbnu.se.tetris.entity.numeric.Tetrominoes;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 /**
  *  게임 화면을 구성하는 칸 <br/>
@@ -63,7 +63,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 
 	/** (x,y)에 블록 종류 */
 	public Tetrominoes shapeAt(int x, int y) { return board[(y * TETRIS_CANVAS_W) + x]; }
-	public void start() throws InterruptedException, ExecutionException {
+	public void start() throws InterruptedException, ExecutionException, IOException {
 		clearBoard();
 		isStarted = true;
 		isFallingFinished = false;
@@ -75,23 +75,17 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		actionTrigger();
 	}
 	protected void actionTrigger(){
-		TimerManager.addTask(tetrisWork,new TimerTask() {
+		TimerManager.addTask(tetrisWork,new TetrisTimerTask() {
 			@Override
-			public void run() {
-				try {
-					if (isFallingFinished) {
-						isFallingFinished = false;
-						newPiece();
-					} else {
-						if(isPaused()){
-							return;
-						}
-						oneLineDown();
+			public void doLogic() throws ExecutionException, InterruptedException, IOException {
+				if (isFallingFinished) {
+					isFallingFinished = false;
+					newPiece();
+				} else {
+					if(isPaused()){
+						pauseTask();
 					}
-				} catch (InterruptedException | ExecutionException e) {
-					/* Clean up whatever needs to be handled before interrupting  */
-					Thread.currentThread().interrupt();
-					throw new RuntimeException(e);
+					oneLineDown();
 				}
 			}
 		},400)
@@ -102,13 +96,13 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	 * 일시정지 메소드
 	 * 추후 pause이펙트를 공통으로 걸려면, timer에 대한 처리가 필요할 것으로 보임.
 	 * */
-	public void pause() throws InterruptedException {
+	public void pause(){
 		if (!isStarted)
 			return;
 		isPaused = !isPaused;
 		if (isPaused) {
 			sound.stopBgm();
-			TimerManager.stopTask(tetrisWork);
+			TimerManager.pauseTask(tetrisWork);
 		} else {
 			sound.startBgm();
 			TimerManager.resumeTask(tetrisWork);
@@ -143,7 +137,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		shadowPiece.copyEntity(curPiece);
 		int newY = shadowPiece.getCurY();
 		while (newY > 0) {
-			if (!tryMoveA(shadowPiece, shadowPiece.getCurX(), newY - 1))
+			if (!tryMove(shadowPiece, shadowPiece.getCurX(), newY - 1))
 				break;
 			--newY;
 		}
@@ -165,7 +159,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		}
 	}
 
-	public boolean dropDown() throws InterruptedException, ExecutionException {
+	public boolean dropDown() throws InterruptedException, ExecutionException, IOException {
 		if(System.currentTimeMillis() - droppedTime < 200){ return false; }
 		int newY = curPiece.getCurY();
 		while (newY > 0) {
@@ -179,7 +173,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	}
 
 	/** 블록이 한줄 아래로 내려가는 메소드*/
-	protected void oneLineDown() throws InterruptedException, ExecutionException {
+	protected void oneLineDown() throws InterruptedException, ExecutionException, IOException {
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY() - 1))
 			pieceDropped(); //떨어지면 수행되는 메소드, 드롭다운과 동일
 	}
@@ -191,7 +185,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	}
 
 	/** 현재 위치에 블록을 남기는 메소드 */
-	protected void pieceDropped() throws InterruptedException, ExecutionException {
+	protected void pieceDropped() throws InterruptedException, ExecutionException, IOException {
 		if(isStarted())sound.playDropSound();
 		// 현재 위치에 블록 배치
 		for (int i = 0; i < 4; ++i) {
@@ -207,7 +201,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	}
 
 	/** 새 블록 생성 */
-	protected void newPiece() throws InterruptedException, ExecutionException {
+	protected void newPiece() throws InterruptedException, ExecutionException, IOException {
 
 		curPiece.copyEntity(previewList[0]);
 		for(int i = 0; i < previewNum - 1; i++)previewList[i].copyEntity(previewList[i + 1]);
@@ -220,11 +214,12 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		// 블록이 움직이지 못할 때(게임 종료)
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
 			curPiece = new Block(Tetrominoes.NO_SHAPE); // 떨어지는 블록 없앰
-			TimerManager.removeTask(tetrisWork);
+			TimerManager.pauseTask(tetrisWork);
 			sound.stopBgm();
 			isStarted = false;
 			preview.setReadyFlagFalse();
-			CanvasScoreInterface.updateDBScore(this);
+			//UICanvas.getInstance().updateDBScore(this);
+			UICanvas.updateDBScore(this);
 		}
 	}
 	@Override
@@ -240,26 +235,12 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
 				return false;
 		}
-		curPiece = newPiece;
-		curPiece.setPosition(newX,newY);
-		repaint();
-		return true;
-	}
-	public boolean tryMoveA(Block newPiece, int newX, int newY) {
-		for (int i = 0; i < 4; ++i) {
-			int x = newX + newPiece.x(i);
-			int y = newY - newPiece.y(i);
-			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
-				return false;
-			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
-				return false;
-		}
 		newPiece.setPosition(newX,newY);
 		repaint();
 		return true;
 	}
 	/** 완성된 줄 제거 */
-	protected void checkFullLines() {
+	protected void checkFullLines() throws IOException {
 		int numFullLines = 0; // 완성된 줄의 수
 
 		// 위에서부터 내려오면서 찾기
@@ -286,7 +267,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			curPiece = new Block(Tetrominoes.NO_SHAPE);
 			sound.playRemoveSound();
 			repaint();
-			CanvasScoreInterface.updateScore(this);
+			UICanvas.updateScore(this,numLinesRemoved);
 		}
 	}
 
@@ -314,7 +295,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	public boolean isStarted(){ return isStarted; }
 	public int getNumLinesRemoved() { return numLinesRemoved; }
 	//재시작 화면 기능 미구현할 시 삭제 요망.
-	public void restart() throws InterruptedException, ExecutionException {
+	public void restart() throws InterruptedException, ExecutionException, IOException {
 		clearBoard();
 		numLinesRemoved=0;
 		newPiece();
@@ -323,5 +304,9 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	public void setUICanvas(UICanvas uiCanvas) {
 		this.uiCanvas = uiCanvas;
 		preview = uiCanvas.getPreview(previewNum);
+	}
+	public synchronized void exitCanvProg(){
+		TimerManager.removeTask(tetrisWork);
+		sound.stopBgm();
 	}
 }

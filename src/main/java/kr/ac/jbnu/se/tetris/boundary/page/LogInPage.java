@@ -8,7 +8,6 @@ import kr.ac.jbnu.se.tetris.FrameMain;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.IOException;
 
 public class LogInPage extends JPanel {
@@ -100,50 +99,5 @@ public class LogInPage extends JPanel {
             }
         });
     }
-    class HintTextField extends JTextField {
-        public HintTextField(String hint) {
-            setForeground(Color.GRAY);
 
-            // 텍스트 필드가 포커스를 얻거나 잃을 때 이벤트 처리
-            addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent e) {
-                    if (getText().equals(hint)) {
-                        setText("");
-                        setForeground(Color.BLACK);
-                    }
-                }
-                @Override
-                public void focusLost(FocusEvent e) {
-                    if (getText().isEmpty()) {
-                        setText(hint);
-                        setForeground(Color.GRAY);
-                    }
-                }
-            });
-        }
-    }
-    class HintPasswordField extends JPasswordField {
-        public HintPasswordField(String hint) {
-            setEchoChar((char) 0); // 초기에는 힌트가 보이도록
-            addFocusListener(new FocusListener() {
-                @Override
-                public void focusGained(FocusEvent e) {
-                    if (String.valueOf(getPassword()).equals(hint)) {
-                        setText("");
-                        setEchoChar('•'); // 입력이 시작되면 가려지도록
-                    }
-                }
-
-                @Override
-                public void focusLost(FocusEvent e) {
-                    if (String.valueOf(getPassword()).isEmpty()) {
-                        setText(hint);
-                        setEchoChar((char) 0);
-                    }
-                }
-            });
-            setText(hint);
-        }
-    }
 }
