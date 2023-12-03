@@ -27,7 +27,7 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
         gameClearCheckTimer = new Timer(1000, e -> {
             try {
                 checkGameClear();
-            } catch (IOException | InterruptedException ex) {
+            } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
@@ -47,7 +47,7 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
         checkGameClear();
         sprintModeStatusbar.setVisible(true);
     }
-    public void checkGameClear() throws IOException, InterruptedException {
+    public void checkGameClear() throws IOException {
         if (getCanvas().getNumLinesRemoved() >= targetLineCount && !gameClearAchieved) {
             gameClearAchieved = true;
             getCanvas().pause();

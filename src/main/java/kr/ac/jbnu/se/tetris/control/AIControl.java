@@ -5,7 +5,6 @@ import kr.ac.jbnu.se.tetris.entity.Point;
 import kr.ac.jbnu.se.tetris.boundary.TetrisCanvasAI;
 import kr.ac.jbnu.se.tetris.entity.numeric.Tetrominoes;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
