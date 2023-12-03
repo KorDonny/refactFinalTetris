@@ -43,6 +43,9 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	Block curPiece;
 	Block shadowPiece;
     TetrisCanvasBuff tBuff;
+
+	private final int squareWidth;
+	private final int squareHeight;
 	private final WorkFlow tetrisWork = new WorkFlow(this);
 	public TetrisCanvas() throws IOException {
 		curPiece = new Block(Tetrominoes.NO_SHAPE); // 현재 블록
@@ -53,13 +56,10 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		previewNum = 5;
 		previewList = new Block[previewNum];
 		for (int i = 0; i < previewNum; i++) previewList[i] = new Block(Tetrominoes.NO_SHAPE);
+
+		squareWidth = BOARD_SIZE_W / TETRIS_CANVAS_W;
+		squareHeight = BOARD_SIZE_H / TETRIS_CANVAS_H;
 	}
-
-	/** 칸의 가로 길이 */
-	int squareWidth() { return (int) getSize().getWidth() / TETRIS_CANVAS_W; }
-
-	/** 칸의 세로 길이 */
-	int squareHeight() { return (int) getSize().getHeight() / TETRIS_CANVAS_H; }
 
 	/** (x,y)에 블록 종류 */
 	public Tetrominoes shapeAt(int x, int y) { return board[(y * TETRIS_CANVAS_W) + x]; }
@@ -121,14 +121,14 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 		super.paint(g);
 
 		Dimension size = getSize();
-		int boardTop = (int) size.getHeight() - TETRIS_CANVAS_H * squareHeight();
+		int boardTop = (int) size.getHeight() - TETRIS_CANVAS_H * squareHeight;
 
 		// 쌓여있는 블록 색칠
 		for (int i = 0; i < TETRIS_CANVAS_H; ++i) {
 			for (int j = 0; j < TETRIS_CANVAS_W; ++j) {
 				Tetrominoes shape = shapeAt(j, TETRIS_CANVAS_H - i - 1);
 				if (shape != Tetrominoes.NO_SHAPE)
-					drawSquare(g, 0 + j * squareWidth(), boardTop + i * squareHeight(), shape);
+					drawSquare(g, 0 + j * squareWidth, boardTop + i * squareHeight, shape);
 			}
 		}
 
@@ -138,7 +138,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			shadowPiece.copyEntity(curPiece);
 			int newY = shadowPiece.getCurY();
 			while (newY > 0) {
-				if (!tryMoveA(shadowPiece, shadowPiece.getCurX(), newY - 1))
+				if (!tryMoveIn(shadowPiece, shadowPiece.getCurX(), newY - 1))
 					break;
 				--newY;
 			}
@@ -147,7 +147,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			for (int i = 0; i < 4; ++i) {
 				int x = shadowPiece.getCurX() + shadowPiece.x(i);
 				int y = shadowPiece.getCurY() - shadowPiece.y(i);
-				drawSquare(g, x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
+				drawSquare(g, x * squareWidth, boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight,
 						Tetrominoes.SHADOW);
 			}
 
@@ -155,7 +155,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			for (int i = 0; i < 4; ++i) {
 				int x = curPiece.getCurX() + curPiece.x(i);
 				int y = curPiece.getCurY() - curPiece.y(i);
-				drawSquare(g, 0 + x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
+				drawSquare(g, x * squareWidth, boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight,
 						curPiece.getShape());
 			}
 		}
@@ -228,30 +228,23 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	/** 블록 움직일 수 있는지 여부 반환<br/>
 	 *  만약 움직일 수 있다면 움직이는 메서드 */
 	public boolean tryMove(Block newPiece, int newX, int newY) {
-		for (int i = 0; i < 4; ++i) {
-			int x = newX + newPiece.x(i);
-			int y = newY - newPiece.y(i);
-			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
-				return false;
-			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
-				return false;
-		}
+		if (!tryMoveIn(newPiece, newX, newY))
+			return false;
 		curPiece = newPiece;
 		curPiece.setPosition(newX,newY);
 		repaint();
 		return true;
 	}
-	public boolean tryMoveA(Block newPiece, int newX, int newY) {
+	public boolean tryMoveIn(Block newPiece, int newX, int newY) {
 		for (int i = 0; i < 4; ++i) {
 			int x = newX + newPiece.x(i);
 			int y = newY - newPiece.y(i);
-			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)//테트리스 컨트롤 도형의 x,y에 의해 통제
+			if (x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H)
 				return false;
-			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)//테트리스 핸들링 도형이 블랭크가 아닐시 게임은 진행중. 불리언에 의해 제어
+			if (shapeAt(x, y) != Tetrominoes.NO_SHAPE)
 				return false;
 		}
 		newPiece.setPosition(newX,newY);
-		repaint();
 		return true;
 	}
 	/** 완성된 줄 제거 */
@@ -291,13 +284,13 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	protected void drawSquare(Graphics g, int x, int y, Tetrominoes shape) {
 		Color tmpcolor = shape.getColor();
 		g.setColor(tmpcolor);
-		g.fillRect(x + 1, y + 1, squareWidth() - 2, squareHeight() - 2);
+		g.fillRect(x + 1, y + 1, squareWidth - 2, squareHeight - 2);
 		g.setColor(tmpcolor.brighter());
-		g.drawLine(x, y + squareHeight() - 1, x, y);
-		g.drawLine(x, y, x + squareWidth() - 1, y);
+		g.drawLine(x, y + squareHeight - 1, x, y);
+		g.drawLine(x, y, x + squareWidth - 1, y);
 		g.setColor(tmpcolor.darker());
-		g.drawLine(x + 1, y + squareHeight() - 1, x + squareWidth() - 1, y + squareHeight() - 1);
-		g.drawLine(x + squareWidth() - 1, y + squareHeight() - 1, x + squareWidth() - 1, y + 1);
+		g.drawLine(x + 1, y + squareHeight - 1, x + squareWidth - 1, y + squareHeight - 1);
+		g.drawLine(x + squareWidth - 1, y + squareHeight - 1, x + squareWidth - 1, y + 1);
 	}
 	public Block getCurPiece(){ return curPiece; }
 	public boolean isPaused(){ return isPaused; }
