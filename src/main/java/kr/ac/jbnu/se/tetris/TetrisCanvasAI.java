@@ -81,13 +81,13 @@ public class TetrisCanvasAI extends TetrisCanvas {
 			getBoard()[(y * TETRIS_CANVAS_W) + x] = curPiece.getShape();
 		}
 		// 완성된 라인 확인
-		removeFullLines();
+		checkFullLines();
 		// 완성된 줄이 있다면 작동 안함
 		if (!isFallingFinished)
 			newPiece();
 	}
 	@Override
-	protected void removeFullLines() {
+	protected void checkFullLines() {
 		int numFullLines = 0; // 완성된 줄의 수
 
 		// 위에서부터 내려오면서 찾기
@@ -103,10 +103,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 			// i번째 행에 빈칸이 없다면 윗줄들을 아래로 내림(채워진 줄 삭제)
 			if (lineIsFull) {
 				++numFullLines;
-				for (int k = i; k < TETRIS_CANVAS_H - 1; ++k) {
-					for (int j = 0; j < TETRIS_CANVAS_W; ++j)
-						getBoard()[(k * TETRIS_CANVAS_W) + j] = shapeAt(j, k + 1);
-				}
+				removeFulllines(i);
 			}
 		}
 		// 완성된 라인이 있다면 UI업데이트

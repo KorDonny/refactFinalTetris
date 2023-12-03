@@ -128,30 +128,34 @@ public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 /
 
 		// 떨어지는 블록 관련 색칠
 		if (curPiece.getShape() != Tetrominoes.NO_SHAPE) {
-			// 그림자 생성
-			shadowPiece.copyEntity(curPiece);
-			int newY = shadowPiece.getCurY();
-			while (newY > 0) {
-				if (!tryMoveA(shadowPiece, shadowPiece.getCurX(), newY - 1))
-					break;
-				--newY;
-			}
+			drawMovingPiece(g, boardTop);
+		}
+	}
 
-			// 블록 그림자 색칠
-			for (int i = 0; i < 4; ++i) {
-				int x = shadowPiece.getCurX() + shadowPiece.x(i);
-				int y = shadowPiece.getCurY() - shadowPiece.y(i);
-				drawSquare(g, x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
-						Tetrominoes.SHADOW);
-			}
+	private void drawMovingPiece(Graphics g, int boardTop) {
+		// 그림자 생성
+		shadowPiece.copyEntity(curPiece);
+		int newY = shadowPiece.getCurY();
+		while (newY > 0) {
+			if (!tryMoveA(shadowPiece, shadowPiece.getCurX(), newY - 1))
+				break;
+			--newY;
+		}
 
-			// 떨어지는 블록 색칠
-			for (int i = 0; i < 4; ++i) {
-				int x = curPiece.getCurX() + curPiece.x(i);
-				int y = curPiece.getCurY() - curPiece.y(i);
-				drawSquare(g, 0 + x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
-						curPiece.getShape());
-			}
+		// 블록 그림자 색칠
+		for (int i = 0; i < 4; ++i) {
+			int x = shadowPiece.getCurX() + shadowPiece.x(i);
+			int y = shadowPiece.getCurY() - shadowPiece.y(i);
+			drawSquare(g, x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
+					Tetrominoes.SHADOW);
+		}
+
+		// 떨어지는 블록 색칠
+		for (int i = 0; i < 4; ++i) {
+			int x = curPiece.getCurX() + curPiece.x(i);
+			int y = curPiece.getCurY() - curPiece.y(i);
+			drawSquare(g, 0 + x * squareWidth(), boardTop + (TETRIS_CANVAS_H - y - 1) * squareHeight(),
+					curPiece.getShape());
 		}
 	}
 
@@ -190,7 +194,7 @@ public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 /
 			board[(y * TETRIS_CANVAS_W) + x] = curPiece.getShape();
 		}
 		// 완성된 라인 확인
-		removeFullLines();
+		checkFullLines();
 		// 완성된 줄이 있다면 작동 안함
 		if (!isFallingFinished && isStarted)
 			newPiece();
@@ -249,7 +253,7 @@ public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 /
 		return true;
 	}
 	/** 완성된 줄 제거 */
-	protected void removeFullLines() {
+	protected void checkFullLines() {
 		int numFullLines = 0; // 완성된 줄의 수
 
 		// 위에서부터 내려오면서 찾기
@@ -265,12 +269,10 @@ public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 /
 			// i번째 행에 빈칸이 없다면 윗줄들을 아래로 내림(채워진 줄 삭제)
 			if (lineIsFull) {
 				++numFullLines;
-				for (int k = i; k < TETRIS_CANVAS_H - 1; ++k) {
-					for (int j = 0; j < TETRIS_CANVAS_W; ++j)
-						board[(k * TETRIS_CANVAS_W) + j] = shapeAt(j, k + 1);
-				}
+				removeFulllines(i);
 			}
 		}
+
 		// 완성된 라인이 있다면 UI업데이트
 		if (numFullLines > 0) {
 			numLinesRemoved += numFullLines;
@@ -281,6 +283,14 @@ public class TetrisCanvas extends UICanvas{//인터페이스 = 액션리스너 /
 			CanvasScoreInterface.updateScore(this);
 		}
 	}
+
+	protected void removeFulllines(int num) {
+		for (int i = num; i < TETRIS_CANVAS_H - 1; ++i) {
+			for (int j = 0; j < TETRIS_CANVAS_W; ++j)
+				board[(i * TETRIS_CANVAS_W) + j] = shapeAt(j, i + 1);
+		}
+	}
+
 	/** 칸을 블록의 종류에 맞게 색칠하는 메소드 */
 	protected void drawSquare(Graphics g, int x, int y, Tetrominoes shape) {
 		Color tmpcolor = shape.getColor();
