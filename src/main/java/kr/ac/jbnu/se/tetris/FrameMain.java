@@ -1,7 +1,9 @@
 package kr.ac.jbnu.se.tetris;
 
+import kr.ac.jbnu.se.tetris.boundary.BackPanel;
+import kr.ac.jbnu.se.tetris.boundary.page.EnterPage;
+
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.IOException;
 public class FrameMain extends JFrame {
