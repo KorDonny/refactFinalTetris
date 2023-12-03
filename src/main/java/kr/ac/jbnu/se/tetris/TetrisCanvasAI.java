@@ -43,10 +43,10 @@ public class TetrisCanvasAI extends TetrisCanvas {
 	public void doControlLogic() {
 		Block tmpBlock = new Block(Tetrominoes.NO_SHAPE);
 		tmpBlock.copyEntity(getCurPiece());
-		int[] goodPosition = aiControl.findGoodPosition(tmpBlock);
+		int[] goodPosition = new AIControl(this).findGoodPosition(tmpBlock);
 
 		for (int i = goodPosition[2]; i > 0; i--) {
-			curPiece.rotateRight();
+			curPiece.rotateRight(getBoard());
 		}
 		int num = curPiece.getCurX() - goodPosition[0];
 		while (num != 0){

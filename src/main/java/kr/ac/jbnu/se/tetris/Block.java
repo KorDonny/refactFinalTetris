@@ -108,15 +108,19 @@ public class Block {
     /**
      * 복사된 entity를 newPiece에 전달, tryMove가 처리. 좌회전
      */
-    public void rotateLeft() {
+    public void rotateLeft(Tetrominoes[] board) {
         if (getShape() == Tetrominoes.SQUARE_SHAPE) // 블록이 사각형인 경우 종료
             return;
         int[][] result = new int[4][2];
         for (int i = 0; i < 4; ++i) {
             result[i][0] = coords[i][1];
             result[i][1] = -coords[i][0];
-            if(result[i][0]+position[0] < 0 || result[i][0]+position[0] >= TETRIS_CANVAS_W ||
-                    result[i][1]+position[1]  < 0 || result[i][1]+position[1]  >= TETRIS_CANVAS_H){
+            int x = result[i][0]+position[0];
+            int y = result[i][1]-position[1];
+            if(x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H){
+                return;
+            }
+            if(board[(y * TETRIS_CANVAS_W) + x] != Tetrominoes.NO_SHAPE){
                 return;
             }
         }
@@ -125,15 +129,19 @@ public class Block {
     /**
      * 복사된 entity를 newPiece에 전달, tryMove가 처리. 우회전
      */
-    public void rotateRight() {
+    public void rotateRight(Tetrominoes[] board) {
         if (getShape() == Tetrominoes.SQUARE_SHAPE) // 블록이 사각형인 경우 종료
             return;
         int[][] result = new int[4][2];
         for (int i = 0; i < 4; ++i) {
             result[i][0] = -coords[i][1];
             result[i][1] = coords[i][0];
-            if(result[i][0]+position[0] < 0 || result[i][0]+position[0] >= TETRIS_CANVAS_W ||
-                    result[i][1]+position[1]  < 0 || result[i][1]+position[1]  >= TETRIS_CANVAS_H){
+            int x = result[i][0]+position[0];
+            int y = result[i][1]-position[1];
+            if(x < 0 || x >= TETRIS_CANVAS_W || y < 0 || y >= TETRIS_CANVAS_H){
+                return;
+            }
+            if(board[(y * TETRIS_CANVAS_W) + x] != Tetrominoes.NO_SHAPE){
                 return;
             }
         }

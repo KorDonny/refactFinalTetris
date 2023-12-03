@@ -115,8 +115,8 @@ public class KeyControl implements KeyListener {
             int newX = getX(player);
             int newY = getY(player);
             if(isOne) --newY;
-            if(isUp && !isDown) getCurPiece(player).rotateLeft();
-            else if(isDown && !isUp) getCurPiece(player).rotateRight();
+            if(isUp && !isDown) getCurPiece(player).rotateLeft(player.getBoard()); // 원래 코드 getCurPiece(player).rotateLeft();
+            else if(isDown && !isUp) getCurPiece(player).rotateRight(player.getBoard()); // 원래 코드 getCurPiece(player).rotateRight();
             if(isLeft && !isRight) player.tryMove(getCurPiece(player), --newX, newY);
             else if(isRight && !isLeft) player.tryMove(getCurPiece(player), ++newX, newY);
             else player.tryMove(getCurPiece(player),newX, newY);
