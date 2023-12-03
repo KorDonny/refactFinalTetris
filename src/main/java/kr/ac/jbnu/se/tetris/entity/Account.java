@@ -15,4 +15,7 @@ public class Account {
     public static Account getLocalMultiAccount(){ return localMultiAccount; }
     public static void updateClientAccount(Account account){ clientAccount = account; }
     public static void updateLocalMultiAccount(Account account){ localMultiAccount = account; }
+    public String getNickName(){
+        return getID().split("@")[0];
+    }
 }

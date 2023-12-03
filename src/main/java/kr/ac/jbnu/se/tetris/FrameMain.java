@@ -21,11 +21,10 @@ public class FrameMain extends JFrame {
     public static final int GRID_VGAP = 10;
     public static final int GRID_WGAP = 0;
     JLayeredPane contentPane;
-    static FrameMain frameMain;
     static BackPanel backPanel;
     static {
         try {
-            backPanel = new BackPanel();
+            backPanel = BackPanel.getInstance();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -49,7 +48,7 @@ public class FrameMain extends JFrame {
         backPanel.push(new UIPanel());
     }
     /** 기초 진입화면 */
-    class UIPanel extends JPanel{
+    static class UIPanel extends JPanel{
         UIPanel(){
             setOpaque(false);
             setLayout(new GridLayout(DEFAULT_VERT_GRID_ROW,DEFAULT_VERT_GRID_COLUMN,GRID_WGAP,GRID_VGAP));
@@ -74,15 +73,6 @@ public class FrameMain extends JFrame {
             add(btnRegister);
         }
     }
-    public static FrameMain getInstance() throws IOException {
-        if(frameMain==null){
-            synchronized (FrameMain.class){
-                frameMain = new FrameMain();
-            }
-        }
-        return frameMain;
-    }
-    public static BackPanel getBackPanel(){ return backPanel; }
     public static void main(String[] args) throws IOException {
         FrameMain frame = new FrameMain();
         frame.setVisible(true);

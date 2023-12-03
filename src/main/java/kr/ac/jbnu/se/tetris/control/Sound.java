@@ -10,9 +10,9 @@ public class Sound {
     private Clip bgmClip;
     private Clip dropSoundClip;
     private Clip removeSoundClip;
-    private final static String BGM_MUSIC_PATH = FrameMain.MUSIC_DIR_PATH+"bgm.wav";
-    private final static String DROP_MUSIC_PATH = FrameMain.MUSIC_DIR_PATH+"drop.wav";
-    private final static String REMOVE_MUSIC_PATH = FrameMain.MUSIC_DIR_PATH+"remove.wav";
+    private static final String BGM_MUSIC_PATH = FrameMain.MUSIC_DIR_PATH+"bgm.wav";
+    private static final String DROP_MUSIC_PATH = FrameMain.MUSIC_DIR_PATH+"drop.wav";
+    private static final String REMOVE_MUSIC_PATH = FrameMain.MUSIC_DIR_PATH+"remove.wav";
     public Sound() {
         setBgm();
         setDropSound();
@@ -80,16 +80,16 @@ public class Sound {
         bgmClip.stop();
     }
 
-    public void startBgm() {
+    public synchronized void startBgm() {
         bgmClip.start();
         bgmClip.loop(Clip.LOOP_CONTINUOUSLY);
     }
-    public void playDropSound() {
+    public synchronized void playDropSound() {
         dropSoundClip.setFramePosition(0);
         dropSoundClip.start();
     }
 
-    public void playRemoveSound() {
+    public synchronized void playRemoveSound() {
         removeSoundClip.setFramePosition(0);
         removeSoundClip.start();
     }

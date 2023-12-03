@@ -2,7 +2,8 @@ package kr.ac.jbnu.se.tetris.boundary;
 
 import kr.ac.jbnu.se.tetris.control.FirebaseTool;
 import kr.ac.jbnu.se.tetris.entity.Account;
-import kr.ac.jbnu.se.tetris.FrameMain;
+
+import java.io.IOException;
 
 public class RegisterPage extends LogInPage {
     public RegisterPage() {
@@ -13,7 +14,13 @@ public class RegisterPage extends LogInPage {
         btnConfirm.addActionListener(e -> {
             if(FirebaseTool.getInstance().signUp(
                     new Account(idBox.getText(), pwBox.getPassword()))
-            )FrameMain.getBackPanel().pop();
+            ) {
+                try {
+                    BackPanel.getInstance().pop();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
         });
     }
 }

@@ -1,39 +1,28 @@
 package kr.ac.jbnu.se.tetris.boundary;
 
 import kr.ac.jbnu.se.tetris.control.AIControl;
-import kr.ac.jbnu.se.tetris.entity.Entity;
+import kr.ac.jbnu.se.tetris.control.WorkFlow;
+import kr.ac.jbnu.se.tetris.entity.Block;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 
 import java.io.IOException;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
 
 public class TetrisCanvasAI extends TetrisCanvas {
 
 	private AIControl aiControl;
+	private final WorkFlow aiWorks = new WorkFlow(this);
 	public TetrisCanvasAI() throws IOException {
 		super();
-		BackPanel.addTask("Canvas AI Logic", new TimerTask() {
-			@Override
-			public void run() {
-				try {
-					actionTrigger();
-				} catch (InterruptedException |ExecutionException e) {
-					/* Clean up whatever needs to be handled before interrupting  */
-					Thread.currentThread().interrupt();
-					throw new RuntimeException(e);
-				}
-            }
-		}, 100);// 이벤트간 딜레이 400
 		aiControl = new AIControl(this);
 	}
 	@Override
-	public void start() throws InterruptedException, ExecutionException {
+	public void start(){
 		clearBoard();
 		isStarted = true;
 		isFallingFinished = false;
 		numLinesRemoved = 0;
 		newPiece();
+		actionTrigger();
 	}
 	@Override
 	public void pause(){
@@ -43,13 +32,12 @@ public class TetrisCanvasAI extends TetrisCanvas {
 		repaint();
 	}
 	@Override
-	protected void newPiece() throws InterruptedException, ExecutionException {
+	protected void newPiece(){
 		curPiece.setRandomShape();
 		// 블록이 움직이지 못할 때(게임 종료)
 		if (!tryMove(curPiece, curPiece.getCurX(), curPiece.getCurY())) {//블록 과다로 게임오버시.
-			curPiece = new Entity(Tetrominoes.NO_SHAPE); // 떨어지는 블록 없앰
-			BackPanel.stopTask(this);
-
+			curPiece = new Block(Tetrominoes.NO_SHAPE); // 떨어지는 블록 없앰
+			BackPanel.removeTask(aiWorks);
 			isStarted = false;
 		}
 		if (isStarted){
@@ -58,9 +46,9 @@ public class TetrisCanvasAI extends TetrisCanvas {
 	}
 
 	public void doControlLogic() {
-		Entity tmpEntity = new Entity(Tetrominoes.NO_SHAPE);
-		tmpEntity.copyEntity(getCurPiece());
-		int[] goodPosition = aiControl.findGoodPosition(tmpEntity);
+		Block tmpBlock = new Block(Tetrominoes.NO_SHAPE);
+		tmpBlock.copyEntity(getCurPiece());
+		int[] goodPosition = aiControl.findGoodPosition(tmpBlock);
 
 		for (int i = goodPosition[2]; i > 0; i--) {
 			curPiece.rotateRight();
@@ -77,7 +65,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 		}
 	}
 	@Override
-	public boolean tryMove(Entity newPiece, int newX, int newY) {
+	public boolean tryMove(Block newPiece, int newX, int newY) {
 		for (int i = 0; i < 4; ++i) {
 			int x = newX + newPiece.x(i);
 			int y = newY - newPiece.y(i);
@@ -90,7 +78,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 		return true;
 	}
 	@Override
-	protected void pieceDropped() throws InterruptedException, ExecutionException {
+	protected void pieceDropped(){
 		// 현재 위치에 블록 배치
 		for (int i = 0; i < 4; ++i) {
 			int x = curPiece.getCurX() + curPiece.x(i);
@@ -130,7 +118,7 @@ public class TetrisCanvasAI extends TetrisCanvas {
 		if (numFullLines > 0) {
 			numLinesRemoved += numFullLines;
 			isFallingFinished = true;
-			curPiece = new Entity(Tetrominoes.NO_SHAPE);
+			curPiece = new Block(Tetrominoes.NO_SHAPE);
 			repaint();
 		}
 	}

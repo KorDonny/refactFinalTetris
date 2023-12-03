@@ -6,7 +6,7 @@ import java.util.Random;
 import static kr.ac.jbnu.se.tetris.boundary.TetrisCanvas.TETRIS_CANVAS_H;
 import static kr.ac.jbnu.se.tetris.boundary.TetrisCanvas.TETRIS_CANVAS_W;
 
-public class Entity {
+public class Block {
     /**
      * Boundary클래스의 curX=0, curY=1가 Entity에게 승계
      */
@@ -20,13 +20,13 @@ public class Entity {
      */
     protected int[][] coords;
     private Random random = new Random();
-    public Entity(Tetrominoes shape) {
+    public Block(Tetrominoes shape) {
         initFunc(shape);
     }
-    public void copyEntity(Entity entity) {
-        this.shape = entity.getShape();
-        setPosition(entity.getCurX(), entity.getCurY());
-        setShapeArr(entity.getShapeArr());
+    public void copyEntity(Block block) {
+        this.shape = block.getShape();
+        setPosition(block.getCurX(), block.getCurY());
+        setShapeArr(block.getShapeArr());
     }
     /**
      * Tetrominoes에 고정 정보들에 대한 접근 및 복사

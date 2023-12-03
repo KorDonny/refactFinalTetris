@@ -5,6 +5,7 @@ import kr.ac.jbnu.se.tetris.FrameMain;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public class MenuPage extends JPanel {
@@ -26,12 +27,18 @@ public class MenuPage extends JPanel {
                 FrameMain.GRID_WGAP,FrameMain.GRID_VGAP));
 
         game = new JButton(Menu.GAME_MENU.label());
-        game.addActionListener(e -> FrameMain.getBackPanel().push(new GameMenuPage()));
+        game.addActionListener(e -> {
+            try {
+                BackPanel.getInstance().push(new GameMenuPage());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         score = new JButton(Menu.SCORE_BOARD.label());
         score.addActionListener(e -> {
             try {
-                FrameMain.getBackPanel().push(new ScoreboardPage());
-            } catch (ExecutionException | InterruptedException ex) {
+                BackPanel.getInstance().push(new ScoreboardPage());
+            } catch (ExecutionException | InterruptedException | IOException ex) {
                 /* Clean up whatever needs to be handled before interrupting  */
                 Thread.currentThread().interrupt();
                 throw new RuntimeException(ex);

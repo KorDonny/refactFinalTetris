@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 public class LogInPage extends JPanel {
     JButton btnConfirm;
@@ -61,17 +62,22 @@ public class LogInPage extends JPanel {
         //확인버튼 액션 = 조건 참일시 MenuPage로 진입
         setBtnConfirm();
         //취소버튼 액션 = 메인 화면으로 회귀
-        btnReject.addActionListener(e -> FrameMain.getBackPanel().pop());
+        btnReject.addActionListener(e -> {
+            try {
+                BackPanel.getInstance().pop();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
-    public boolean checkID(Account account) {
+    public boolean checkID(Account account) throws IOException {
         if(Account.getClientAccount()==null){
             Account.updateClientAccount(firebaseTool.logIn(account));
             if(Account.getClientAccount()!=null){
                 JOptionPane.showMessageDialog(null, "반갑습니다!");
-                FrameMain.getBackPanel().push(new MenuPage());
+                BackPanel.getInstance().push(new MenuPage());
                 return true;
             }
-            JOptionPane.showMessageDialog(null, "회원정보를 확인하세요.");
             return false;
         }
         else{
@@ -85,14 +91,16 @@ public class LogInPage extends JPanel {
         }
     }
     public void setBtnConfirm(){
-        btnConfirm.addActionListener(e -> checkID(new Account(idBox.getText(),pwBox.getPassword())));
+        btnConfirm.addActionListener(e -> {
+            try {
+                checkID(new Account(idBox.getText(),pwBox.getPassword()));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
-
     class HintTextField extends JTextField {
-        private String hint;
-
         public HintTextField(String hint) {
-            this.hint = hint;
             setForeground(Color.GRAY);
 
             // 텍스트 필드가 포커스를 얻거나 잃을 때 이벤트 처리
@@ -104,7 +112,6 @@ public class LogInPage extends JPanel {
                         setForeground(Color.BLACK);
                     }
                 }
-
                 @Override
                 public void focusLost(FocusEvent e) {
                     if (getText().isEmpty()) {
@@ -115,14 +122,9 @@ public class LogInPage extends JPanel {
             });
         }
     }
-
     class HintPasswordField extends JPasswordField {
-        private String hint;
-
         public HintPasswordField(String hint) {
-            this.hint = hint;
             setEchoChar((char) 0); // 초기에는 힌트가 보이도록
-
             addFocusListener(new FocusListener() {
                 @Override
                 public void focusGained(FocusEvent e) {
@@ -140,7 +142,6 @@ public class LogInPage extends JPanel {
                     }
                 }
             });
-
             setText(hint);
         }
     }

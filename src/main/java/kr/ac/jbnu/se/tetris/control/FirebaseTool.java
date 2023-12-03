@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
+import kr.ac.jbnu.se.tetris.boundary.BackPanel;
 import kr.ac.jbnu.se.tetris.entity.Account;
 import kr.ac.jbnu.se.tetris.entity.GameMode;
 import org.jetbrains.annotations.NotNull;
@@ -55,14 +56,12 @@ public class FirebaseTool {
         try{
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance(firebaseApp);
             userRecord = firebaseAuth.getUserByEmail(account.getID());
-            if(userRecord.getUid().equals(account.getPW()))
-                System.out.println("success check");
-            else{
+            if(!userRecord.getUid().equals(account.getPW())){
+                JOptionPane.showMessageDialog(BackPanel.getInstance().top(), "회원정보를 확인하세요.", "Message",JOptionPane.ERROR_MESSAGE );
                 return null;
             }
-        }catch (NullPointerException | FirebaseAuthException e){
-            if(e instanceof NullPointerException) JOptionPane.showMessageDialog(null, "User is null.");
-            else if(e instanceof FirebaseAuthException) JOptionPane.showMessageDialog(null, "Error occurs on DB stage");
+        }catch (NullPointerException | FirebaseAuthException | IOException e){
+            JOptionPane.showMessageDialog(null, "Error occurs on DB stage");
             return null;
         }
         return new Account(userRecord.getEmail(), userRecord.getUid().toCharArray());
@@ -75,7 +74,7 @@ public class FirebaseTool {
                     .setUid(account.getPW())
                     .setDisplayName(account.getID().split("@")[0]));
 
-            initScore(account.getID().split("@")[0]);
+            initScore(account);
 
             JOptionPane.showMessageDialog(null, "회원가입에 정상적으로 처리되었습니다.");
             return true;
@@ -101,38 +100,38 @@ public class FirebaseTool {
      * null값을 반환함. 그것때문에 정상 시퀀스 Integer.parseInt부분에서 Nullpointer exception 발생.
      * 이를 막고자 null일시 -1을 반환하고 ,setUser에서 사용시 신규 등록 상황에서 오류 없이 초기화시킬 수 있음.
      * */
-    public static int getUserBestScore(String userID, GameMode mode) throws ExecutionException, InterruptedException {
-        DocumentReference docRef = db.collection(mode.label()).document(userID.split("@")[0]);
+    public static int getUserBestScore(Account account, GameMode mode) throws ExecutionException, InterruptedException {
+        DocumentReference docRef = db.collection(mode.label()).document(account.getNickName());
         // asynchronously retrieve the document
         ApiFuture<DocumentSnapshot> future = docRef.get();
         if(future.get().getData()==null)return -1;
         return Integer.parseInt(future.get().getData().get(BEST_SCORE).toString());
     }
-    private static void setUserBestScore(String userID, int score, GameMode mode) throws ExecutionException, InterruptedException {
+    private static void setUserBestScore(Account account, int score, GameMode mode) throws ExecutionException, InterruptedException {
         // Create a Map to store the data we want to set
         Map<String, Object> docData = new HashMap<>();
         docData.put(BEST_SCORE, score);
         // ...
         // future.get() blocks on response
         // Add a new document (asynchronously) in collection "cities" with id "LA"
-        ApiFuture<WriteResult> future = db.collection(mode.label()).document(userID).set(docData,SetOptions.merge());
+        ApiFuture<WriteResult> future = db.collection(mode.label()).document(account.getNickName()).set(docData,SetOptions.merge());
         // ...
         // future.get() blocks on response
         System.out.println("Update time : " + future.get().getUpdateTime());
     }
-    public void updateUserBestScore(Account account, int score, GameMode mode) throws ExecutionException, InterruptedException {
+    public static void updateUserBestScore(Account account, int score, GameMode mode) throws ExecutionException, InterruptedException {
         Map<String, Object> docData = new HashMap<>();
         docData.put(BEST_SCORE, score);
 
         // future.get() blocks on response
-        if(getUserBestScore(account.getID(),mode)<score){
+        if(getUserBestScore(account,mode)<score){
             ApiFuture<WriteResult> future = db.collection(mode.label()).document(account.getID().split("@")[0]).update(docData);
             System.out.println("Update time : " + future.get().getUpdateTime());
         }
     }
-    private void initScore(String userId) throws ExecutionException, InterruptedException {
+    private void initScore(Account account) throws ExecutionException, InterruptedException {
         for(GameMode mode : GameMode.values()){
-            setUserBestScore(userId,-1,mode);
+            setUserBestScore(account,-1,mode);
         }
     }
 }

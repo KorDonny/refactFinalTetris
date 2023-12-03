@@ -1,11 +1,11 @@
 package kr.ac.jbnu.se.tetris.boundary;
 
 import kr.ac.jbnu.se.tetris.control.KeyControl;
-import kr.ac.jbnu.se.tetris.FrameMain;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.IOException;
 
 import static kr.ac.jbnu.se.tetris.boundary.UICanvas.BOARD_SIZE_H;
 import static kr.ac.jbnu.se.tetris.boundary.UICanvas.BOARD_SIZE_W;
@@ -13,11 +13,11 @@ import static kr.ac.jbnu.se.tetris.boundary.UICanvas.BOARD_SIZE_W;
 public class InGamePage extends JPanel {
     private static InGamePage instance = null;
 
-    InGamePage(){
+    InGamePage() throws IOException {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(BOARD_SIZE_W*3,BOARD_SIZE_H));
         setBorder(new EmptyBorder(0,0,0,0));
-        FrameMain.getBackPanel().push(this);
+        BackPanel.getInstance().push(this);
         addKeyListener(KeyControl.getInstance());
         setFocusable(true);
         requestFocusInWindow();
@@ -35,7 +35,7 @@ public class InGamePage extends JPanel {
         revalidate();
         return comp;
     }
-    public static InGamePage getInstance(){
+    public static InGamePage getInstance() throws IOException {
         if(instance==null){
             synchronized (InGamePage.class){
                 instance = new InGamePage();

@@ -2,10 +2,10 @@ package kr.ac.jbnu.se.tetris.boundary;
 
 import kr.ac.jbnu.se.tetris.control.FirebaseTool;
 import kr.ac.jbnu.se.tetris.entity.GameMode;
-import kr.ac.jbnu.se.tetris.FrameMain;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +25,13 @@ public class ScoreboardPage extends JPanel {
         JButton backBtn = new JButton("<");
         backBtn.setVisible(true);
         add(backBtn);
-        backBtn.addActionListener(e -> FrameMain.getBackPanel().pop());
+        backBtn.addActionListener(e -> {
+            try {
+                BackPanel.getInstance().pop();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         Map<String,Integer>[] resultArr = new LinkedHashMap[GameMode.values().length];
         Set<String>[] nameTag = new Set[GameMode.values().length];

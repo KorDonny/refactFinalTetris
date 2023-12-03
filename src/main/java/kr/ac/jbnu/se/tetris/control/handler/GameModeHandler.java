@@ -9,5 +9,4 @@ public interface GameModeHandler {
     void startGame() throws IOException, InterruptedException, ExecutionException;
     void connectCanvas();
     TetrisCanvas getCanvas();
-    void initiateTrigger();
 }

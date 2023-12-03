@@ -1,6 +1,6 @@
 package kr.ac.jbnu.se.tetris.control.handler;
 
-import kr.ac.jbnu.se.tetris.FrameMain;
+import kr.ac.jbnu.se.tetris.boundary.BackPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,13 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
 
         // 게임 클리어 확인용 타이머 초기화 (1초마다 체크)
         Timer gameClearCheckTimer; // 게임 클리어 확인용 타이머
-        gameClearCheckTimer = new Timer(1000, e -> checkGameClear());
+        gameClearCheckTimer = new Timer(1000, e -> {
+            try {
+                checkGameClear();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         gameClearCheckTimer.setInitialDelay(1000); // 최초 딜레이 설정
         gameClearCheckTimer.start();
     }
@@ -41,14 +47,14 @@ public class SprintModeHandler extends NormalModeHandler implements GameModeHand
         checkGameClear();
         sprintModeStatusbar.setVisible(true);
     }
-    public void checkGameClear() {
+    public void checkGameClear() throws IOException {
         if (getCanvas().getNumLinesRemoved() >= targetLineCount && !gameClearAchieved) {
             gameClearAchieved = true;
             getCanvas().pause();
             gameClearStatusLabel.setText("Game Clear!");
             gameClearStatusLabel.setVisible(true);
             getCanvas().setEnabled(false);
-            FrameMain.getBackPanel().repaint();
+            BackPanel.getInstance().repaint();
         }
     }
     private void updateTargetLineCount() {

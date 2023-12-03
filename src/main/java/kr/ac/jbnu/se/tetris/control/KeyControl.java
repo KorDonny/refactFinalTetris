@@ -1,9 +1,11 @@
 package kr.ac.jbnu.se.tetris.control;
 
 import kr.ac.jbnu.se.tetris.boundary.BackPanel;
+import kr.ac.jbnu.se.tetris.boundary.GameMenuPage;
 import kr.ac.jbnu.se.tetris.boundary.TetrisCanvasAI;
-import kr.ac.jbnu.se.tetris.entity.Entity;
+import kr.ac.jbnu.se.tetris.entity.Block;
 import kr.ac.jbnu.se.tetris.boundary.TetrisCanvas;
+import kr.ac.jbnu.se.tetris.entity.GameMode;
 import kr.ac.jbnu.se.tetris.entity.Tetrominoes;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -26,6 +28,7 @@ public class KeyControl implements KeyListener {
     boolean isDownP2;
     boolean isOneP2;
     boolean isDropP2;
+    private final WorkFlow keyCtrlWorks = new WorkFlow(this);
     public KeyControl(){
         isLeft=false;
         isRight=false;
@@ -40,7 +43,7 @@ public class KeyControl implements KeyListener {
         isDownP2=false;
         isOneP2=false;
         isDropP2=false;
-        BackPanel.addTask("KeyControl", new TimerTask() {
+        BackPanel.addTask(keyCtrlWorks, new TimerTask() {
             @Override
             public void run() {
                 try {
@@ -75,12 +78,10 @@ public class KeyControl implements KeyListener {
         if(key == KeyEvent.VK_SPACE) isDrop = false;
         if(key == KeyEvent.VK_R) isOne = false;
     }
-
     @Override
     public void keyTyped(KeyEvent e) {
         //nothing to do
     }
-
     @Override
     public void keyPressed(KeyEvent e) {
         if(getPlayer(false)==null)return;
@@ -128,12 +129,12 @@ public class KeyControl implements KeyListener {
             else player.tryMove(getCurPiece(player),newX, newY);
         }
     }
-    Entity getCurPiece(TetrisCanvas player){ return player.getCurPiece(); }
+    Block getCurPiece(TetrisCanvas player){ return player.getCurPiece(); }
     int getX(TetrisCanvas player){ return getCurPiece(player).getCurX(); }
     int getY(TetrisCanvas player){ return getCurPiece(player).getCurY(); }
     public static void updatePlayer(TetrisCanvas player){
         if(player1==null)player1=player;
-        else if(!(player instanceof TetrisCanvasAI))player2=player;
+        else if(GameMenuPage.getMode() == GameMode.MULTI)player2=player;
     }
     public static KeyControl getInstance(){
         if(keyControl==null){
