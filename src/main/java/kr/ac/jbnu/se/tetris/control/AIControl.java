@@ -131,9 +131,7 @@ public class AIControl {
             --newX;
         }
     }
-    private void setWeight(double[] weight) {
-        this.weight = Arrays.copyOf(weight,weight.length);
-    }
+
     public void setDefaultWeight() {
         //계산된 가중치값
         weight[0] = -0.8882324104022858;
