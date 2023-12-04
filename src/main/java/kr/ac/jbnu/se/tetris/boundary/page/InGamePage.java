@@ -3,7 +3,6 @@ package kr.ac.jbnu.se.tetris.boundary.page;
 import kr.ac.jbnu.se.tetris.boundary.BackPanel;
 import kr.ac.jbnu.se.tetris.boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.control.KeyControl;
-import kr.ac.jbnu.se.tetris.control.TimerManager;
 import kr.ac.jbnu.se.tetris.boundary.UICanvas;
 
 import javax.swing.*;
@@ -24,7 +23,6 @@ public class InGamePage extends JPanel {
         addKeyListener(KeyControl.getInstance());
         setFocusable(true);
         requestFocusInWindow();
-        TimerManager.getInstance();
     }
     @Override
     public Component add(Component comp) {
@@ -46,6 +44,10 @@ public class InGamePage extends JPanel {
             }
         }
         return instance;
+    }
+    public static synchronized void exitProg() throws IOException {
+        BackPanel.getInstance().pop();
+        instance = null;
     }
 }
 

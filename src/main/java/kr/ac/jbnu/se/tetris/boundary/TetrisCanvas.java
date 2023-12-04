@@ -218,7 +218,6 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 			sound.stopBgm();
 			isStarted = false;
 			preview.setReadyFlagFalse();
-			//UICanvas.getInstance().updateDBScore(this);
 			UICanvas.updateDBScore(this);
 		}
 	}
@@ -296,9 +295,7 @@ public class TetrisCanvas extends UICanvas {//인터페이스 = 액션리스너 
 	public int getNumLinesRemoved() { return numLinesRemoved; }
 	//재시작 화면 기능 미구현할 시 삭제 요망.
 	public void restart() throws InterruptedException, ExecutionException, IOException {
-		clearBoard();
-		numLinesRemoved=0;
-		newPiece();
+		start();
 	}
 	public Tetrominoes[] getBoard(){ return board; }
 	public void setUICanvas(UICanvas uiCanvas) {

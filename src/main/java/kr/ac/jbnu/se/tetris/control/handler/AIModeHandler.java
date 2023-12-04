@@ -3,6 +3,7 @@ package kr.ac.jbnu.se.tetris.control.handler;
 import kr.ac.jbnu.se.tetris.boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.boundary.TetrisCanvasAI;
 import kr.ac.jbnu.se.tetris.boundary.page.InGamePage;
+import kr.ac.jbnu.se.tetris.control.KeyControl;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -18,6 +19,7 @@ public class AIModeHandler extends NormalModeHandler implements GameModeHandler 
         super.startGame();
         connectCanvas();
         InGamePage.getInstance().add(canvas);
+        KeyControl.updatePlayer(canvas);
         canvas.start();
     }
 }

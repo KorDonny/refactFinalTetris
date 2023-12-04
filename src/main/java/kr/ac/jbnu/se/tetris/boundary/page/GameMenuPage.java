@@ -2,7 +2,6 @@ package kr.ac.jbnu.se.tetris.boundary.page;
 
 import kr.ac.jbnu.se.tetris.*;
 import kr.ac.jbnu.se.tetris.boundary.BackPanel;
-import kr.ac.jbnu.se.tetris.boundary.UICanvas;
 import kr.ac.jbnu.se.tetris.control.FirebaseTool;
 import kr.ac.jbnu.se.tetris.control.TimerManager;
 import kr.ac.jbnu.se.tetris.control.handler.*;
@@ -42,6 +41,9 @@ public class GameMenuPage extends JPanel {
                 0,0,0));
     }
     private void startGame(GameMode mode) throws IOException, InterruptedException, ExecutionException {
+        setMode(mode);
+        TimerManager.getInstance();
+        //BackPanel.getInstance().push(InGamePage.getInstance());
         switch (mode) {
             case NORMAL:
                 setModeHandler(new NormalModeHandler());
@@ -67,8 +69,6 @@ public class GameMenuPage extends JPanel {
                 setModeHandler(new LocalModeHandler());
                 break;
         }
-        InGamePage.getInstance();
-        setMode(mode);
         getModeHandler().startGame();
     }
     private static class GameModeHolder {
@@ -108,8 +108,7 @@ public class GameMenuPage extends JPanel {
     public static synchronized void resetMenu() throws IOException {
         setMode(null);
         setModeHandler(null);
-        UICanvas.exitProg();
-        BackPanel.getInstance().pop();
         TimerManager.exitProg();
+        InGamePage.exitProg();
     }
 }

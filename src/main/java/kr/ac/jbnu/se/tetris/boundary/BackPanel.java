@@ -49,7 +49,7 @@ public class BackPanel extends JPanel {
         if(viewStack.isEmpty())return;
         viewStack.removeFirst().setVisible(false);
         viewStack.getFirst().setVisible(true);
-        this.revalidate();
+        revalidate();
     }
     /** 컴포넌트 알림창 사용시 부모 창을 붙여주기 위해 메소드 구현 */
     public Component top(){

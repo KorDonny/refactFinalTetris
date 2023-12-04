@@ -26,12 +26,15 @@ public class UICanvas extends JPanel{
     private PreviewBlock mainPreview = null;
     private PreviewBlock subPreview = null;
     private static int p1Score;
+    private static String p1Text = Account.getClientAccount().getNickName()+" : "+0;
     private static int p2Score;
+    private static String p2Text = "0";
     private final WorkFlow uiCanvasWorks = new WorkFlow(this);
     public UICanvas() throws IOException {
         setOpaque(false);
         setPreferredSize(new Dimension(BOARD_SIZE_W,BOARD_SIZE_H));
         if(!(this instanceof TetrisCanvas)){
+            TimerManager.getInstance();
             TimerManager.addTask(uiCanvasWorks, new TetrisTimerTask() {
                 @Override
                 public void doLogic(){
@@ -54,14 +57,13 @@ public class UICanvas extends JPanel{
 
     @Override
     public void paintComponent(Graphics g){
+        super.paintComponent(g);
         g.drawImage(uiBuff.getSprite(), 0, 0, null);
         g.setFont(new Font("SansSerif",Font.BOLD, FrameMain.FONT_TITLE));
         if(GameMenuPage.getMode() == GameMode.MULTI){
-            g.setColor(Color.BLUE);
-            g.drawString(Account.getLocalMultiAccount().getNickName()+" : "+p2Score,BOARD_SIZE_W/2,BOARD_HGAP*2);
+            updateScoreText(g,p2Text);
         }
-        g.setColor(Color.RED);
-        g.drawString(Account.getClientAccount().getNickName()+" : "+p1Score,BOARD_SIZE_W/2,GameMenuPage.getMode() == GameMode.MULTI ? BOARD_SIZE_H-BOARD_HGAP*2 : BOARD_SIZE_H/2);
+        updateScoreText(g,p1Text);
     }
     public PreviewBlock getPreview(int previewNum) {
         if (mainPreview == null) {
@@ -73,25 +75,41 @@ public class UICanvas extends JPanel{
         }
         return null;
     }
-    public static void updateDBScore(TetrisCanvas canvas) throws ExecutionException, InterruptedException, IOException {
+    public static void updateDBScore(TetrisCanvas canvas) throws ExecutionException, InterruptedException{
         Account account;
         if(canvas == KeyControl.getPlayer(true) && GameMenuPage.getMode() == GameMode.MULTI) account = Account.getLocalMultiAccount();
         else if(canvas == KeyControl.getPlayer(false)) account = Account.getClientAccount();
         else return;
         int result = account == Account.getClientAccount() ? p1Score : p2Score;
         if(FirebaseTool.getUserBestScore(account,GameMenuPage.getMode())<result){
-            getInstance().getGraphics().setColor(Color.green);
-            getInstance().getGraphics().drawString("Congrats! New Record! : "+result,BOARD_SIZE_W*3/2,BOARD_SIZE_H/2+BOARD_HGAP);
-            FirebaseTool.updateUserBestScore(account,result, GameMenuPage.getMode());
+            // 그래픽 업데이트 코드
+            instance.getGraphics().setColor(Color.green);
+            p1Text = "Congrats! New Record! : " + result;
+            instance.repaint(); // 화면 갱신
         }
         else{
-            getInstance().getGraphics().setColor(Color.cyan);
-            getInstance().getGraphics().drawString("Game Over : "+result,BOARD_SIZE_W*3/2,BOARD_SIZE_H/2+BOARD_HGAP);
+            instance.getGraphics().setColor(Color.cyan);
+            p1Text = "Game Over : "+result;
+            instance.repaint();
         }
     }
+    private void updateScoreText(Graphics g, String text){
+        if(GameMenuPage.getMode() == GameMode.MULTI){
+            g.setColor(Color.BLUE);
+            g.drawString(text,BOARD_SIZE_W/2,BOARD_HGAP*2);
+        }
+        g.setColor(Color.RED);
+        g.drawString(text,BOARD_SIZE_W/2,GameMenuPage.getMode() == GameMode.MULTI ? BOARD_SIZE_H-BOARD_HGAP*2 : BOARD_SIZE_H/2);
+    }
     public static void updateScore(TetrisCanvas canvas,int score) throws IOException {
-        if(canvas == KeyControl.getPlayer(true) && GameMenuPage.getMode() == GameMode.MULTI) p2Score = score;
-        else p1Score = score;
+        if(canvas == KeyControl.getPlayer(true) && GameMenuPage.getMode() == GameMode.MULTI) {
+            p2Score = score;
+            p2Text = Account.getLocalMultiAccount().getNickName()+" : "+p2Score;
+        }
+        else {
+            p1Score = score;
+            p1Text = Account.getClientAccount().getNickName()+" : "+p1Score;
+        }
         getInstance().repaint();
     }
     public static UICanvas getInstance() throws IOException {

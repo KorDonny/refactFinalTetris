@@ -60,12 +60,19 @@ public class TimerManager {
     public static void resumeTask(WorkFlow works){
         if(works!=null && getTask(works) != null) getTask(works).resumeTask();
     }
+
     /** 특정 타이머 태스크만 삭제 */
     public static void removeTask(WorkFlow works){
         TetrisTimerTask task = getTask(works);
         if(task != null){
             task.cancelTask();
             timerMap.remove(works.getHashCode());
+        }
+    }
+    /** 특정 타이머 태스크만 삭제 */
+    public static void removeAllTasks(){
+        for (TetrisTimerTask task : timerMap.values()) {
+            task.cancelTask();
         }
     }
     /** 모든 스레드 정지 */
@@ -97,9 +104,7 @@ public class TimerManager {
         return instance;
     }
     public static synchronized void exitProg(){
-        timerMap = null;
-        timer = null;
-        instance = null;
+        removeAllTasks();
     }
 }
 

@@ -34,6 +34,38 @@ public class LogInPage extends JPanel {
         int uiTopMargin = (FrameMain.WINDOW_HEIGHT)/3;
         this.setBorder(new EmptyBorder(uiTopMargin,0,0,0));
 
+        setFirstUI();
+    }
+    public boolean checkID(Account account) throws IOException {
+        if(Account.getClientAccount()==null){
+            Account.updateClientAccount(firebaseTool.logIn(account));
+            if(Account.getClientAccount()!=null){
+                JOptionPane.showMessageDialog(null, "반갑습니다!");
+                BackPanel.getInstance().push(new MenuPage());
+                return true;
+            }
+            return false;
+        }
+        else{
+            Account.updateLocalMultiAccount(firebaseTool.logIn(account));
+            if(Account.getLocalMultiAccount()!=null){
+                JOptionPane.showMessageDialog(null, "반갑습니다! 플레이어 2님!");
+                return true;
+            }
+            JOptionPane.showMessageDialog(null, "회원정보를 확인하세요.");
+            return false;
+        }
+    }
+    public void setBtnConfirm(){
+        btnConfirm.addActionListener(e -> {
+            try {
+                checkID(new Account(idBox.getText(),pwBox.getPassword()));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
+    private void setFirstUI(){
         //각 컴포넌트들을 표시하기 위한 레이어 구성
         layout1 = new FlowLayout(FlowLayout.CENTER,20,20);
         layout2 = new FlowLayout(FlowLayout.CENTER,100,20);
@@ -70,34 +102,4 @@ public class LogInPage extends JPanel {
             }
         });
     }
-    public boolean checkID(Account account) throws IOException {
-        if(Account.getClientAccount()==null){
-            Account.updateClientAccount(firebaseTool.logIn(account));
-            if(Account.getClientAccount()!=null){
-                JOptionPane.showMessageDialog(null, "반갑습니다!");
-                BackPanel.getInstance().push(new MenuPage());
-                return true;
-            }
-            return false;
-        }
-        else{
-            Account.updateLocalMultiAccount(firebaseTool.logIn(account));
-            if(Account.getLocalMultiAccount()!=null){
-                JOptionPane.showMessageDialog(null, "반갑습니다! 플레이어 2님!");
-                return true;
-            }
-            JOptionPane.showMessageDialog(null, "회원정보를 확인하세요.");
-            return false;
-        }
-    }
-    public void setBtnConfirm(){
-        btnConfirm.addActionListener(e -> {
-            try {
-                checkID(new Account(idBox.getText(),pwBox.getPassword()));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-    }
-
 }

@@ -1,6 +1,7 @@
 package kr.ac.jbnu.se.tetris.control;
 
 import kr.ac.jbnu.se.tetris.boundary.TetrisCanvasAI;
+import kr.ac.jbnu.se.tetris.boundary.UICanvas;
 import kr.ac.jbnu.se.tetris.boundary.page.GameMenuPage;
 import kr.ac.jbnu.se.tetris.boundary.TetrisCanvas;
 import kr.ac.jbnu.se.tetris.entity.Block;
@@ -92,8 +93,8 @@ public class KeyControl implements KeyListener {
                         new String[]{"재시작","종료","취소"},2)){
                     case 0:
                         try {
-                            player1.restart();
-                            if(player2!=null)player2.restart();
+                            player1.start();
+                            if(player2!=null)player2.start();
                             TimerManager.resumeAllTasks();
                         } catch (InterruptedException | ExecutionException | IOException ex) {
                             throw new RuntimeException(ex);
@@ -174,6 +175,7 @@ public class KeyControl implements KeyListener {
         player1.exitCanvProg();
         player1 = null;
         keyControl = null;
+        UICanvas.exitProg();
         GameMenuPage.resetMenu();
     }
     public boolean isSingle(){ return player2 == null || player2 instanceof TetrisCanvasAI; }

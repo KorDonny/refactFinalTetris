@@ -9,17 +9,15 @@ import java.util.concurrent.ExecutionException;
 
 public class LocalModeHandler extends NormalModeHandler implements GameModeHandler{
     private final TetrisCanvas canvas;
-    NormalModeHandler normal;
     public LocalModeHandler() throws IOException {
         super();
-        this.normal = new NormalModeHandler();
         this.canvas = new TetrisCanvas();
     }
     @Override
     public void startGame() throws IOException, InterruptedException, ExecutionException {
-        normal.startGame();
+        super.startGame();
         InGamePage.getInstance().add(canvas);
-        canvas.setUICanvas(normal.getUiCanvas());
+        canvas.setUICanvas(super.getUiCanvas());
         connectCanvas();
         canvas.start();
     }

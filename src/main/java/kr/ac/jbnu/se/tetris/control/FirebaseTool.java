@@ -110,12 +110,8 @@ public class FirebaseTool {
         // Create a Map to store the data we want to set
         Map<String, Object> docData = new HashMap<>();
         docData.put(BEST_SCORE, score);
-        // ...
         // future.get() blocks on response
-        // Add a new document (asynchronously) in collection "cities" with id "LA"
         ApiFuture<WriteResult> future = db.collection(mode.label()).document(account.getNickName()).set(docData,SetOptions.merge());
-        // ...
-        // future.get() blocks on response
         System.out.println("Update time : " + future.get().getUpdateTime());
     }
     public static void updateUserBestScore(Account account, int score, GameMode mode) throws ExecutionException, InterruptedException {
